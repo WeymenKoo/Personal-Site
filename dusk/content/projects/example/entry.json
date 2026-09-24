@@ -1,0 +1,14 @@
+{
+  "title": "Project title",
+  "status": "wip",
+  "statusLabel": "In progress",
+  "year": "2026",
+  "spec": "Key spec · key spec · key spec",
+  "summary": "PLACEHOLDER — two or three sentences on what it is and what was hard about it.",
+  "cover": { "src": "cover.jpg", "alt": "Describe the cover photo", "fit": "cover" },
+  "strip": [
+    { "src": "rev1.jpg", "alt": "Rev 1", "caption": "Rev 1" },
+    { "src": "rev2.jpg", "alt": "Rev 2", "caption": "Rev 2" }
+  ],
+  "link": ""
+}

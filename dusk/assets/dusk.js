@@ -205,14 +205,13 @@
      RECORD SHELF — clicking a record loads it into the player.
      Nothing ever autoplays: Spotify's embed needs its own tap to play.
      ------------------------------------------------------------------- */
-  var player = document.getElementById("player");
-  var nowT = document.getElementById("nowTitle");
-  document.querySelectorAll(".rec").forEach(function (r) {
-    r.addEventListener("click", function () {
-      document.querySelectorAll(".rec").forEach(function (x) { x.classList.remove("on"); });
-      r.classList.add("on");
-      player.src = "https://open.spotify.com/embed/track/" + r.dataset.track + "?utm_source=generator&theme=0";
-      nowT.textContent = r.dataset.title;
-    });
+  /* delegated: records are rendered later by entries.js */
+  document.addEventListener("click", function (e) {
+    var r = e.target.closest(".rec");
+    if (!r) return;
+    document.querySelectorAll(".rec").forEach(function (x) { x.classList.remove("on"); });
+    r.classList.add("on");
+    document.getElementById("player").src = "https://open.spotify.com/embed/track/" + r.dataset.track + "?utm_source=generator&theme=0";
+    document.getElementById("nowTitle").textContent = r.dataset.title;
   });
 })();

@@ -1,0 +1,14 @@
+{
+  "title": "Roll title",
+  "location": "PLACEHOLDER location",
+  "film": "Film stock",
+  "notes": "PLACEHOLDER — two lines about this roll. Where you were, what the air felt like, why these frames.",
+  "song": "75Suv3FnFQji4Lp3ATMLJ1",
+  "frames": [
+    { "src": "01.jpg", "alt": "Describe frame 01" },
+    { "src": "02.jpg", "alt": "Describe frame 02" },
+    { "src": "03.jpg", "alt": "Describe frame 03" },
+    { "src": "04.jpg", "alt": "Describe frame 04", "width": 6 },
+    { "src": "05.jpg", "alt": "Describe frame 05", "width": 6 }
+  ]
+}

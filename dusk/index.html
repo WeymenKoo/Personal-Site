@@ -6,7 +6,7 @@
 <title>Weymen Koo 许梣焕</title>
 <meta name="description" content="Circuit boards, film photographs, and records — a day, from golden hour to night.">
 <meta name="theme-color" content="#F4EBDD">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 140'%3E%3Cg fill='none' stroke='%232A2118' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M30 46C34 29 50 17 70 15c8-1 14 3 16 9'/%3E%3Cpath d='M86 24c44 1 89 16 114 34'/%3E%3Cpath d='M88 64c42 2 84 1 112-6'/%3E%3Cpath d='M88 92c34-3 78-14 112-34'/%3E%3Cpath d='M86 24v68'/%3E%3Cpath d='M30 46l-3 46h61'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" href="design/toucan.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,380..680&family=Noto+Sans+SC:wght@400&display=swap" rel="stylesheet">
@@ -32,16 +32,13 @@
 <section id="golden" data-hour="golden" class="hero-wrap">
   <div class="wrap hero">
     <div>
-      <svg class="mark" viewBox="0 0 220 140" role="img" aria-label="Toucan">
-        <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M30 46 C34 29 50 17 70 15 C78 14 84 18 86 24"/><path d="M30 46 L27 92"/>
-          <path d="M34 33 L45 25"/><path d="M32 43 L44 34"/><path d="M30 53 L42 43"/>
-          <path d="M28 63 L40 53"/><path d="M27 73 L38 64"/><path d="M86 24 L88 64"/>
-          <path d="M86 24 C130 25 175 40 200 58"/><path d="M88 64 C130 66 172 65 200 58"/>
-          <path d="M88 92 C122 89 166 78 200 58"/><path d="M88 64 L88 92"/><path d="M27 92 L88 92"/>
-          <path d="M27 92 L27 112"/><path d="M27 112 L45 112"/><path d="M45 92 L45 112"/>
-          <path d="M88 92 L88 112"/><circle cx="62" cy="39" r="3.4" fill="currentColor" stroke="none"/>
-        </g>
+      <svg class="mark" viewBox="40 28 176 108" role="img" aria-label="Toucan">
+        <path d="M44 110 L44 72 C44 48 60 32 82 32 L100 32 L100 110 Z" fill="currentColor"/>
+        <rect x="44" y="114" width="20" height="18" fill="currentColor"/>
+        <rect x="95" y="114" width="6" height="18" fill="currentColor"/>
+        <path d="M100 32 C150 34 190 52 212 74 C190 78 150 78 100 76 Z" fill="#E0892F"/>
+        <path d="M100 76 C150 78 190 78 212 74 C190 94 150 106 100 110 Z" fill="#B24E26"/>
+        <circle cx="80" cy="56" r="5" fill="var(--bg)"/>
       </svg>
       <h1>Weymen Koo</h1>
       <p class="cjk">许梣焕</p>
@@ -50,7 +47,7 @@
     </div>
 
     <figure class="print-frame">
-      <img src="img/photos/t1-01-beach.jpg" alt="A lone figure walking along a pale beach, calm sea behind">
+      <img src="content/hero.jpg" alt="PLACEHOLDER — describe the landing photo">
       <figcaption><span>Tape 01 · Frame 01</span><span>Film</span></figcaption>
     </figure>
   </div>
@@ -62,86 +59,10 @@
      ================================================================ -->
 <section id="side-a" data-hour="afternoon" class="hour">
   <div class="wrap">
-    <p class="jcard"><b>Side A</b><span>Things I've built</span><i>05</i></p>
+    <p class="jcard"><b>Side A</b><span>Things I've built</span><i id="projectCount">00</i></p>
     <p class="lede">Boards I laid out, assembled, and debugged myself — some finished, some still on the bench.</p>
-
-    <div class="projects">
-
-      <!-- ---------- 01 ---------- -->
-      <article class="proj">
-        <div class="pic contain"><img src="img/projects/focrev01top.jpg" alt="FoC motor controller Rev 01, top and bottom render" loading="lazy"></div>
-        <div>
-          <div class="row"><span class="no">A1</span><span class="st wip">At fab</span></div>
-          <h3>Field-oriented motor controller</h3>
-          <p class="spec">50 V · 3-phase · 100 V MOSFETs · ±27.5 A · CAN FD</p>
-          <p>A three-phase FOC controller on an STM32G431 and a DRV8323 gate driver, laid out across fourteen hierarchical schematic sheets. The boards are somewhere between the fab house and my desk.</p>
-          <div class="foot"><span class="lcd" data-ghost="8888">2026</span><a class="more" href="#">Read &rarr;</a></div>
-        </div>
-      </article>
-
-      <!-- ---------- 02 ---------- -->
-      <article class="proj">
-        <div class="pic"><img src="img/projects/aerodesignspirit.jpg" alt="Spirit aircraft on the runway" loading="lazy"></div>
-        <div>
-          <div class="row"><span class="no">A2</span><span class="st ok">Flown</span></div>
-          <h3>AeroDesign — the aircraft</h3>
-          <p class="spec">SAE Advanced Class · 120" span heavy lift · four airframes</p>
-          <div class="strip">
-            <figure><img src="img/projects/aerodesignkyogre.jpg" alt="Kyogre" loading="lazy"><figcaption>21–22</figcaption></figure>
-            <figure><img src="img/projects/aerodesignspirit.jpg" alt="Spirit" loading="lazy"><figcaption>22–23</figcaption></figure>
-            <figure><img src="img/projects/aerodesignshadow.jpg" alt="Shadow" loading="lazy"><figcaption>23–24</figcaption></figure>
-            <figure><img src="img/projects/aerodesign202425.jpg" alt="2024–25 aircraft" loading="lazy"><figcaption>24–25</figcaption></figure>
-          </div>
-          <p>I joined UBC AeroDesign to build wings — ribs, carbon layups, and eventually every lifting surface on Spirit. Then I moved to the wiring.</p>
-          <div class="foot"><span class="lcd" data-ghost="8888">2021</span><a class="more" href="#">Read &rarr;</a></div>
-        </div>
-      </article>
-
-      <!-- ---------- 03 ---------- -->
-      <article class="proj">
-        <div class="pic"><img src="img/projects/pdb2board.jpg" alt="Second generation power board" loading="lazy"></div>
-        <div>
-          <div class="row"><span class="no">A3</span><span class="st ok">Flown</span></div>
-          <h3>AeroDesign — the avionics</h3>
-          <p class="spec">Protoboard → PCB · two power boards · CAN · ~30 people</p>
-          <div class="strip">
-            <figure><img src="img/projects/flightcomputergen1.jpg" alt="Flight computer gen 1" loading="lazy"><figcaption>FC1 '19</figcaption></figure>
-            <figure><img src="img/projects/flightcomputergen3.jpg" alt="Flight computer gen 3" loading="lazy"><figcaption>FC3 '20</figcaption></figure>
-            <figure><img src="img/projects/flightcomputergen5.jpg" alt="Flight computer gen 5" loading="lazy"><figcaption>FC5</figcaption></figure>
-            <span class="arrow">&rarr;</span>
-            <figure><img src="img/projects/pdb1installed.jpg" alt="Power board gen 1, installed" loading="lazy"><figcaption>PDB1 '23</figcaption></figure>
-            <figure><img src="img/projects/pdb2board.jpg" alt="Power board gen 2" loading="lazy"><figcaption>PDB2 '25</figcaption></figure>
-          </div>
-          <p>It started with a model rocket flight computer on protoboard in 2019. Four hand-wired generations later I was leading avionics for the team — two power boards, a custom flight controller, and a CAN bus.</p>
-          <div class="foot"><span class="lcd" data-ghost="8888">2019</span><a class="more" href="#">Read &rarr;</a></div>
-        </div>
-      </article>
-
-      <!-- ---------- 04 ---------- -->
-      <article class="proj">
-        <div class="pic"><img src="img/projects/micromouserev02.jpg" alt="Micromouse Rev 02, assembled" style="object-position:center 58%" loading="lazy"></div>
-        <div>
-          <div class="row"><span class="no">A4</span><span class="st wip">Firmware</span></div>
-          <h3>Micromouse</h3>
-          <p class="spec">STM32F411 · pulsed IR · gyro · PD control</p>
-          <p>A maze-solving robot on one board. The IR emitters fire at 100 mA for 60 µs inside the interrupt, just long enough to see the walls.</p>
-          <div class="foot"><span class="lcd" data-ghost="8888">2024</span><a class="more" href="#">Read &rarr;</a></div>
-        </div>
-      </article>
-
-      <!-- ---------- 05 ---------- -->
-      <article class="proj">
-        <div class="pic contain"><img src="img/projects/eloadbench.jpg" alt="Electronic load power board and control board" loading="lazy"></div>
-        <div>
-          <div class="row"><span class="no">A5</span><span class="st wip">Calibrating</span></div>
-          <h3>Electronic load</h3>
-          <p class="spec">Four-transistor linear sink · LT1014D · 4.096 V reference</p>
-          <p>A two-board bench instrument: an analogue power board that does the work, and a digital control board that tells it what to do.</p>
-          <div class="foot"><span class="lcd" data-ghost="8888">2024</span><a class="more" href="#">Read &rarr;</a></div>
-        </div>
-      </article>
-
-    </div>
+    <!-- filled from content/projects/ — see README -->
+    <div class="projects" id="projects"></div>
   </div>
 </section>
 
@@ -162,73 +83,10 @@
      ================================================================ -->
 <section id="side-b" data-hour="blue" class="hour">
   <div class="wrap">
-    <p class="jcard"><b>Side B</b><span>Photographs</span><i>03</i></p>
+    <p class="jcard"><b>Side B</b><span>Photographs</span><i id="tapeCount">00</i></p>
     <p class="lede">Shot on film. Each roll comes with the song I'd want you listening to while you look.</p>
-
-    <!-- ---------- TAPE 01 ---------- -->
-    <article class="tape">
-      <header class="tape-head">
-        <span class="lcd" data-ghost="88">01</span>
-        <h3>Humid afternoon</h3><!-- PLACEHOLDER title -->
-        <div class="meta">PLACEHOLDER location<br>Film &middot; 6 frames</div>
-      </header>
-      <p class="notes">PLACEHOLDER — two lines about this roll. Where you were, what the air felt like, why these six.</p>
-      <div class="frames">
-        <button data-full="img/photos/t1-01-beach.jpg" data-cap="Tape 01 · 01"><img src="img/photos/t1-01-beach.jpg" alt="Beach, lone walker" loading="lazy"><span class="n">01</span></button>
-        <button data-full="img/photos/t1-02-wok.jpg" data-cap="Tape 01 · 02"><img src="img/photos/t1-02-wok.jpg" alt="Hawker cooking over a wok" loading="lazy"><span class="n">02</span></button>
-        <button data-full="img/photos/t1-03-cafe.jpg" data-cap="Tape 01 · 03"><img src="img/photos/t1-03-cafe.jpg" alt="Open-air café counter" loading="lazy"><span class="n">03</span></button>
-        <button data-full="img/photos/t1-04-minaret.jpg" data-cap="Tape 01 · 04"><img src="img/photos/t1-04-minaret.jpg" alt="Minaret between buildings" loading="lazy"><span class="n">04</span></button>
-        <button data-full="img/photos/t1-05-cub.jpg" data-cap="Tape 01 · 05"><img src="img/photos/t1-05-cub.jpg" alt="Motorbike parked in a doorway" loading="lazy"><span class="n">05</span></button>
-        <button data-full="img/photos/t1-06-highrise.jpg" data-cap="Tape 01 · 06"><img src="img/photos/t1-06-highrise.jpg" alt="City and sea from a high floor" loading="lazy"><span class="n">06</span></button>
-      </div>
-      <div class="side">
-        <span class="print">Play with &rarr;</span>
-        <!-- SONG: replace the track ID. Open Spotify > Share > Copy song link;
-             the ID is the part after /track/ and before any "?" -->
-        <iframe src="https://open.spotify.com/embed/track/75Suv3FnFQji4Lp3ATMLJ1?utm_source=generator&amp;theme=0" loading="lazy" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture" title="Song for tape 01"></iframe>
-      </div>
-    </article>
-
-    <!-- ---------- TAPE 02 ---------- -->
-    <article class="tape">
-      <header class="tape-head">
-        <span class="lcd" data-ghost="88">02</span>
-        <h3>Waterfront</h3><!-- PLACEHOLDER title -->
-        <div class="meta">Vancouver<br>Film &middot; 4 frames</div>
-      </header>
-      <p class="notes">PLACEHOLDER — two lines about this roll.</p>
-      <div class="frames">
-        <button data-full="img/photos/t2-01-dock.jpg" data-cap="Tape 02 · 01"><img src="img/photos/t2-01-dock.jpg" alt="Fishing boats along a busy dock" loading="lazy"><span class="n">01</span></button>
-        <button data-full="img/photos/t2-02-wharf.jpg" data-cap="Tape 02 · 02"><img src="img/photos/t2-02-wharf.jpg" alt="Gangway down to the wharf" loading="lazy"><span class="n">02</span></button>
-        <button data-full="img/photos/t2-03-harbour.jpg" data-cap="Tape 02 · 03"><img src="img/photos/t2-03-harbour.jpg" alt="Harbour terrace and mountains" loading="lazy"><span class="n">03</span></button>
-        <button class="w12" data-full="img/photos/t2-04-cruise.jpg" data-cap="Tape 02 · 04"><img src="img/photos/t2-04-cruise.jpg" alt="Cruise ship at the terminal" loading="lazy" style="object-position:center 45%"><span class="n">04</span></button>
-      </div>
-      <div class="side">
-        <span class="print">Play with &rarr;</span>
-        <iframe src="https://open.spotify.com/embed/track/75Suv3FnFQji4Lp3ATMLJ1?utm_source=generator&amp;theme=0" loading="lazy" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture" title="Song for tape 02"></iframe>
-      </div>
-    </article>
-
-    <!-- ---------- TAPE 03 ---------- -->
-    <article class="tape">
-      <header class="tape-head">
-        <span class="lcd" data-ghost="88">03</span>
-        <h3>Market days</h3><!-- PLACEHOLDER title -->
-        <div class="meta">Vancouver<br>Film &middot; 5 frames</div>
-      </header>
-      <p class="notes">PLACEHOLDER — two lines about this roll.</p>
-      <div class="frames">
-        <button data-full="img/photos/t3-03-market.jpg" data-cap="Tape 03 · 01"><img src="img/photos/t3-03-market.jpg" alt="Street market under the trees" loading="lazy"><span class="n">01</span></button>
-        <button data-full="img/photos/t3-01-shopfront.jpg" data-cap="Tape 03 · 02"><img src="img/photos/t3-01-shopfront.jpg" alt="Old bookshop front, for lease sign" loading="lazy"><span class="n">02</span></button>
-        <button data-full="img/photos/t3-02-festival.jpg" data-cap="Tape 03 · 03"><img src="img/photos/t3-02-festival.jpg" alt="Crowd under hanging lanterns" loading="lazy"><span class="n">03</span></button>
-        <button class="w6" data-full="img/photos/t3-04-swapmeet.jpg" data-cap="Tape 03 · 04"><img src="img/photos/t3-04-swapmeet.jpg" alt="Swap meet tables" loading="lazy"><span class="n">04</span></button>
-        <button class="w6" data-full="img/photos/t3-05-lawn.jpg" data-cap="Tape 03 · 05"><img src="img/photos/t3-05-lawn.jpg" alt="Lawn and old building, someone walking" loading="lazy"><span class="n">05</span></button>
-      </div>
-      <div class="side">
-        <span class="print">Play with &rarr;</span>
-        <iframe src="https://open.spotify.com/embed/track/75Suv3FnFQji4Lp3ATMLJ1?utm_source=generator&amp;theme=0" loading="lazy" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture" title="Song for tape 03"></iframe>
-      </div>
-    </article>
+    <!-- filled from content/tapes/ — see README -->
+    <div id="tapes"></div>
   </div>
 </section>
 
@@ -237,53 +95,14 @@
      ================================================================ -->
 <section id="records" data-hour="night" class="hour">
   <div class="wrap">
-    <p class="jcard"><b>Side B</b><span>Records</span><i>06</i></p>
+    <p class="jcard"><b>Side B</b><span>Records</span><i id="recordCount">00</i></p>
     <p class="lede">What's been on repeat. Pick one off the shelf.</p>
-
-    <!-- Each record: data-track = Spotify track ID, data-title = shown in the player.
-         Sleeve colours are just two CSS colours — change them freely. -->
-    <div class="shelf">
-      <button class="rec on" data-track="75Suv3FnFQji4Lp3ATMLJ1" data-title="Johnny B. Goode — Chuck Berry">
-        <div class="sleeve"><span class="disc"></span>
-          <div class="cover" style="background:linear-gradient(160deg,#F2B45A,#D9534F);color:#2A1410"><span>01</span><span>Placeholder</span></div></div>
-        <p class="t">Johnny B. Goode</p><p class="a">Chuck Berry</p>
-        <p class="why">PLACEHOLDER — one line on why.</p>
-      </button>
-      <button class="rec" data-track="75Suv3FnFQji4Lp3ATMLJ1" data-title="Johnny B. Goode — Chuck Berry">
-        <div class="sleeve"><span class="disc"></span>
-          <div class="cover" style="background:linear-gradient(160deg,#6FB7C9,#2E4B8C);color:#F2EEE6"><span>02</span><span>Placeholder</span></div></div>
-        <p class="t">Johnny B. Goode</p><p class="a">Chuck Berry</p>
-        <p class="why">PLACEHOLDER — one line on why.</p>
-      </button>
-      <button class="rec" data-track="75Suv3FnFQji4Lp3ATMLJ1" data-title="Johnny B. Goode — Chuck Berry">
-        <div class="sleeve"><span class="disc"></span>
-          <div class="cover" style="background:linear-gradient(160deg,#F7D9C4,#E58FB0);color:#3A1D2B"><span>03</span><span>Placeholder</span></div></div>
-        <p class="t">Johnny B. Goode</p><p class="a">Chuck Berry</p>
-        <p class="why">PLACEHOLDER — one line on why.</p>
-      </button>
-      <button class="rec" data-track="75Suv3FnFQji4Lp3ATMLJ1" data-title="Johnny B. Goode — Chuck Berry">
-        <div class="sleeve"><span class="disc"></span>
-          <div class="cover" style="background:linear-gradient(160deg,#2B2F45,#8A5CC7);color:#EDE6F7"><span>04</span><span>Placeholder</span></div></div>
-        <p class="t">Johnny B. Goode</p><p class="a">Chuck Berry</p>
-        <p class="why">PLACEHOLDER — one line on why.</p>
-      </button>
-      <button class="rec" data-track="75Suv3FnFQji4Lp3ATMLJ1" data-title="Johnny B. Goode — Chuck Berry">
-        <div class="sleeve"><span class="disc"></span>
-          <div class="cover" style="background:linear-gradient(160deg,#E9E2CF,#9CB38A);color:#23301C"><span>05</span><span>Placeholder</span></div></div>
-        <p class="t">Johnny B. Goode</p><p class="a">Chuck Berry</p>
-        <p class="why">PLACEHOLDER — one line on why.</p>
-      </button>
-      <button class="rec" data-track="75Suv3FnFQji4Lp3ATMLJ1" data-title="Johnny B. Goode — Chuck Berry">
-        <div class="sleeve"><span class="disc"></span>
-          <div class="cover" style="background:linear-gradient(160deg,#111320,#FF4F9A);color:#FFE3EF"><span>06</span><span>Placeholder</span></div></div>
-        <p class="t">Johnny B. Goode</p><p class="a">Chuck Berry</p>
-        <p class="why">PLACEHOLDER — one line on why.</p>
-      </button>
-    </div>
+    <!-- filled from content/records.json — see README -->
+    <div class="shelf" id="shelf"></div>
 
     <div class="player">
-      <div class="row"><span class="print">Now on the deck</span><span class="print" id="nowTitle">Johnny B. Goode — Chuck Berry</span></div>
-      <iframe id="player" src="https://open.spotify.com/embed/track/75Suv3FnFQji4Lp3ATMLJ1?utm_source=generator&amp;theme=0" loading="lazy" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture" title="Record player"></iframe>
+      <div class="row"><span class="print">Now on the deck</span><span class="print" id="nowTitle"></span></div>
+      <div id="playerSlot"></div>
     </div>
   </div>
 </section>
@@ -324,6 +143,7 @@
   <button class="next" aria-label="Next">&rarr;</button>
 </div>
 
+<script src="assets/entries.js"></script>
 <script src="assets/dusk.js"></script>
 </body>
 </html>
