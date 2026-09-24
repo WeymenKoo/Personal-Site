@@ -133,12 +133,19 @@
   }
   function count(id, n) { document.getElementById(id).textContent = pad(n, 2); }
 
+  function skip(what) {
+    return function (err) { console.error("[entries] skipped " + what + ":", err.message); return null; };
+  }
+
+  /* a broken entry is skipped and logged; the rest still render */
   function loadAll(kind, slugs, build) {
     return Promise.all(slugs.map(function (slug) {
       var dir = "content/" + kind + "/" + slug + "/";
-      return getJSON(dir + "entry.json").then(function (data) { return { data: data, dir: dir }; });
+      return getJSON(dir + "entry.json")
+        .then(function (data) { return { data: data, dir: dir }; })
+        .catch(skip(dir + "entry.json"));
     })).then(function (list) {
-      return list.map(function (x, i) { return build(x.data, x.dir, i); });
+      return list.filter(Boolean).map(function (x, i) { return build(x.data, x.dir, i); });
     });
   }
 
@@ -146,7 +153,7 @@
     return Promise.all([
       loadAll("projects", m.projects || [], project),
       loadAll("tapes", m.tapes || [], tape),
-      getJSON("content/records.json")
+      getJSON("content/records.json").catch(skip("content/records.json")).then(function (r) { return r || []; })
     ]);
   }).then(function (res) {
     fill("projects", res[0]); count("projectCount", res[0].length);

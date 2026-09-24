@@ -1,6 +1,6 @@
 /* =====================================================================
    dusk.js
-   1. Blends the page colour from one hour to the next as you scroll.
+   1. Snaps the page colour to the hour of the section you're in.
    2. Runs the tape counter + hour label in the deck.
    3. Photo lightbox.
    4. Record shelf -> player.
@@ -10,9 +10,8 @@
 
   /* -------------------------------------------------------------------
      THE HOURS
-     Each <section data-hour="..."> picks one of these. The page blends
-     between neighbouring sections' palettes as you scroll between them.
-     Change a colour here and the whole site follows.
+     Each <section data-hour="..."> picks one of these. Change a colour
+     here and the whole site follows.
      ------------------------------------------------------------------- */
   var HOURS = {
     golden:    { label: "Golden hour",    bg: "#F4EBDD", fg: "#2A2118", dim: "#6E5E4E", line: "#DCCBB6", accent: "#C8742E" },
@@ -24,66 +23,34 @@
   };
   var KEYS = ["bg", "fg", "dim", "line", "accent"];
 
-  function hex(h) { h = h.replace("#", ""); return [0, 2, 4].map(function (i) { return parseInt(h.substr(i, 2), 16); }); }
-  /* relative luminance, 0 (black) .. 1 (white) — accepts "#rrggbb" or "rgb(r,g,b)" */
-  function lum(c) {
-    var v = c.charAt(0) === "#" ? hex(c) : c.match(/\d+/g).map(Number);
-    var s = v.map(function (x) { x /= 255; return x <= .03928 ? x / 12.92 : Math.pow((x + .055) / 1.055, 2.4); });
-    return .2126 * s[0] + .7152 * s[1] + .0722 * s[2];
-  }
-  function contrast(a, b) {
-    var x = lum(a), y = lum(b);
-    return (Math.max(x, y) + .05) / (Math.min(x, y) + .05);
-  }
-  function mix(a, b, t) {
-    var A = hex(a), B = hex(b);
-    return "rgb(" + A.map(function (v, i) { return Math.round(v + (B[i] - v) * t); }).join(",") + ")";
-  }
-
   var root = document.documentElement;
   var sections = Array.prototype.slice.call(document.querySelectorAll("[data-hour]"));
   var hourLabel = document.getElementById("hourLabel");
   var counter = document.getElementById("counter");
   var navLinks = Array.prototype.slice.call(document.querySelectorAll(".deck nav a"));
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var themeColor = document.querySelector('meta[name="theme-color"]');
+  var current = null;
 
-  function apply(p) { KEYS.forEach(function (k) { root.style.setProperty("--" + k, p[k]); }); }
+  /* The hour snaps when a section's top crosses 55% down the viewport;
+     the fade itself is a CSS transition on the registered --bg/--fg/...
+     properties (see "HOUR SNAP" in dusk.css). */
+  function setHour(key) {
+    if (key === current) return;
+    var p = HOURS[key];
+    KEYS.forEach(function (k) { root.style.setProperty("--" + k, p[k]); });
+    if (hourLabel) hourLabel.textContent = p.label;
+    if (themeColor) themeColor.content = p.bg;
+    current = key;
+  }
 
   function tick() {
     var mid = window.scrollY + window.innerHeight * 0.55;
 
-    /* find which two sections we're between */
-    var i = 0;
+    var cur = sections[0];
     for (var n = 0; n < sections.length; n++) {
-      if (sections[n].offsetTop <= mid) i = n;
+      if (sections[n].offsetTop <= mid) cur = sections[n];
     }
-    var cur = sections[i], nxt = sections[i + 1];
-    var A = HOURS[cur.dataset.hour];
-
-    if (!nxt || reduce) {
-      apply(A);
-    } else {
-      /* blend only across the last 45% of the current section,
-         so each hour gets to "settle" before it starts turning */
-      var start = cur.offsetTop + cur.offsetHeight * 0.55;
-      var end = nxt.offsetTop;
-      var t = Math.min(1, Math.max(0, (mid - start) / Math.max(1, end - start)));
-      /* ease-in-out: linger on each clean hour, sweep fast through the
-         grey middle of the crossfade where contrast is weakest */
-      t = t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-      var B = HOURS[nxt.dataset.hour];
-      var out = {};
-      /* background, hairlines, accent: blend smoothly */
-      ["bg", "line", "accent"].forEach(function (k) { out[k] = mix(A[k], B[k], t); });
-      /* ink: never blend. Blending dark->light ink over a light->dark page
-         puts grey text on grey paper at the crossover. Instead, pick
-         whichever hour's ink has more contrast with the background NOW. */
-      var pick = contrast(A.fg, out.bg) >= contrast(B.fg, out.bg) ? A : B;
-      out.fg = pick.fg; out.dim = pick.dim;
-      apply(out);
-    }
-
-    if (hourLabel) hourLabel.textContent = A.label;
+    setHour(cur.dataset.hour);
 
     /* tape counter: 000 at the top, 999 at the bottom */
     var max = document.documentElement.scrollHeight - window.innerHeight;
@@ -103,6 +70,11 @@
   window.addEventListener("resize", tick);
   window.addEventListener("load", tick);
   tick();
+  /* enable the fade on the first real input, so the browser restoring your
+     scroll position after a reload doesn't animate in from golden hour */
+  ["wheel", "touchstart", "keydown", "pointerdown"].forEach(function (ev) {
+    window.addEventListener(ev, function () { root.classList.add("ready"); }, { once: true, passive: true });
+  });
 
 
   /* -------------------------------------------------------------------

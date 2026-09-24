@@ -3,9 +3,29 @@
    A day from golden hour to night, detailed like late-80s hi-fi.
 
    Colour is NOT set per section in CSS. assets/dusk.js reads the
-   data-hour on each <section> and blends the whole page between those
-   hours as you scroll, by writing these five variables on <html>.
+   data-hour on each <section> and writes these five variables on <html>
+   when you scroll into a new hour.
    ===================================================================== */
+
+/* HOUR SNAP — registering the variables as <color> lets the browser
+   animate them, so the whole page fades on one transition. Browsers
+   without @property simply cut instead of fading. */
+@property --bg     { syntax:"<color>"; inherits:true; initial-value:#F4EBDD }
+@property --fg     { syntax:"<color>"; inherits:true; initial-value:#2A2118 }
+@property --dim    { syntax:"<color>"; inherits:true; initial-value:#6E5E4E }
+@property --line   { syntax:"<color>"; inherits:true; initial-value:#D9C8B4 }
+@property --accent { syntax:"<color>"; inherits:true; initial-value:#C8742E }
+/* paper, hairlines and accent fade; ink flips at the midpoint so text
+   never passes through grey-on-grey */
+html.ready{
+  --fade:.6s;
+  transition:
+    --bg var(--fade) cubic-bezier(.4,0,.2,1),
+    --line var(--fade) cubic-bezier(.4,0,.2,1),
+    --accent var(--fade) cubic-bezier(.4,0,.2,1),
+    --fg 0s linear calc(var(--fade) / 2),
+    --dim 0s linear calc(var(--fade) / 2);
+}
 
 :root{
   --bg:#F4EBDD;       /* page            */
@@ -32,11 +52,12 @@ img{display:block;max-width:100%}
 a{color:inherit}
 .wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--pad)}
 
-/* film grain over everything — very faint, static */
+/* film grain over everything — very faint, static.
+   No mix-blend-mode: on a fixed full-screen layer it forces a repaint of
+   the whole viewport every scroll frame (measured: p95 33 ms -> 17 ms). */
 body::after{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.06;
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.035;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  mix-blend-mode:multiply;
 }
 
 /* =====================================================================
@@ -115,6 +136,8 @@ h1{font-family:var(--serif);font-weight:600;letter-spacing:-.025em;
    SECTION SHELL
    ===================================================================== */
 .hour{padding-block:clamp(5rem,12vh,8rem)}
+.flip{min-height:70svh;display:grid;place-items:center;text-align:center}
+.flip-title{font-family:var(--serif);font-weight:600;font-size:clamp(2.4rem,7vw,4.8rem);letter-spacing:-.02em;margin:.8rem 0}
 .lede{font-family:var(--mono);font-size:.84rem;line-height:1.8;color:var(--dim);max-width:52ch;margin:-1.5rem 0 3.5rem}
 
 /* =====================================================================
@@ -236,6 +259,7 @@ h1{font-family:var(--serif);font-weight:600;letter-spacing:-.025em;
 @media(max-width:640px){.tl li{grid-template-columns:1fr}.tl .tag{display:none}}
 
 .end{padding:4rem 0 5rem;display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:1.5rem}
+.end p{margin:0}
 .end a{font-family:var(--mono);font-size:.78rem;color:var(--dim);text-decoration:none;border-bottom:1px solid var(--line)}
 .end a:hover{color:var(--accent)}
 
