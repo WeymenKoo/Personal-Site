@@ -10,7 +10,7 @@ assets/entries.js       builds projects / tapes / records from content/
 content/
   manifest.json         which projects and tapes appear, and in what order
   hero.jpg              the landing photo (add your own)
-  placeholder.svg       shown for any image that's missing
+  placeholder.webp      shown for any image that's missing (the beach photo)
   projects/<slug>/      entry.json + that project's images
   tapes/<slug>/         entry.json + that roll's frames
   records.json          the record shelf
@@ -173,7 +173,7 @@ load is logged there with `[entries]` and the file path.
 | symptom | likely cause |
 |---|---|
 | one entry missing, console says `skipped …` | a JSON syntax error in that file: a trailing comma, or a missing quote or bracket. Paste the file into https://jsonlint.com |
-| grey "PHOTO" box | the `src` filename doesn't match the file on disk (check case and extension) |
+| the beach placeholder instead of your photo | the `src` filename doesn't match the file on disk (check case and extension) |
 | entry missing | its slug isn't in `manifest.json`, or is spelled differently from the folder |
 | everything empty | you opened the file directly (use the local server above), or `manifest.json` itself has a syntax error |
 

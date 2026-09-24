@@ -5,7 +5,7 @@
 (function () {
   "use strict";
 
-  var PLACEHOLDER = "content/placeholder.svg";
+  var PLACEHOLDER = "content/placeholder.webp";
   var SPOTIFY = "https://open.spotify.com/embed/track/";
 
   /* any image that fails to load (e.g. a template photo you haven't added yet)

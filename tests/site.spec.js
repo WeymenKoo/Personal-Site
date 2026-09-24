@@ -41,7 +41,7 @@ test.describe('as shipped (templates only)', () => {
     await open(page, server.url);
     await page.evaluate(async () => { for (const i of document.images) if (i.loading === 'lazy') i.loading = 'eager'; });
     await page.waitForFunction(() => [...document.images].filter(i => i.getAttribute('src')).every(i => i.dataset.ph && i.complete && i.naturalWidth > 0));
-    await expect(page.locator('.print-frame img')).toHaveAttribute('src', /placeholder\.svg$/);
+    await expect(page.locator('.print-frame img')).toHaveAttribute('src', /placeholder\.webp$/);
   });
 });
 
@@ -229,7 +229,7 @@ test.describe('resilience', () => {
 
   test('filenames are case-sensitive, as the README warns', async ({ page }) => {
     await open(page, server.url);
-    await expect(page.locator('.proj .pic img')).toHaveAttribute('src', /placeholder\.svg$/);
+    await expect(page.locator('.proj .pic img')).toHaveAttribute('src', /placeholder\.webp$/);
   });
 });
 
