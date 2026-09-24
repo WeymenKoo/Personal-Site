@@ -1,13 +1,12 @@
 // Scrolls the page top to bottom in headless Chromium and reports frame times.
 // 16.7 ms = 60 fps. p95 above ~20 ms means you're dropping frames.
 //
-//   npm i -g playwright && npx playwright install chromium
-//   (cd dusk && python3 -m http.server 8000) &
-//   node tools/scroll-profile.js [url] ["css to inject for an A/B test"]
+//   npm run serve &
+//   npm run profile -- [url] ["css to inject for an A/B test"]
 
-const { chromium } = require('playwright');
+const { chromium } = require('@playwright/test');
 
-const url = process.argv[2] || 'http://localhost:8000/index.html';
+const url = process.argv[2] || 'http://localhost:8000/Personal-Site/index.html';
 const css = process.argv[3] || '';
 
 (async () => {

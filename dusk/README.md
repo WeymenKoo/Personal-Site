@@ -20,10 +20,14 @@ design/                 logo sheet + toucan.svg (the mark, also the favicon)
 ## Running it locally
 
 `entries.js` loads JSON with `fetch()`, which browsers block on `file://`.
-Double-clicking index.html gives you empty sections. Serve the folder instead:
+Double-clicking index.html gives you empty sections. Serve the folder instead.
+From the repo root:
 
-    cd dusk
-    python3 -m http.server          # then open http://localhost:8000
+    npm run serve                   # then open http://localhost:8000/Personal-Site/
+
+This serves the site under `/Personal-Site/`, exactly as GitHub Pages will,
+so a path that would break in production also breaks here. No Node? Use
+`cd dusk && python3 -m http.server` (then http://localhost:8000/) instead.
 
 Leave it running. Save a file, reload the page, and you'll see the change.
 
@@ -151,12 +155,15 @@ Spotify → the song → Share → Copy song link. You get something like:
 
 - Export at about **1800 px on the long side**, JPEG quality ~80. A full-size
   scan is 10× the bytes for no visible difference.
-- **Lowercase filenames, no spaces.** Netlify's server is case-sensitive:
-  `Cover.JPG` works on your laptop and breaks in production.
+- **Lowercase filenames, no spaces.** GitHub Pages is case-sensitive:
+  `Cover.JPG` can work on your Mac or Windows laptop and break once deployed.
 - **Always write `alt` text.** Describe what's in the photo, for screen
   readers and for when an image fails to load.
-- **Replacing an image?** Keeping the same filename is fine. Netlify is
-  set to re-check `content/` on every visit, so nobody gets a stale copy.
+- **Replacing an image?** Keeping the same filename is fine, but GitHub
+  Pages lets browsers cache files for about 10 minutes, so visitors may see
+  the old one briefly. Hard-refresh (Ctrl/Cmd + Shift + R) to check yours.
+- **Keep photos out of `main` until you mean to publish them.** Anything
+  committed stays in git history, even after you delete it.
 
 ### When something doesn't show up
 
@@ -187,15 +194,61 @@ The ink colour flips halfway through the fade, so text never sits
 grey-on-grey. With "reduce motion" switched on in the OS, the change is
 instant.
 
+## Tests
+
+The suite lives in `tests/` at the repo root and runs in headless Chromium.
+It copies the site, adds projects, rolls and records **by following the
+steps in this README**, and checks that they render. It also covers the
+lightbox, record player, hour snap, tape counter, nav, phone layout,
+broken-entry handling and scroll performance. One-time setup, from the
+repo root:
+
+    npm install
+    npx playwright install chromium
+
+Then:
+
+    npm test
+
+By default the tests generate tiny images, so no personal photos need to be
+in the repo. To run them against real photos, point `SITE_PHOTOS` at a
+folder of JPEGs:
+
+    SITE_PHOTOS=~/Pictures/site-export npm test
+
+**If you change how entries work, change this README and the tests in the
+same commit.** The tests are the proof that the instructions are true.
+
 ## Performance
 
-`tools/scroll-profile.js` (at the repo root) scrolls the page in headless
-Chromium and reports frame times. Run it after any visual change that
+`npm run profile` scrolls the page in headless Chromium and reports frame
+times (run `npm run serve` first). Use it after any visual change that
 touches fixed, blurred or blended layers. p95 should stay around 16.7 ms
-(60 fps).
+(60 fps). To A/B test a CSS idea without editing files:
 
-    node ../tools/scroll-profile.js http://localhost:8000/index.html
+    npm run profile -- http://localhost:8000/Personal-Site/index.html "body::after{display:none}"
 
-## Deploy
+## Deploy (GitHub Pages)
 
-Drag the `dusk` folder onto https://app.netlify.com/drop
+Every push to `main` runs `.github/workflows/pages.yml`:
+
+1. **test**: runs `npm test`. If anything fails, nothing is deployed and
+   the live site stays as it was.
+2. **deploy**: publishes the `dusk/` folder to GitHub Pages.
+
+The site goes live at **https://weymenkoo.github.io/Personal-Site/**.
+Watch a deploy under the repo's **Actions** tab. A red ✘ means the tests
+caught something; click into the run to see which one.
+
+Pull requests run the tests too but don't deploy, so you can try a change
+on a branch first.
+
+### One-time setup
+
+1. **Repo → Settings → Pages → Build and deployment → Source: "GitHub
+   Actions".**
+2. GitHub Pages on a **private** repo needs a paid plan (Pro / Team). On a
+   free account, the repo must be **public**. Everything in its history then
+   becomes public too, including anything you've since deleted.
+3. Optional custom domain: Settings → Pages → Custom domain. Then add a
+   `CNAME` file containing the domain to `dusk/`.
