@@ -19,7 +19,7 @@ async function open(page, url) {
 const rgb = hex => `rgb(${[1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)).join(', ')})`;
 
 /* ================================================================= */
-test.describe('as shipped (templates only)', () => {
+test.describe('as shipped', () => {
   let server;
   test.beforeAll(async () => { server = await startServer(SITE); });
   test.afterAll(async () => { await server.close(); });
@@ -40,8 +40,12 @@ test.describe('as shipped (templates only)', () => {
   test('every missing image falls back to the placeholder, hero included', async ({ page }) => {
     await open(page, server.url);
     await page.evaluate(async () => { for (const i of document.images) if (i.loading === 'lazy') i.loading = 'eager'; });
-    await page.waitForFunction(() => [...document.images].filter(i => i.getAttribute('src')).every(i => i.dataset.ph && i.complete && i.naturalWidth > 0));
+    // nothing is ever a broken image: real photos load, missing ones become the placeholder
+    await page.waitForFunction(() => [...document.images].filter(i => i.getAttribute('src')).every(i => i.complete && i.naturalWidth > 0));
     await expect(page.locator('.print-frame img')).toHaveAttribute('src', /placeholder\.webp$/);
+    // the template roll has no photos, so every frame fell back
+    const tapeImgs = page.locator('.tape img');
+    for (let k = 0; k < await tapeImgs.count(); k++) await expect(tapeImgs.nth(k)).toHaveAttribute('src', /placeholder\.webp$/);
   });
 });
 

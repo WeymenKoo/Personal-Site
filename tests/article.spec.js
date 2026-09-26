@@ -105,3 +105,55 @@ test.describe('writing an article by following the README', () => {
     await ctx.close();
   });
 });
+
+/* ================================================================= */
+test.describe('the avionics article, as shipped', () => {
+  let server;
+  const { SITE } = require('./content');
+  const URL_ = 'content/projects/avionics/index.html';
+  test.beforeAll(async () => { server = await startServer(SITE); });
+  test.afterAll(async () => { await server.close(); });
+
+  test('is listed, and its card links to it', async ({ page }) => {
+    await offline(page);
+    await page.goto(server.url + 'index.html');
+    await page.evaluate(() => window.entriesReady);
+    await expect(page.locator('.proj h3').first()).toHaveText('AeroDesign — the avionics');
+    await expect(page.locator('.proj .more').first()).toHaveAttribute('href', URL_);
+  });
+
+  test('every image and GIF loads, with no script errors', async ({ page }) => {
+    const errors = []; page.on('pageerror', e => errors.push(e.message));
+    await offline(page);
+    await page.goto(server.url + URL_);
+    await page.evaluate(() => { for (const i of document.images) i.loading = 'eager'; });
+    await page.waitForFunction(() => [...document.images].every(i => i.complete), null, { timeout: 15000 });
+    const broken = await page.evaluate(() => [...document.images].filter(i => !i.naturalWidth).map(i => i.getAttribute('src')));
+    expect(broken).toEqual([]);
+    expect(await page.locator('img[src$=".gif"]').count()).toBe(6);
+    expect(errors).toEqual([]);
+  });
+
+  test('walks through every hour, golden to lights off', async ({ page }) => {
+    await offline(page);
+    await page.goto(server.url + URL_);
+    await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; });
+    for (const [id, label] of [['brief', 'Late afternoon'], ['heart', 'Dusk'], ['crash', 'Blue hour'], ['rev2', 'Night'], ['end', 'Lights off']]) {
+      await page.evaluate(i => document.getElementById(i).scrollIntoView(), id);
+      await expect(page.locator('#hourLabel')).toHaveText(label);
+    }
+  });
+
+  test('every image has alt text', async ({ page }) => {
+    await offline(page);
+    await page.goto(server.url + URL_);
+    const missing = await page.evaluate(() => [...document.images].filter(i => !(i.getAttribute('alt') || '').trim() && !i.closest('svg')).map(i => i.getAttribute('src')));
+    expect(missing).toEqual([]);
+  });
+
+  test('stays light enough: no single GIF over 1 MB', async () => {
+    const dir = `${SITE}/content/projects/avionics`;
+    const big = fs.readdirSync(dir).filter(f => f.endsWith('.gif') && fs.statSync(`${dir}/${f}`).size > 1024 * 1024);
+    expect(big).toEqual([]);
+  });
+});

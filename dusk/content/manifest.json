@@ -1,4 +1,8 @@
 {
-  "projects": ["example"],
-  "tapes": ["example"]
+  "projects": [
+    "avionics"
+  ],
+  "tapes": [
+    "example"
+  ]
 }

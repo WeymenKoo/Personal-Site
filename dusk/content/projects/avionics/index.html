@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Heart, the Brain, and the Rat's Nest — Weymen Koo</title>
+<meta name="description" content="Three seasons of UBC AeroDesign avionics: a wiring hub, two power boards, one shoot-through, and a plane that flew anyway.">
+<meta name="theme-color" content="#F4EBDD">
+<link rel="icon" href="../../../design/toucan.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,380..680&family=Noto+Sans+SC:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/dusk.css">
+<link rel="stylesheet" href="../../../assets/article.css">
+</head>
+<body>
+
+<!-- ARTICLE TEMPLATE NOTES
+     - Each <section data-hour="..."> snaps the page to that hour as you
+       scroll, exactly like the homepage. Use them in order:
+       golden, afternoon, dusk, blue, night, off.
+     - Images are paths relative to THIS folder.
+     - Components: .ar-slide (a quote off a slide), .ar-chat (a text
+       message), .ar-fig / .ar-bleed / .ar-grid (images), .ar-check,
+       .ar-gbu, .ar-fix (tables), .ar-ecg, .ar-specs. See dusk/README.md. -->
+
+<div class="deck" aria-label="Reading position">
+  <span class="lcd" data-ghost="888" id="counter">000</span>
+  <span class="hr" id="hourLabel">Golden hour</span>
+  <nav>
+    <a href="#brief">Brief</a>
+    <a href="#heart">Heart</a>
+    <a href="#crash">Crash</a>
+    <a href="#rev2">2025</a>
+  </nav>
+</div>
+
+<!-- ============================ GOLDEN HOUR ============================ -->
+<section id="top" data-hour="golden">
+  <div class="ar-bar">
+    <svg class="mark" viewBox="40 28 176 108" role="img" aria-label="Toucan">
+      <path d="M44 110 L44 72 C44 48 60 32 82 32 L100 32 L100 110 Z" fill="currentColor"/>
+      <rect x="44" y="114" width="20" height="18" fill="currentColor"/>
+      <rect x="95" y="114" width="6" height="18" fill="currentColor"/>
+      <path d="M100 32 C150 34 190 52 212 74 C190 78 150 78 100 76 Z" fill="#E0892F"/>
+      <path d="M100 76 C150 78 190 78 212 74 C190 94 150 106 100 110 Z" fill="#B24E26"/>
+      <circle cx="80" cy="56" r="5" fill="var(--bg)"/>
+    </svg>
+    <a href="../../../index.html#side-a">&larr; Side A</a>
+  </div>
+
+  <div class="ar">
+    <header class="ar-head">
+      <span class="st ok">Flown</span>
+      <h1>The Heart, the Brain, and the Rat's Nest</h1>
+      <p class="ar-sub">Three seasons making a plane think for UBC AeroDesign — and the four years before that, trying to get invited.</p>
+      <p class="ar-meta">
+        <span><b>UBC AeroDesign</b></span>
+        <span>Role/ <b>Power &amp; Controls Lead → Avionics Lead</b></span>
+        <span>Date/ <b>Sep 2023 – May 2025</b></span>
+      </p>
+    </header>
+
+    <p class="ar-lead">In 2021, before I'd ever laid out a circuit board, I made a slide deck of everything I'd built in high school, for UBC's design teams. The last slide said this:</p>
+
+    <blockquote class="ar-slide">
+      <p>I will continue what I do despite several unsuccessful attempts, I know I have a lot more to learn. I hope UBC design team can give me an opportunity to learn from all the seniors, and do hands on projects under the proper guidance.</p>
+      <cite>— “My Projects,” 2021. The last slide.</cite>
+    </blockquote>
+
+    <p>The unsuccessful attempts were mostly flight computers. Four of them, on protoboard, for a water rocket that never flew. Gen 1 was a servo timer and my first time soldering anything. Gen 3 had an SD card reader that <em>“won't communicate with the arduino no matter what, I troubleshooted the code, replaced the board, replaced the arduino, added capacitors. Nothing worked.”</em> Gen 4 ended with a line I wrote at eighteen that aged better than most things I wrote at eighteen:</p>
+
+    <blockquote class="ar-slide">
+      <p>In the future, I would like to further refine the code and also learn how to design printed circuit board.</p>
+      <cite>— Flight computer, Gen 4, July 2021</cite>
+    </blockquote>
+
+    <figure class="ar-fig ar-gif">
+      <img width="520" height="558" src="fc-generations.gif" alt="Animated: flight computers generation 1 through 5, from hand-wired protoboard to a fabricated PCB" loading="lazy">
+      <figcaption>Five generations, 2019 onward. The first four are protoboard. The fifth is the one I learned to make.</figcaption>
+    </figure>
+
+    <p>The design team said yes. This is what I did with it.</p>
+  </div>
+</section>
+
+<!-- ============================ LATE AFTERNOON ============================ -->
+<section id="brief" data-hour="afternoon" class="ar-ch">
+  <div class="ar">
+    <p class="ar-kick"><b>01</b><span>The brief</span></p>
+    <h2>“Money is no issue.”</h2>
+
+    <p>By 2023 I'd spent two seasons on the mechanical side — wing ribs, carbon layups, airfoils — and was about to become Power &amp; Controls Lead for <em>Shadow</em>, the team's SAE Aero Design Advanced Class entry. The brief arrived the way all good briefs arrive.</p>
+
+    <div class="ar-chat">
+      <span class="who">Avionics Director</span>
+      <span class="typing" aria-hidden="true"><i></i><i></i><i></i></span>
+      <div class="msg">Custom Electronics,<br>Hand Assembly,<br>Money is no issue,<br>Figure it out</div>
+      <span class="seen">Seen <b>✓✓</b><br>02:10 AM</span>
+    </div>
+
+    <p>For the record, at the January design review that season, the Power &amp; Controls budget had <span class="ar-num">$433.61</span> left of <span class="ar-num">$1,500.00</span>. About 28%. Money was, in a sense, no longer an issue.</p>
+
+    <h3>Pulling the puzzle apart</h3>
+    <p>The plane needed a kill switch, two 16.8 V batteries, a 2.4 GHz ELRS control link, ESC PWM, 900 MHz telemetry, a cellular video stream, and MAVLink to the flight controller. My slide for this had one label on it, in red, pointing at the whole pile: <em>“These need to connect nicely together.”</em></p>
+
+    <figure class="ar-fig">
+      <img width="1500" height="844" src="power-budget.jpg" alt="Sankey diagram of the worst-case power budget: 30 A split into two 15 A power modules feeding the flight controller, radios, sensors and six servos" loading="lazy">
+      <figcaption>Worst case. Flight controller 3.05, cellular 4.0, optical 0.66, sensors 0.43, four servos at 2.5 each — about 18 A of load across two 15 A modules, 11.9 A of margin.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="nest" data-hour="afternoon" class="ar-ch">
+  <div class="ar">
+    <p class="ar-kick"><b>02</b><span>The rat's nest</span></p>
+    <h2>Bet you didn't see this.</h2>
+
+    <p>In PCB design, the <em>rat's nest</em> is the tangle of thin lines the software draws before you've routed anything — every connection that still needs to be made, going straight through everything else. It is a to-do list shaped like a mess.</p>
+
+    <figure class="ar-fig" style="max-width:26rem">
+      <img width="432" height="330" src="rats-nest-airwires.jpg" alt="Unrouted PCB footprints joined by thin straight airwires" loading="lazy">
+      <figcaption>A rat's nest, the software kind.</figcaption>
+    </figure>
+
+    <p>On the plane before <em>Shadow</em>, the rat's nest was the plane. My slide for it was titled <strong>“Flight Electronics — Old — The Rats Nest,”</strong> had a large red X over the photo, and said, in its entirety, <em>“Bet You didnt see this.”</em></p>
+
+    <figure class="ar-fig ar-gif" style="max-width:26rem">
+      <img width="390" height="534" src="rats-nest-to-hub.gif" alt="Animated: the old tangle of loose wiring, fading into the tidy wiring hub installed in Shadow" loading="lazy">
+      <figcaption>Before and after. Same airframe family, one season apart.</figcaption>
+    </figure>
+
+    <p>So the job wasn't really “design some boards.” It was: route the rat's nest. Every connection in the plane, made once, on purpose, on copper.</p>
+  </div>
+</section>
+
+<section id="brain" data-hour="afternoon" class="ar-ch">
+  <div class="ar">
+    <p class="ar-kick"><b>03</b><span>The brain</span></p>
+    <h2>The motherboard of the plane.</h2>
+
+    <p>I split the electrical system the way you'd split a body, which is also how the slides were titled that year: a <strong>central nervous system</strong>, a <strong>brain</strong>, a <strong>heart</strong>, and some <strong>muscle</strong>. It started as a joke and turned out to be a pretty good architecture.</p>
+
+    <figure class="ar-fig">
+      <img width="1500" height="844" src="power-architecture.jpg" alt="Block diagram of Shadow's power architecture: two batteries through the wiring hub and power modules to the flight controller, radios, camera and servos" loading="lazy">
+      <figcaption>The power architecture of <em>Shadow</em>. The central nervous system.</figcaption>
+    </figure>
+
+    <blockquote class="ar-slide">
+      <p>“Motherboard” of the plane.</p>
+      <p>Everything connects through the wiring hub.</p>
+      <p>Centralized piece of hardware for all power distribution and connections.</p>
+      <p>Simplifies previous architecture; consists of only what we need.</p>
+      <cite>— Wiring Hub: The Brain. Avionics design review, Jan 2024</cite>
+    </blockquote>
+
+    <div class="ar-grid two land">
+      <figure><img width="792" height="672" src="hub-top.jpg" alt="Wiring hub render, top side" loading="lazy"><figcaption>Top: flight controller interface, servo connections, status LED and buzzer.</figcaption></figure>
+      <figure><img width="797" height="672" src="hub-bottom.jpg" alt="Wiring hub render, bottom side with the power module soldered on" loading="lazy"><figcaption>Bottom: the power module, soldered straight on.</figcaption></figure>
+    </div>
+
+    <p>Four layers. Top carries vertical signals, test points, connectors and indicator LEDs. Bottom carries horizontal signals, the high-power traces, and spare GPIO. Vertical on one side, horizontal on the other, so nothing has to fight for a lane.</p>
+
+    <figure class="ar-fig ar-gif" style="max-width:32rem">
+      <img width="560" height="516" src="hub-layers.gif" alt="Animated: the four copper layers of the wiring hub, one at a time" loading="lazy">
+      <figcaption>The four copper layers, one at a time.</figcaption>
+    </figure>
+
+    <h3>The decisions, in my own slide notes</h3>
+    <ul>
+      <li><strong>0.1 µF caps at every connector's supply</strong> — low-ESL, to fight EMI. My note: <em>“Unable to validate, minimal impact.”</em></li>
+      <li><strong>TVS diodes on every connector</strong>, because <em>“ESD was likely during winter.”</em></li>
+      <li><strong>A 2-second fuse.</strong> <em>“Trip time was arbitrarily selected to be &lt; 2s.”</em> I did derate it for temperature — Texas weather, an airframe with low albedo, other electronics throwing off heat. Then, underneath, the review I wrote later: <em>“Shouldn't have considered Fuse, single point failure.”</em></li>
+    </ul>
+
+    <p>The hub bolts into the fuselage on the camera gimbal mount, with room for vibration-damping feet so it doesn't shake noise into the sensor board. The tail got its own small board — the <strong>empennage hub</strong>, “the muscle” — which feeds the elevator, rudder and tail gear, and unplugs cleanly for travel.</p>
+
+    <figure class="ar-fig">
+      <img width="1054" height="1400" src="hub-bench.jpg" alt="The wiring hub with the orange Cube flight controller mounted, on the bench" loading="lazy">
+      <figcaption>The brain, on the bench, with the flight controller seated.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================ DUSK ============================ -->
+<section id="heart" data-hour="dusk" class="ar-ch">
+  <div class="ar">
+    <p class="ar-kick"><b>04</b><span>The heart</span></p>
+    <h2>Juicy 5 V, 15 A.</h2>
+
+    <p>The power module turns a 4-cell LiPo into a clean 5 V rail for everything on the plane. The goal on the slide was two words: <em>Powers Shadow</em>. It took more than one try.</p>
+
+    <figure class="ar-fig ar-gif" style="max-width:30rem">
+      <img width="540" height="578" src="module-versions.gif" alt="Animated: power module V1, V2, then the final version installed in Shadow" loading="lazy">
+      <figcaption>Custom power modules and carrier board: V1, V2, and the final one, installed in Shadow.</figcaption>
+    </figure>
+
+    <p>The controller is an ISL8117A, a synchronous buck controller I picked for a reason I wrote down with total honesty: <em>“Cheap on JLCPCB: $0.96 / unit.”</em> Everything else came out of the datasheet and a spreadsheet:</p>
+
+    <ul>
+      <li>Input <span class="ar-num">7.4 V</span> (2S) to <span class="ar-num">20 V</span> (4S, with margin), output <span class="ar-num">5 V</span>, max <span class="ar-num">15 A</span> — from the power budget.</li>
+      <li>Inductor <span class="ar-num">3.3 µH</span>, same as the eval board, at <span class="ar-num">600 kHz</span>. Peak switch current <span class="ar-num">15.97 A</span> — the number the inductor and FETs have to survive.</li>
+      <li>Output cap <span class="ar-num">330 µF</span> aluminium electrolytic, sized for the transient where two servos stall at once and pull 5 A: <span class="ar-num">±10.6 mV</span> of deviation.</li>
+      <li>Two batteries in through an ideal-diode OR controller with reverse-polarity protection, so either pack can die and the plane keeps flying.</li>
+      <li>Current sensed across a <span class="ar-num">3 mΩ</span> shunt at a gain of 60 — <span class="ar-num">2.7 V</span> out at full load, and the shunt burns <span class="ar-num">0.675 W</span> doing it.</li>
+    </ul>
+
+    <p>The battery voltage monitor went through an OP07 buffer, which turned out not to be rail-to-rail: its output bottomed out at <span class="ar-num">1.27 V</span>. I listed my options on the slide like a responsible engineer:</p>
+
+    <ul class="ar-check">
+      <li>Replace the buffer with a rail-to-rail MCP6001</li>
+      <li>Change the resistor divider ratio</li>
+      <li>Map V<sub>out</sub> to use the full ADC range</li>
+      <li class="done">Do nothing, it's good enough</li>
+    </ul>
+
+    <p>And it was — 871 ADC counts between a full pack and a dead one is plenty to land a plane on.</p>
+
+    <figure class="ar-fig">
+      <img width="1425" height="616" src="heart-schematics.jpg" alt="Schematics for the current sensor, voltage sensor, and dual battery with reverse polarity protection, one part circled as causing shorting" loading="lazy">
+      <figcaption>The heart's schematics. The circled part is labelled, on the original slide, “Causes Shorting.” The board photo next to it had its own labels: <em>Fried Current Sensor</em>, <em>Juicy 5V, 15A</em>, and <em>Hidden UAS logo</em>.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="ecg" data-hour="dusk" class="ar-ch">
+  <div class="ar">
+    <p class="ar-kick"><b>05</b><span>The ECG</span></p>
+    <h2>Little to no ripple.</h2>
+
+    <p>If the board is the heart, the oscilloscope is the ECG. Three tests: stall a servo on purpose and watch the rail, scope the output, and run both batteries at once to check the OR-ing hands over cleanly.</p>
+
+    <div class="ar-ecg" aria-hidden="true">
+      <svg viewBox="0 0 600 120" preserveAspectRatio="none">
+        <g class="grid">
+          <line x1="0" y1="20" x2="600" y2="20"/><line x1="0" y1="60" x2="600" y2="60"/><line x1="0" y1="100" x2="600" y2="100"/>
+          <line x1="100" y1="0" x2="100" y2="120"/><line x1="200" y1="0" x2="200" y2="120"/><line x1="300" y1="0" x2="300" y2="120"/><line x1="400" y1="0" x2="400" y2="120"/><line x1="500" y1="0" x2="500" y2="120"/>
+        </g>
+        <path class="trace" d="M0 60 L90 60 L100 60 L106 52 L112 60 L130 60 L138 18 L146 98 L154 60 L180 60 L192 50 L204 60 L290 60 L300 60 L306 52 L312 60 L330 60 L338 18 L346 98 L354 60 L380 60 L392 50 L404 60 L490 60 L500 60 L506 52 L512 60 L530 60 L538 18 L546 98 L554 60 L580 60 L600 60"/>
+      </svg>
+      <div class="row"><span>Heart rate: normal</span><span>Rail <b>5.00 V</b></span></div>
+    </div>
+    <p style="font-family:var(--mono);font-size:.68rem;color:var(--dim);margin-top:-1.2rem">↑ An illustration for the joke. The real measurements are below.</p>
+
+    <div class="ar-grid three">
+      <figure><img width="256" height="382" src="ecg-servo-stall.jpg" alt="Bench power supply reading 10.08 volts, 0.938 amps, 5.225 watts" loading="lazy"><figcaption>Servo stall test. 10.08 V, 0.938 A.</figcaption></figure>
+      <figure><img width="461" height="293" src="ecg-scope.jpg" alt="Oscilloscope showing a flat output rail" loading="lazy"><figcaption>The scope. My annotation: “Little to no Ripple.”</figcaption></figure>
+      <figure><img width="446" height="596" src="ecg-dual-battery.jpg" alt="Dual battery test setup with the power module wired to two packs" loading="lazy"><figcaption>Dual battery test.</figcaption></figure>
+    </div>
+
+    <p>The patient was stable. The patient was about to go to Texas.</p>
+  </div>
+</section>
+
+<!-- ============================ BLUE HOUR ============================ -->
+<section id="crash" data-hour="blue" class="ar-ch">
+  <div class="ar">
+    <p class="ar-kick"><b>06</b><span>Nobody said it was easy</span></p>
+    <h2>Seen, 05:23 AM.</h2>
+
+    <p>Here is the other text message from that season.</p>
+
+    <div class="ar-chat">
+      <span class="who">A team member</span>
+      <span class="typing" aria-hidden="true"><i></i><i></i><i></i></span>
+      <div class="msg">Weymen I think we have a problem …</div>
+      <span class="seen">Seen <b>✓✓</b><br>05:23 AM</span>
+    </div>
+
+    <p>When I reviewed the season afterwards, I put this under a heading I'd recommend to anyone: <strong>“What made me a bad engineer at the time?”</strong> The second bullet is the one I think about:</p>
+
+    <blockquote class="ar-slide">
+      <p>Dismissed a member's concern about a critical failure … causing a critical failure;</p>
+      <cite>— Technical Show and Tell, self-review</cite>
+    </blockquote>
+
+    <div class="ar-grid three">
+      <figure><img width="654" height="869" src="fail-exposure.jpg" alt="Power module exposed to the elements on the airframe" loading="lazy"><figcaption>Bad integration. Exposure to elements.</figcaption></figure>
+      <figure><img width="1200" height="800" src="fail-shoot-through.jpg" alt="The damaged power module held in a hand" loading="lazy"><figcaption>Suspected shoot-through event, killing 4 servos.</figcaption></figure>
+      <figure><img width="733" height="557" src="fail-rework.jpg" alt="The power module installed in the fuselage, hard to reach" loading="lazy"><figcaption>Non-rework friendly. Cheap out on connectors.</figcaption></figure>
+    </div>
+
+    <p>A shoot-through is when both switches in a buck converter's half-bridge are on at the same moment, so the input is shorted straight to ground through them. It is exactly as good for four servos as it sounds. The rest of the list, from the same slide:</p>
+    <ul>
+      <li>Buck controller IC running low on stock</li>
+      <li>Lack of output protection</li>
+      <li>Underutilized built-in features in the ICs</li>
+      <li>No datalog for troubleshooting, no test points</li>
+      <li>Get better test equipment to better validate</li>
+    </ul>
+    <p>Hold onto that list. It comes back.</p>
+  </div>
+</section>
+
+<section id="worked" data-hour="blue" class="ar-ch">
+  <div class="ar">
+    <p class="ar-kick"><b>07</b><span>Things worked</span></p>
+    <h2>It flew anyway.</h2>
+    <p>In my show-and-tell deck, after the failures, there's a slide titled <em>“Things Worked.”</em> It's one photo, no bullet points. You have to look for the plane.</p>
+  </div>
+
+  <figure class="ar-bleed">
+    <img width="1280" height="720" src="things-worked.jpg" alt="Shadow in flight, a small shape against a clear blue sky above trees" loading="lazy">
+    <figcaption>Shadow, flying. It's the speck.</figcaption>
+  </figure>
+
+  <div class="ar">
+    <p><em>Shadow</em> placed <strong>5th overall</strong> in the Advanced Class. My evaluation of whether I'd actually met the brief was three columns, which I stole from a western:</p>
+
+    <div class="ar-gbu">
+      <div class="good"><b>The good</b><ul><li>Student competition, not a business</li><li>Only team that pursued custom electronics</li><li>Challenged, and things worked technically</li></ul></div>
+      <div class="bad"><b>The bad</b><ul><li>Placed 5th overall</li><li>Expensive; cost optimization</li><li>High risk</li><li>Unpopular amongst other subteams</li></ul></div>
+      <div class="ugly"><b>The ugly</b><ul><li>Risk mitigation</li><li>FMEA</li><li>Comprehensive system test plan</li><li>Hardware design</li><li>Mechanical integration</li><li>Validate and verify</li></ul></div>
+    </div>
+
+    <p>“Fixated on technicals, not the systems,” the review says. <em>“A poorly optimized design would've worked anyway.”</em> Which is humbling to read about your own heart surgery.</p>
+  </div>
+</section>
+
+<!-- ============================ NIGHT ============================ -->
+<section id="rev2" data-hour="night" class="ar-ch">
+  <div class="ar">
+    <p class="ar-kick"><b>08</b><span>The transplant</span></p>
+    <h2>Rev 2.</h2>
+
+    <p>The next season I became Avionics Lead — about thirty people across three subteams, flying an autonomous payload-delivery mission. The power board got redesigned from scratch with B. Liu, and the design brief was, more or less, that list from the autopsy.</p>
+
+    <figure class="ar-fig">
+      <img width="1600" height="970" src="stack-2025.jpg" alt="Render of the 2025 avionics stack: flight controller and GNSS module stacked on the new power board" loading="lazy">
+      <figcaption>The 2025 stack: flight controller and GNSS on top of the new power board.</figcaption>
+    </figure>
+
+    <table class="ar-fix">
+      <thead><tr><th>2024, what broke</th><th></th><th>2025, what changed</th></tr></thead>
+      <tbody>
+        <tr><td>Lack of output protection; a shoot-through took out four servos</td><td>→</td><td>TPS25983 e-fuse on the input <em>and</em> the output</td></tr>
+        <tr><td>Cheap out on connectors</td><td>→</td><td>IO connectors with mechanical lock features</td></tr>
+        <tr><td>No datalog for troubleshooting</td><td>→</td><td>Voltage and current sense, sent over telemetry</td></tr>
+        <tr><td>Buck controller running low on stock</td><td>→</td><td>A new buck, the LM5146, still designed for 5 V at 15 A</td></tr>
+        <tr><td>Two-layer power modules</td><td>→</td><td>Six-layer stackup: one power, three ground, two signal</td></tr>
+      </tbody>
+    </table>
+
+    <p>Input range is 7 V to 25 V — 4-cell LiPo or smaller, as the competition rules define — powering the servos, camera, remote airspeed sensors, GNSS, radios and flight controller. The big black part in the middle is the LM5146's 3.3 µH inductor.</p>
+
+    <figure class="ar-fig ar-gif">
+      <img width="640" height="357" src="pdb2-layers.gif" alt="Animated: the six layers of the 2025 power board, one at a time" loading="lazy">
+      <figcaption>Six layers. Power, ground, ground, signal, ground, signal.</figcaption>
+    </figure>
+
+    <p>And because this whole site is a cassette, the board has a side A and a side B. Every connector's pinout is printed on the back, where the person plugging it in at 5 AM can actually read it.</p>
+
+    <figure class="ar-fig ar-gif">
+      <img width="600" height="378" src="flip-the-board.gif" alt="Animated: the 2025 power board flipping between its top side and its bottom side with printed pinouts" loading="lazy">
+      <figcaption>Flip the board.</figcaption>
+    </figure>
+
+    <h3>The honest part</h3>
+    <p>I don't have waveforms for this one. From my own portfolio, verbatim: <em>“No waveforms or data to show due to lack of proper equipment.”</em> I wrote out the test plan anyway, and the gear I'd need to run it — starting with an electronic load of at least 200 W.</p>
+    <p>So the next thing I built was an electronic load.</p>
+  </div>
+</section>
+
+<section id="workshop" data-hour="night" class="ar-ch">
+  <div class="ar">
+    <p class="ar-kick"><b>09</b><span>Teaching the rat's nest</span></p>
+    <h2>How to <span class="ar-strike">make</span> steal a component.</h2>
+
+    <p>In January 2025, Anna and I ran the team's PCB design workshop. A few years earlier I was the one asking the seniors to teach me. This is roughly what I told the room.</p>
+
+    <figure class="ar-fig">
+      <img width="1500" height="844" src="workshop-process.jpg" alt="Slide: PCB design process from idea to manufacturing, with project progress labelled bite more than you can chew, cost, time commitment, anxiety level, point of no return" loading="lazy">
+      <figcaption>The PCB design process, with an accurate axis for anxiety.</figcaption>
+    </figure>
+
+    <blockquote class="ar-slide">
+      <p>Copy the Eval Board schematic, but make sure u understand how it works!</p>
+      <p>Make sure to solder it with 63/37 Eutectic leaded solder with ample flux so it doesn't start running away</p>
+      <p>Get Good</p>
+      <cite>— PCB Design workshop, Jan 2025</cite>
+    </blockquote>
+
+    <p>The schematic section of that workshop had a slide titled <em>“How Do I Properly Make A Schematic Without F***ing Up and Bringing Great Shame.”</em> The answer on the slide was two arrows: <em>read the datasheets</em>, and <em>copy the eval board, but understand it.</em> I've never found a better one.</p>
+
+    <p>And the routing slide, which is the whole story of this page in two sentences:</p>
+
+    <blockquote class="ar-slide">
+      <p>At first, all footprints will be scattered on a grid, with a Rats Nest showing what connections need to be made.</p>
+      <p>Job of the engineer is to route them all.</p>
+      <cite>— PCB Design workshop, Jan 2025</cite>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============================ LIGHTS OFF ============================ -->
+<section id="end" data-hour="off" class="ar-ch">
+  <div class="ar">
+    <p class="ar-kick"><b>10</b><span>Lights off</span></p>
+    <h2>They did give me the opportunity.</h2>
+
+    <p>The things I'd do differently are the same things I wrote down in 2024, and they're mostly not about circuits: manage time, money and people; know my limits; hold design reviews; do the failure-mode analysis; run the integration tests. And when someone texts at 5 AM that they think there's a problem — believe them.</p>
+
+    <h3>Specs</h3>
+    <dl class="ar-specs">
+      <div><dt>Aircraft</dt><dd>Shadow, 2023–24 · SAE Aero Design Advanced Class · 5th overall</dd></div>
+      <div><dt>Wiring hub</dt><dd>4-layer carrier for the Cube Orange · TVS + filtering on every connector · empennage hub in the tail</dd></div>
+      <div><dt>Power, 2024</dt><dd>ISL8117A synchronous buck · 7.4–20 V in → 5 V, 15 A · 3.3 µH, 600 kHz, 330 µF · ideal-diode OR dual battery · 3 mΩ current sense</dd></div>
+      <div><dt>Power, 2025</dt><dd>LM5146 buck, 5 V 15 A · TPS25983 e-fuse in and out · 6 layers · locking IO · V/I telemetry · co-designed with B. Liu</dd></div>
+      <div><dt>Roles</dt><dd>Power &amp; Controls Lead, 2023–24 · Avionics Lead, 2024–25</dd></div>
+      <div><dt>Tools</dt><dd>Altium Designer · LTspice · JLCPCB</dd></div>
+    </dl>
+
+    <p class="liner liner-off" id="offLine"></p>
+
+    <div class="ar-end"><a href="../../../index.html#side-a">&larr; Back to Side A</a></div>
+  </div>
+</section>
+
+<script src="../../../assets/dusk.js"></script>
+<script src="../../../assets/article.js"></script>
+</body>
+</html>
