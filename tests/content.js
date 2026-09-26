@@ -39,9 +39,13 @@ function image() {
   return png(60, 40, [(n * 70) % 256, (n * 130) % 256, (n * 40) % 256]);
 }
 
+/* A copy of the site reset to templates only, so tests that add entries
+   start from a blank site no matter what real content has been published. */
 function copySite() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dusk-'));
   fs.cpSync(SITE, dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'content', 'manifest.json'),
+    JSON.stringify({ projects: ['example'], tapes: ['example'] }, null, 2));
   return dir;
 }
 

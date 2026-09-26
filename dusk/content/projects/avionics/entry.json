@@ -1,0 +1,16 @@
+{
+  "title": "AeroDesign — the avionics",
+  "status": "ok",
+  "statusLabel": "Flown",
+  "year": "2023",
+  "spec": "Wiring hub · 5 V 15 A power, twice · 4 → 6 layers · ~30 people",
+  "summary": "The plane as a body: a wiring hub for a brain, a power board for a heart, and a rat's nest to untangle. Three seasons, two power boards, one shoot-through, and a 5th-place plane that flew anyway.",
+  "cover": { "src": "cover.jpg", "alt": "The 2025 power board, top side, with its connector banks and FORWARD arrow", "fit": "cover" },
+  "strip": [
+    { "src": "fc-gen1.jpg", "alt": "Flight computer generation 1 on protoboard", "caption": "FC1 '19" },
+    { "src": "rats-nest.jpg", "alt": "The old tangle of wiring in the airframe", "caption": "Nest '23" },
+    { "src": "hub-bench.jpg", "alt": "The wiring hub with the flight controller seated", "caption": "Hub '24" },
+    { "src": "pdb2-photo.jpg", "alt": "The 2025 power board", "caption": "PDB2 '25" }
+  ],
+  "link": "content/projects/avionics/index.html"
+}
