@@ -7,11 +7,12 @@ index.html              page shell: hero, section headings, career timeline
 assets/dusk.css         styling
 assets/dusk.js          hour snap, tape counter, liner notes, lightbox, record player
 assets/entries.js       builds projects / tapes / records from content/
+assets/article.css      long-form project pages (+ article.js)
 content/
   manifest.json         which projects and tapes appear, and in what order
   hero.jpg              the landing photo (add your own)
   placeholder.webp      shown for any image that's missing (the beach photo)
-  projects/<slug>/      entry.json + that project's images
+  projects/<slug>/      entry.json + that project's images (+ index.html, its article)
   tapes/<slug>/         entry.json + that roll's frames
   records.json          the record shelf
 design/                 logo sheet + toucan.svg (the mark, also the favicon)
@@ -143,6 +144,59 @@ Records have no images, so there's no folder. Add an object to
 
 `sleeve` is the two gradient colours on the cover; `ink` is the text colour
 on it. Pick an `ink` that reads clearly against both sleeve colours.
+
+### Writing an article (the "Read →" page)
+
+A project card can link to a long-form page. The page lives in the
+project's own folder, next to its `entry.json` and images.
+
+**1.** The template is already in the folder you copied:
+`content/projects/<slug>/index.html`.
+
+**2.** Point the card at it — in `entry.json`:
+
+```json
+"link": "content/projects/<slug>/index.html"
+```
+
+**3.** Edit `index.html`. Replace every `PLACEHOLDER`; delete what you
+don't need. Images are paths relative to the folder: `"cover.jpg"`,
+`"layers.gif"`.
+
+Each `<section data-hour="...">` snaps the page to that hour as you
+scroll, same as the homepage. Use them in order:
+`golden → afternoon → dusk → blue → night → off`. The deck's tape
+counter becomes a reading-progress counter, and its nav links point at
+your section `id`s.
+
+| component | markup | use it for |
+|---|---|---|
+| chapter | `<section class="ar-ch" data-hour="…">` + `.ar-kick` + `<h2>` | each part of the story |
+| slide quote | `<blockquote class="ar-slide"> … <cite>` | words lifted off an old deck, with where they came from |
+| image | `<figure class="ar-fig">` (add `ar-gif` for GIFs) | one picture |
+| full width | `<figure class="ar-bleed">` | the one photo that deserves the whole screen |
+| gallery | `<div class="ar-grid two">` / `three`, add `land` for 4:3 | photos side by side |
+| text message | `<div class="ar-chat">` (who, typing, msg, seen) | the 2 AM message; the dots "type" before it appears |
+| checklist | `<ul class="ar-check">`, `class="done"` on the ticked one | options you weighed |
+| three columns | `<div class="ar-gbu">` with `.good` `.bad` `.ugly` | a verdict |
+| before → after | `<table class="ar-fix">` | what broke, what changed |
+| specs | `<dl class="ar-specs">` | the numbers, at the end |
+| liner note | `<p class="liner liner-off" id="offLine">` | a random line from the homepage pool |
+
+**Give every image its `width` and `height`** (the file's real pixel size,
+e.g. `<img src="cover.jpg" width="1456" height="840" …>`). The browser then
+reserves the space before the image arrives. Without it, a photo loading
+late pushes the page down, and the hour label can end up showing the wrong
+section until you scroll again.
+
+**GIFs:** keep each under about 1 MB — around 500 px wide, a few
+frames, a shared palette. Always add `loading="lazy"`. A long GIF of a
+photo is the fastest way to make the page heavy; a slideshow of 3–5
+stills is usually better than a crossfade.
+
+**Quoting your old slides:** fine, it's your writing. Don't paste in
+memes or other people's images off those slides — they're copyrighted,
+and on a public site they're the part that gets taken down.
 
 ### Finding a Spotify track ID
 

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project title — Weymen Koo</title>
+<meta name="description" content="One line about this project.">
+<meta name="theme-color" content="#F4EBDD">
+<link rel="icon" href="../../../design/toucan.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,380..680&family=Noto+Sans+SC:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/dusk.css">
+<link rel="stylesheet" href="../../../assets/article.css">
+</head>
+<body>
+
+<!-- =====================================================================
+     ARTICLE TEMPLATE — copy this whole folder, then:
+       1. set "link" in entry.json to  "content/projects/<slug>/index.html"
+       2. replace every PLACEHOLDER below, delete what you don't need
+     Images are paths relative to THIS folder ("cover.jpg", "build.gif").
+
+     Each <section data-hour="..."> snaps the page to that hour while you
+     scroll. Use them in order: golden, afternoon, dusk, blue, night, off.
+     Components are listed in dusk/README.md under "Writing an article".
+     ===================================================================== -->
+
+<div class="deck" aria-label="Reading position">
+  <span class="lcd" data-ghost="888" id="counter">000</span>
+  <span class="hr" id="hourLabel">Golden hour</span>
+  <nav>
+    <a href="#one">One</a>
+    <a href="#two">Two</a>
+  </nav>
+</div>
+
+<section id="top" data-hour="golden">
+  <div class="ar-bar">
+    <svg class="mark" viewBox="40 28 176 108" role="img" aria-label="Toucan">
+      <path d="M44 110 L44 72 C44 48 60 32 82 32 L100 32 L100 110 Z" fill="currentColor"/>
+      <rect x="44" y="114" width="20" height="18" fill="currentColor"/>
+      <rect x="95" y="114" width="6" height="18" fill="currentColor"/>
+      <path d="M100 32 C150 34 190 52 212 74 C190 78 150 78 100 76 Z" fill="#E0892F"/>
+      <path d="M100 76 C150 78 190 78 212 74 C190 94 150 106 100 110 Z" fill="#B24E26"/>
+      <circle cx="80" cy="56" r="5" fill="var(--bg)"/>
+    </svg>
+    <a href="../../../index.html#side-a">&larr; Side A</a>
+  </div>
+  <div class="ar">
+    <header class="ar-head">
+      <span class="st wip">In progress</span>
+      <h1>PLACEHOLDER — project title</h1>
+      <p class="ar-sub">PLACEHOLDER — one sentence under the title.</p>
+      <p class="ar-meta">
+        <span><b>PLACEHOLDER — team or "Individual work"</b></span>
+        <span>Role/ <b>PLACEHOLDER</b></span>
+        <span>Date/ <b>PLACEHOLDER</b></span>
+      </p>
+    </header>
+    <p class="ar-lead">PLACEHOLDER — the opening paragraph. Why this exists.</p>
+  </div>
+</section>
+
+<section id="one" data-hour="afternoon" class="ar-ch">
+  <div class="ar">
+    <p class="ar-kick"><b>01</b><span>PLACEHOLDER chapter</span></p>
+    <h2>PLACEHOLDER — chapter heading</h2>
+    <p>PLACEHOLDER — body text. Numbers look best as <span class="ar-num">5 V</span>.</p>
+
+    <!-- a line lifted straight off one of your slides -->
+    <blockquote class="ar-slide">
+      <p>PLACEHOLDER — the words as they were on the slide.</p>
+      <cite>— Which deck, and when</cite>
+    </blockquote>
+
+    <!-- one image; add class="ar-gif" for GIFs (adds a soft shadow) -->
+    <figure class="ar-fig">
+      <img width="1400" height="939" src="../../placeholder.webp" alt="PLACEHOLDER — describe the image" loading="lazy">
+      <figcaption>PLACEHOLDER — caption.</figcaption>
+    </figure>
+
+    <!-- two or three side by side: class="ar-grid two" / "ar-grid three" (add "land" for 4:3) -->
+    <div class="ar-grid two land">
+      <figure><img width="1400" height="939" src="../../placeholder.webp" alt="PLACEHOLDER" loading="lazy"><figcaption>PLACEHOLDER</figcaption></figure>
+      <figure><img width="1400" height="939" src="../../placeholder.webp" alt="PLACEHOLDER" loading="lazy"><figcaption>PLACEHOLDER</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="two" data-hour="night" class="ar-ch">
+  <div class="ar">
+    <p class="ar-kick"><b>02</b><span>PLACEHOLDER chapter</span></p>
+    <h2>PLACEHOLDER — chapter heading</h2>
+
+    <!-- a text message: the dots "type", then the message appears -->
+    <div class="ar-chat">
+      <span class="who">PLACEHOLDER — who sent it</span>
+      <span class="typing" aria-hidden="true"><i></i><i></i><i></i></span>
+      <div class="msg">PLACEHOLDER — the message</div>
+      <span class="seen">Seen <b>✓✓</b><br>PLACEHOLDER time</span>
+    </div>
+
+    <p>PLACEHOLDER — body text.</p>
+  </div>
+</section>
+
+<section id="end" data-hour="off" class="ar-ch">
+  <div class="ar">
+    <h3>Specs</h3>
+    <dl class="ar-specs">
+      <div><dt>PLACEHOLDER</dt><dd>PLACEHOLDER</dd></div>
+      <div><dt>PLACEHOLDER</dt><dd>PLACEHOLDER</dd></div>
+    </dl>
+    <!-- a random liner note, same pool as the homepage -->
+    <p class="liner liner-off" id="offLine"></p>
+    <div class="ar-end"><a href="../../../index.html#side-a">&larr; Back to Side A</a></div>
+  </div>
+</section>
+
+<script src="../../../assets/dusk.js"></script>
+<script src="../../../assets/article.js"></script>
+</body>
+</html>

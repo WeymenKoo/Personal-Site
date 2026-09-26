@@ -142,6 +142,8 @@
      same tape; Esc closes.
      ------------------------------------------------------------------- */
   var lb = document.getElementById("lb");
+  /* article pages have no lightbox — skip the whole block there */
+  if (lb) (function () {
   var lbImg = lb.querySelector("img");
   var lbCap = lb.querySelector(".cap");
   var group = [], idx = 0;
@@ -172,6 +174,7 @@
     if (e.key === "ArrowLeft") show(idx - 1);
     if (e.key === "ArrowRight") show(idx + 1);
   });
+  })();
 
   /* -------------------------------------------------------------------
      RECORD SHELF — clicking a record loads it into the player.
