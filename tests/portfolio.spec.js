@@ -100,3 +100,22 @@ test('photos open in the lightbox and close with Escape', async ({ page }) => {
   await page.keyboard.press('Escape');
   await expect(page.locator('#lb')).toBeHidden();
 });
+
+test('project cards jump into the deck, and "On this page" follows the scroll', async ({ page }) => {
+  await open(page, 1600, 1000);
+  const cards = page.locator('.cards .card');
+  expect(await cards.count()).toBeGreaterThanOrEqual(3);
+  const hrefs = await page.$$eval('.cards .hit', as => as.map(a => a.getAttribute('href')));
+  for (const h of hrefs) await expect(page.locator(h)).toHaveCount(1);
+  await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; document.querySelector('#p10').scrollIntoView(); });
+  await expect(page.locator('.toc a.on')).toHaveAttribute('data-p', '10');
+});
+
+test('the PDF print hides the page chrome and keeps one slide per page', async ({ page }) => {
+  await open(page, 1920, 1080);
+  await page.emulateMedia({ media: 'print' });
+  const hidden = await page.evaluate(() => ['.author', '.toc', '.index', '.bar'].map(s => getComputedStyle(document.querySelector(s)).display));
+  expect(hidden).toEqual(['none', 'none', 'none', 'none']);
+  const top = await page.evaluate(() => document.querySelector('#p01').getBoundingClientRect().top + scrollY);
+  expect(top).toBe(0);
+});

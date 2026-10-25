@@ -299,7 +299,7 @@ function layout(content) {
   return slides.map((sl, i) => {
     const page = i + 1;
     const items = [...chrome(sl, page, slides.length), ...L[sl.type](sl, meta, ctx)].filter(Boolean);
-    return { id: sl.id, page: String(page).padStart(2, '0'), type: sl.type, title: sl.title || sl.headline || sl.section, section: sl.section, appendix: sl.appendix, items };
+    return { id: sl.id, page: String(page).padStart(2, '0'), type: sl.type, title: sl.title || sl.headline || sl.section, short: sl.short || sl.title || sl.section, section: sl.section, appendix: sl.appendix, items };
   });
 }
 

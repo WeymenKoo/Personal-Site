@@ -21,16 +21,16 @@ function runsHtml(runs, o = {}) {
 }
 
 const svgCache = {};
-function inlineSvg(src, alt) {
+let svgN = 0;
+function inlineSvg(src) {
   const name = path.basename(src, '.svg');
   if (!svgCache[src]) {
     let s = fs.readFileSync(path.join(SITE, src), 'utf8');
-    s = s.replace(/<\?xml[^>]*>/, '').replace(/\swidth="[\d.]+"\sheight="[\d.]+"/, '');
-    // marker ids must be unique once several figures share one page
-    s = s.replace(/id="(ar|arb)"/g, `id="$1-${name}"`).replace(/url\(#(ar|arb)\)/g, `url(#$1-${name})`);
-    svgCache[src] = s.trim();
+    svgCache[src] = s.replace(/<\?xml[^>]*>/, '').replace(/\swidth="[\d.]+"\sheight="[\d.]+"/, '').trim();
   }
-  return svgCache[src];
+  // marker ids must be unique once a figure appears more than once on the page
+  const k = `${name}-${++svgN}`;
+  return svgCache[src].replace(/id="(ar|arb)"/g, `id="$1-${k}"`).replace(/url\(#(ar|arb)\)/g, `url(#$1-${k})`);
 }
 
 function item(i) {
@@ -105,8 +105,61 @@ ${overlay(sl.items)}
 </section>`;
 }
 
-function page(slides, meta) {
-  const index = slides.map(s => `<li><a href="#p${s.page}"><span>${s.page}</span>${esc(s.appendix ? s.id + ' · ' + s.title : s.section)}</a></li>`).join('');
+const TOUCAN = `<svg viewBox="40 -6 176 176" aria-hidden="true"><path d="M44 110 L44 72 C44 48 60 32 82 32 L100 32 L100 110 Z" fill="${T.ink}"/><rect x="44" y="114" width="20" height="18" fill="${T.ink}"/><rect x="95" y="114" width="6" height="18" fill="${T.ink}"/><path d="M100 32 C150 34 190 52 212 74 C190 78 150 78 100 76 Z" fill="${T.trace}"/><path d="M100 76 C150 78 190 78 212 74 C190 94 150 106 100 110 Z" fill="${T.signal}"/><circle cx="80" cy="56" r="5" fill="${T.paper}"/></svg>`;
+
+// the author card: who, one line, where, links (after willwhang.dev's sidebar)
+function author(meta) {
+  return `<aside class="author" aria-label="About">
+  <div class="avatar">${TOUCAN}</div>
+  <h1><span>${esc(meta.name)}</span> <span class="cjk" lang="zh-Hans">${esc(meta.cjk)}</span></h1>
+  <p class="tag">${esc(meta.tagline)}</p>
+  <ul class="meta">
+    <li><i class="ic pin"></i>${esc(meta.location)}</li>
+    <li><i class="ic cap"></i>${esc(meta.school)}</li>
+    <li><a href="mailto:${esc(meta.email)}"><i class="ic mail"></i>Email</a></li>
+    <li><a href="https://${esc(meta.github)}"><i class="ic code"></i>GitHub</a></li>
+    <li><a href="${esc(meta.pdfName)}" download><i class="ic doc"></i>Portfolio PDF</a></li>
+    <li><a href="${esc(meta.personalSite)}"><i class="ic home"></i>Personal site</a></li>
+  </ul>
+</aside>`;
+}
+
+// the project index: photo cards, each jumps into the deck
+function projectCards(slides, content) {
+  const pageOf = id => (slides.find(s => s.id === id) || {}).page;
+  const gallery = content.slides.find(s => s.type === 'gallery');
+  const cards = [...(content.cards || []), ...(gallery ? gallery.tiles.filter(t => t.image).map(t => ({
+    to: gallery.id, title: t.name, status: t.status, statusLabel: t.statusLabel, line: t.spec, image: t.image,
+  })) : [])];
+  const plainTxt = s => require('./layout').plain(s);
+  return cards.map(c => {
+    const pg = pageOf(c.to);
+    const thumb = c.figure ? `<span class="thumb fig-thumb">${inlineSvg(c.figure)}</span>`
+      : `<span class="thumb"><img src="${c.image.src}" alt="${esc(c.image.alt)}" loading="lazy" decoding="async"></span>`;
+    const long = c.long ? ` · <a href="${esc(c.long.href)}">${esc(c.long.label)} →</a>` : '';
+    return `<li class="card">
+  <a class="hit" href="#p${pg}">${thumb}<span class="ct">${esc(c.title)}</span></a>
+  <p class="cl">${esc(plainTxt(c.line))}</p>
+  <p class="cm"><i class="dot ${c.status}"></i>${esc(plainTxt(c.statusLabel))} · <a href="#p${pg}">p.${pg}</a>${long}</p>
+</li>`;
+  }).join('\n');
+}
+
+// "On this page": every slide, grouped, with the current one lit (willwhang.dev's post TOC)
+function toc(slides) {
+  const groups = [];
+  for (const s of slides) {
+    const g = s.appendix ? `${s.appendix} · ${s.section}` : (s.type === 'back' ? 'End' : 'Two-minute read');
+    if (!groups.length || groups[groups.length - 1].g !== g) groups.push({ g, items: [] });
+    const label = s.appendix ? `${s.id} · ${s.short}` : s.section;
+    groups[groups.length - 1].items.push(`<li><a href="#p${s.page}" data-p="${s.page}"><span>${s.page}</span>${esc(label)}</a></li>`);
+  }
+  return `<nav class="toc" aria-label="On this page"><p class="toc-h">On this page</p>${groups.map(x => `<p class="toc-g">${esc(x.g)}</p><ol>${x.items.join('')}</ol>`).join('')}</nav>`;
+}
+
+function page(slides, meta, content = require('./content')) {
+  svgN = 0;
+  const index = slides.map(s => `<li><a href="#p${s.page}"><span>${s.page}</span>${esc(s.appendix ? s.id + ' · ' + s.short : s.section)}</a></li>`).join('');
   const css = Object.entries(S).map(([k, v]) => `.st-${k}{--fs:${v.size};--lh:${v.lh};font-weight:${v.weight}}`).join('\n');
   return `<!DOCTYPE html>
 <html lang="en">
@@ -115,7 +168,9 @@ function page(slides, meta) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(meta.name)} — ${esc(meta.title)}</title>
 <meta name="description" content="Hardware design portfolio of ${esc(meta.name)}, UBC Electrical Engineering 2027: a FOC motor controller, an aircraft power system, and a flight-controller module.">
-<meta name="theme-color" content="${T.paper}">
+<meta name="theme-color" content="${T.paper}" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#20242C" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
 <meta property="og:title" content="${esc(meta.name)} — ${esc(meta.title)}">
 <meta property="og:image" content="img/foc-render.jpg">
 <link rel="icon" href="fig/toucan.svg" type="image/svg+xml">
@@ -128,18 +183,32 @@ ${css}
 </head>
 <body>
 <!-- GENERATED by tools/portfolio/build.js from tools/portfolio/content.js. Edit those, then run: npm run portfolio -->
+<a class="skip" href="#projects">Skip to projects</a>
 <header class="bar">
-  <a class="who" href="#p01"><b>${esc(meta.name)}</b><span>${esc(meta.title)}</span></a>
+  <a class="who" href="#top"><b>${esc(meta.name)}</b><span>${esc(meta.title)}</span></a>
   <nav>
     <details class="idx"><summary>Pages</summary><ol>${index}</ol></details>
     <a class="btn" href="${esc(meta.pdfName)}" download>PDF</a>
     <button class="btn pri" id="present" type="button">Present</button>
   </nav>
 </header>
-<main id="deck">
+<div class="shell" id="top">
+${author(meta)}
+<main>
+  <section class="index" id="projects" aria-labelledby="projects-h">
+    <h2 class="sec" id="projects-h">Projects</h2>
+    <ul class="cards">
+${projectCards(slides, content)}
+    </ul>
+  </section>
+  <h2 class="sec deckhead" id="deck-h">The deck <span>${slides.length} pages · two-minute read, then the appendix</span></h2>
+  <div id="deck">
 ${slides.map(slideHtml).join('\n')}
+  </div>
+  <footer class="foot"><a href="${esc(meta.personalSite)}">← Weymen's personal site</a><span>${esc(meta.docId)} · ${esc(meta.rev)} · ${esc(meta.updated)}</span></footer>
 </main>
-<footer class="foot"><a href="../">← Weymen's personal site</a><span>${esc(meta.docId)} · ${esc(meta.rev)} · ${esc(meta.updated)}</span></footer>
+${toc(slides)}
+</div>
 <div class="lb" id="lb" role="dialog" aria-label="Image" hidden><img alt=""><button class="x" type="button" aria-label="Close">Close ×</button></div>
 <script src="portfolio.js"></script>
 </body>

@@ -55,6 +55,24 @@
     show(e.clientX > window.innerWidth / 2 ? cur + 1 : cur - 1);
   });
 
+  /* "On this page": light up the slide that fills most of the window */
+  var tocLinks = {};
+  Array.prototype.forEach.call(document.querySelectorAll('.toc a[data-p]'), function (a) { tocLinks['p' + a.getAttribute('data-p')] = a; });
+  if ('IntersectionObserver' in window && slides.length) {
+    var ratios = {};
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { ratios[en.target.id] = en.intersectionRatio; });
+      var best = null, r = 0;
+      Object.keys(ratios).forEach(function (id) { if (ratios[id] > r) { r = ratios[id]; best = id; } });
+      Object.keys(tocLinks).forEach(function (id) { tocLinks[id].classList.toggle('on', id === best); });
+      if (best && tocLinks[best] && tocLinks[best].scrollIntoView) {
+        var toc = tocLinks[best].closest('.toc'), a = tocLinks[best];
+        if (toc && (a.offsetTop < toc.scrollTop || a.offsetTop > toc.scrollTop + toc.clientHeight - 40)) toc.scrollTop = a.offsetTop - toc.clientHeight / 2;
+      }
+    }, { threshold: [0, .25, .5, .75, 1] });
+    slides.forEach(function (s) { io.observe(s); });
+  }
+
   /* the page index closes after a pick */
   var idx = document.querySelector('.idx');
   if (idx) idx.addEventListener('click', function (e) { if (e.target.closest('a')) idx.open = false; });
