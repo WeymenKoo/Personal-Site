@@ -1,3 +1,7 @@
 node_modules/
 test-results/
 playwright-report/
+
+# portfolio exports: the PDF is printed during deploy, the .pptx stays local
+dusk/portfolio/*.pdf
+dusk/portfolio/*.pptx
