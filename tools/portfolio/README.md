@@ -59,6 +59,14 @@ it, or PowerPoint substitutes them and lines rewrap. Diagrams come in as images;
 in `figures.js` and rebuild, not in PowerPoint. If you edit text in PowerPoint, copy the change
 back into `content.js`, or the next build overwrites it.
 
+## The page around the deck
+
+Borrowed from willwhang.dev: an author card on the left (`meta.tagline`, `location`, `school`
+in `content.js`), a grid of project cards above the deck (`cards` in `content.js`, plus every
+gallery tile that has a photo), and an "On this page" list on the right that lights the slide
+you're on (each appendix page's `short` label). The desk follows the OS light/dark setting; the
+slides stay light, because they're the same pages as the PDF. None of this is in the PDF or .pptx.
+
 ## Presenting
 
 On the site: **Present** (or any page, then the button) goes full screen; ← → / PgUp PgDn /

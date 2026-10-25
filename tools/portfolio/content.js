@@ -23,7 +23,27 @@ const meta = {
   github: 'github.com/WeymenKoo',
   site: 'weymenkoo.github.io/Personal-Site/portfolio',
   pdfName: 'WeymenKoo_HardwarePortfolio_2026-11.pdf',
+  // web only: the author card beside the deck
+  tagline: 'Designs power and mixed-signal boards, then brings them up on the bench.',
+  location: 'Vancouver, BC',
+  school: 'UBC Electrical Engineering · 2027',
+  personalSite: '../',
 };
+
+// web only: the project index above the deck. Each card jumps to a slide (by id);
+// gallery tiles that have a photo are added after these automatically.
+const cards = [
+  { to: '02', title: 'FOC Motor Controller', status: 'wip', statusLabel: 'Bring-up',
+    line: 'A 60 V field-oriented drive for a robot joint. Rev 01 spins a motor; Rev B is in review.',
+    image: { src: 'img/foc-top.jpg', alt: 'FOC controller Rev 01, top side render' } },
+  { to: '03', title: 'AeroDesign Power System', status: 'ok', statusLabel: 'Flown',
+    line: 'Two seasons of 5 V, 15 A power for an SAE Aero Design plane: a shoot-through, then a protected rebuild.',
+    image: { src: 'img/pb25-photo.jpg', alt: '2025 power board, assembled' },
+    long: { href: '../content/projects/avionics/index.html', label: 'Long read' } },
+  { to: '04', title: 'Flight Controller SoM', status: 'wip', statusLabel: 'In design',
+    line: 'An STM32H757 ArduPilot module, 36 × 55 mm, designed with a junior engineer I mentor.',
+    figure: 'fig/som-arch.svg' },
+];
 
 // status → dot colour. ok green: shipped / flown · wip cyan: in progress
 // sim hollow cyan: simulation only · idle grey: paused / not built · stop red
@@ -164,7 +184,7 @@ const slides = [
 
   /* ================================================================ A */
   {
-    type: 'deep', id: 'A1', appendix: 'A', section: 'FOC Motor Controller', partNo: 'WK-FOC-01',
+    type: 'deep', id: 'A1', short: 'System and current loop', appendix: 'A', section: 'FOC Motor Controller', partNo: 'WK-FOC-01',
     headline: 'A 25 kHz centre-aligned PWM gives the current loop a 40 µs window',
     body: 'Each PWM period the G431 samples the three low-side shunts, runs Clarke and Park, two PI current loops and SVPWM, then updates the timer. The DRV8323S drives six 100 V FETs and amplifies the shunts; the AS5047P reports rotor angle over SPI.',
     figure: { src: 'fig/foc-system.svg', w: 1200, h: 820, alt: 'FOC controller system block diagram and current loop' },
@@ -178,7 +198,7 @@ const slides = [
     ],
   },
   {
-    type: 'deep', id: 'A2', appendix: 'A', section: 'FOC Motor Controller', partNo: 'WK-FOC-01',
+    type: 'deep', id: 'A2', short: 'Power-stage simulation', appendix: 'A', section: 'FOC Motor Controller', partNo: 'WK-FOC-01',
     headline: 'I simulated the bridge before layout: [[ the one number that changed the design ]]',
     body: 'Five LTspice studies on the power stage, run before routing: switching edges, shoot-through margin at the chosen dead time, gate-drive strength, loop inductance and temperature rise. [[ chose X because Y; rejected Z because W ]]',
     figure: null,
@@ -196,7 +216,7 @@ const slides = [
     },
   },
   {
-    type: 'deep', id: 'A3', appendix: 'A', section: 'FOC Motor Controller', partNo: 'WK-FOC-01',
+    type: 'deep', id: 'A3', short: 'Layout and stackup', appendix: 'A', section: 'FOC Motor Controller', partNo: 'WK-FOC-01',
     headline: 'Three unbroken ground planes give every signal layer a reference next door',
     body: 'Six layers from JLCPCB. L2, L4 and L5 are solid ground; power and signals share L1, L3 and L6 [[ confirm L3 ]]. The high-side drains use via-in-pad, so the bus copper drops straight through instead of detouring around the FETs.',
     figure: { src: 'fig/foc-stackup.svg', w: 908, h: 768, alt: 'Six-layer stackup of the FOC controller' },
@@ -208,7 +228,7 @@ const slides = [
     ],
   },
   {
-    type: 'deep', id: 'A4', appendix: 'A', section: 'FOC Motor Controller', partNo: 'WK-FOC-01', layout: 'table',
+    type: 'deep', id: 'A4', short: 'Bring-up findings', appendix: 'A', section: 'FOC Motor Controller', partNo: 'WK-FOC-01', layout: 'table',
     headline: 'Five bench findings on Rev 01, from bit-shifted SPI to a motor model 2.5× off',
     table: {
       cols: [['#', 60], ['Symptom', 300], ['Root cause', 520], ['Change', 400], ['Evidence', 448]],
@@ -224,7 +244,7 @@ const slides = [
     note: 'Rev B: [[ which of these move into hardware? ]]',
   },
   {
-    type: 'deep', id: 'A5', appendix: 'A', section: 'FOC Motor Controller', partNo: 'WK-FOC-01',
+    type: 'deep', id: 'A5', short: 'Measured on the bench', appendix: 'A', section: 'FOC Motor Controller', partNo: 'WK-FOC-01',
     headline: '[[ The headline the scope gives you: switch-node overshoot, dead time, bus sag ]]',
     body: 'Measured on the bench at a 12 V bus first, then higher. Each capture uses the same probe setup, photographed, and is saved as CSV and PNG with the conditions in the filename.',
     figure: null,
@@ -241,7 +261,7 @@ const slides = [
     },
   },
   {
-    type: 'deep', id: 'A6', appendix: 'A', section: 'FOC Motor Controller', partNo: 'WK-FOC-01',
+    type: 'deep', id: 'A6', short: 'Firmware and GUI', appendix: 'A', section: 'FOC Motor Controller', partNo: 'WK-FOC-01',
     headline: 'A host GUI and two framed protocols make every bench run repeatable',
     body: 'FOCLINK/1 runs over UART and FOCCAN/1 over CAN FD, carrying commands and telemetry in the same frames. The GUI sends setpoints, plots live data and captures scope-style buffers from the board [[ confirm ]]. The 2000 rpm open-loop I/f ramp was logged on 28 Sep 2026.',
     figure: null,
@@ -256,7 +276,7 @@ const slides = [
 
   /* ================================================================ B */
   {
-    type: 'deep', id: 'B1', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-24/25',
+    type: 'deep', id: 'B1', short: 'Power budget', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-24/25',
     headline: 'Worst case: about 18 A of 5 V load, split across two 15 A modules',
     body: 'One aircraft, one 5 V rail for everything: flight controller, cellular video, optical system, sensors and four servos. Competition rules cap the battery at 4S. I sized the power modules from this budget, with the stall current of every servo counted at once.',
     figure: { src: 'img/power-budget.jpg', w: 1440, h: 844, alt: 'Worst-case power budget for the 2024 aircraft, as a flow diagram' },
@@ -271,7 +291,7 @@ const slides = [
     ],
   },
   {
-    type: 'deep', id: 'B2', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-24',
+    type: 'deep', id: 'B2', short: '2024 architecture', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-24',
     headline: "One wiring hub replaced the rat's nest: every connection made once, on copper",
     body: 'I split the system the way you would split a body. The wiring hub is the brain: a carrier for the Cube Orange with every servo, radio and sensor connector. The power module is the heart. A small empennage hub in the tail drives the elevator, rudder and tail gear and unplugs for travel.',
     figure: { src: 'img/power-arch.jpg', w: 1440, h: 844, alt: 'Power architecture of the 2024 aircraft Shadow' },
@@ -283,7 +303,7 @@ const slides = [
     ],
   },
   {
-    type: 'deep', id: 'B3', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-24',
+    type: 'deep', id: 'B3', short: '2024 boards and result', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-24',
     headline: 'Four-layer hub, two-layer buck modules, and Shadow flew to 5th overall',
     body: 'Hub: vertical signals on top, horizontal and high-current on the bottom, a TVS and 0.1 µF at every connector. Module: an ISL8117A synchronous buck, with the output capacitor sized for two servos stalling at once.',
     figures: [
@@ -300,7 +320,7 @@ const slides = [
     ],
   },
   {
-    type: 'deep', id: 'B4', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-24', tone: 'fault',
+    type: 'deep', id: 'B4', short: 'Failure analysis', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-24', tone: 'fault',
     headline: 'A suspected shoot-through killed four servos, and the board had no way to tell us why',
     body: 'Both switches of the buck half-bridge on at once shorts the input to ground. Nothing on the board could have caught it or recorded it. My own review of the season: "Dismissed a member\'s concern about a critical failure."',
     figures: [
@@ -320,7 +340,7 @@ const slides = [
     },
   },
   {
-    type: 'deep', id: 'B5', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-25',
+    type: 'deep', id: 'B5', short: '2025 redesign', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-25',
     headline: 'Rev 2 was designed from the failure list: protect both ends, measure everything',
     body: 'Redesigned from scratch for the 2024–25 autonomous payload mission, with B. Liu. Same job, 5 V at 15 A, from 7–25 V. [[ who did what: e.g. I did the power stage and layout, B. Liu did ... ]]',
     figure: { src: 'fig/pb25-power.svg', w: 1208, h: 428, alt: 'Power path of the 2025 board' },
@@ -334,7 +354,7 @@ const slides = [
     ],
   },
   {
-    type: 'deep', id: 'B6', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-25',
+    type: 'deep', id: 'B6', short: '2025 layout', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-25',
     headline: 'Six layers, three of them ground, under a 15 A buck whose input loop sets the noise',
     body: 'At 15 A the input loop of the buck carries the fastest edges on the board, so it is the loop to keep small. [[ how you placed the input caps and FETs ]] L2 is solid ground directly underneath. [[ the GND-split lesson, in one line ]]',
     figures: [
@@ -349,7 +369,7 @@ const slides = [
     ],
   },
   {
-    type: 'deep', id: 'B7', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-25', layout: 'table',
+    type: 'deep', id: 'B7', short: 'Validation', appendix: 'B', section: 'AeroDesign Power System', partNo: 'WK-PWR-25', layout: 'table',
     headline: '[[ Headline from the bench: e.g. ripple and regulation at 5 A ]]',
     table: {
       cols: [['#', 60], ['Test', 420], ['Condition', 440], ['Expected', 380], ['Result', 428]],
@@ -369,7 +389,7 @@ const slides = [
 
   /* ================================================================ C */
   {
-    type: 'deep', id: 'C1', appendix: 'C', section: 'Flight Controller SoM', partNo: 'WK-SOM-01',
+    type: 'deep', id: 'C1', short: 'Module and carrier', appendix: 'C', section: 'Flight Controller SoM', partNo: 'WK-SOM-01',
     headline: 'Everything flight-critical on a 36 × 55 mm module; everything airframe-specific on the carrier',
     body: 'The module carries the processor, sensors, storage and power conditioning. The carrier only breaks signals out to the aircraft, so a new airframe needs a new carrier, not a new autopilot. [[ confirm the why: replace the Cube Orange? ]]',
     figure: { src: 'fig/som-interface.svg', w: 1200, h: 760, alt: 'Module-to-carrier interface over J1 and J2' },
@@ -382,7 +402,7 @@ const slides = [
     ],
   },
   {
-    type: 'deep', id: 'C2', appendix: 'C', section: 'Flight Controller SoM', partNo: 'WK-SOM-01',
+    type: 'deep', id: 'C2', short: 'Architecture', appendix: 'C', section: 'Flight Controller SoM', partNo: 'WK-SOM-01',
     headline: 'Room for two IMU + baro pairs on separate SPI buses; the first build fits one',
     body: 'The primary pair (LSM6DSV32X, DPS368) sits on SPI1. A second, different pair (ICM-42688-P, MS5611) has footprints on SPI2 and is not fitted on the first build. Parameters live in FRAM on SPI3; flight logs on microSD over 4-bit SDMMC.',
     figure: { src: 'fig/som-arch.svg', w: 1208, h: 798, alt: 'Flight controller module block diagram' },
@@ -396,7 +416,7 @@ const slides = [
     ],
   },
   {
-    type: 'deep', id: 'C3', appendix: 'C', section: 'Flight Controller SoM', partNo: 'WK-SOM-01',
+    type: 'deep', id: 'C3', short: 'Power tree', appendix: 'C', section: 'Flight Controller SoM', partNo: 'WK-SOM-01',
     headline: 'Carrier power wins over USB, and the sensors get their own LDO',
     body: 'A priority mux takes the carrier 5 V whenever it is present and falls back to USB on the bench. An e-fuse follows the mux. A buck makes 3.3 V for the digital side; a separate LDO feeds the IMU, baro and magnetometer.',
     figure: { src: 'fig/som-power.svg', w: 1200, h: 520, alt: 'Power tree of the flight controller module' },
@@ -410,7 +430,7 @@ const slides = [
     ],
   },
   {
-    type: 'deep', id: 'C4', appendix: 'C', section: 'Flight Controller SoM', partNo: 'WK-SOM-01', layout: 'table',
+    type: 'deep', id: 'C4', short: 'Team and plan', appendix: 'C', section: 'Flight Controller SoM', partNo: 'WK-SOM-01', layout: 'table',
     headline: 'Two designers, split by schematic sheet, gated by reviews',
     table: {
       cols: [['Sheet', 380], ['Owner', 380], ['Gate', 560], ['Status', 408]],
@@ -430,4 +450,4 @@ const slides = [
   { type: 'back', id: 'END', section: 'Contact' },
 ];
 
-module.exports = { meta, slides };
+module.exports = { meta, slides, cards };
