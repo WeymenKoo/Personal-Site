@@ -5,3 +5,6 @@ playwright-report/
 # portfolio exports: the PDF is printed during deploy, the .pptx stays local
 dusk/portfolio/*.pdf
 dusk/portfolio/*.pptx
+
+tools/deck/*.pptx
+tools/deck/*.pdf
