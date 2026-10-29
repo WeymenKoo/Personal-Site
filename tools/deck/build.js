@@ -79,7 +79,7 @@ function table(s, x, y, w, head, rows, colW, o = {}) {
   s.addTable([H, ...R], { x, y, w, colW, margin: [6, 6, 6, 0], autoPage: false });
 }
 const sizes = {};
-for (const f of fs.readdirSync(path.join(__dirname, 'img'))) {
+for (const f of fs.readdirSync(path.join(__dirname, 'img')).filter(f => /\.(png|jpe?g)$/i.test(f))) {
   const m = require('child_process').execSync(`python3 -c "from PIL import Image;im=Image.open('img/${f}');print(im.size[0],im.size[1])"`, { cwd: __dirname }).toString().trim().split(' ');
   sizes[f] = { w: +m[0], h: +m[1] };
 }
@@ -114,8 +114,8 @@ const todo = t => `[ ${t} ]`;
   const rx = 7.2, rw = W - M - rx;
   const projs = [
     ['FOC motor controller', 'Bring-up', '60 V, 10 A field-oriented drive. Rev 01 spins a motor; Rev B in review.', '03'],
-    ['AeroDesign power system', 'Flown', 'Two seasons of 5 V, 15 A power for a competition aircraft, 5th overall.', '04'],
-    ['Flight controller module', 'In design', 'STM32H757 ArduPilot module, 36 × 55 mm, with a second designer.', '05'],
+    ['AeroDesign power system', 'Flown', 'Two seasons of 5 V, 15 A power for a competition aircraft, 5th overall.', '12'],
+    ['Flight controller module', 'In design', 'STM32H757 ArduPilot module, 36 × 55 mm, with a second designer.', '16'],
   ];
   projs.forEach((p, i) => {
     const y = 1.6 + i * 1.25;
@@ -126,150 +126,185 @@ const todo = t => `[ ${t} ]`;
     T(s, 'p.' + p[3], { x: rx + rw - 0.6, y: y + 0.9, w: 0.6, h: 0.25, fontSize: 9, color: GRAY, align: 'right' });
   });
   s.addShape('line', { x: rx, y: 1.6 + 3 * 1.25, w: rw, h: 0, line: { color: LIGHT, width: 0.5 } });
-  cap(s, 'Six more boards on p.06 · design detail from p.07', rx, 1.6 + 3 * 1.25 + 0.15, rw);
+  cap(s, 'FOC: motivation, theory, schematic, simulation, layout, bring-up, p.03–11 · AeroDesign p.12–15 · more boards p.16', rx, 1.6 + 3 * 1.25 + 0.15, rw);
 }
 
-/* ============================================================ 03 FOC */
+/* ============================================================ 03 FOC motivation */
 {
-  const s = slide('light');
-  title(s, 'FOC motor controller');
-  const pw = 5.6;
-  ph(s, M, 1.6, pw, pw * 0.75, 'Rev 01 top side, straight down on white paper, window light, fills the frame. 4:3.');
-  cap(s, 'Rev 01 · 70 × 70 mm · 6 layers · KiCad', M, 1.6 + pw * 0.75 + 0.1, pw);
+  const s = slide('light', 'FOC motor controller');
+  title(s, 'FOC motor controller: a joint drive for a cat-scale biped');
+  const pw = 5.2;
+  ph(s, M, 1.55, pw, pw * 0.75, 'Rev 01 top side, straight down on white paper, window light, fills the frame. 4:3.');
+  cap(s, 'Rev 01 · 70 × 70 mm · 6 layers · KiCad · fabricated and assembled at JLCPCB, August 2026', M, 1.55 + pw * 0.75 + 0.08, pw);
   const rx = M + pw + 0.6, rw = W - M - rx;
-  body(s, 'A 60 V field-oriented controller for a quasi-direct-drive robot joint. Designed from the power stage out: the bridge was simulated before layout, the layout was reviewed from the fab package, and Rev 01 was brought up on the bench in September.', rx, 1.6, rw, 1.3);
-  specs(s, rx, 3.1, rw, [
-    ['My role', todo('solo, or who helped')],
-    ['Bus', '36–56 V (12S) · 60 V absolute'],
-    ['Phase', '10 A RMS continuous'],
-    ['Sense', '3 mΩ shunts · ±27.5 A full scale'],
-    ['Control', '25 kHz centre-aligned PWM · 200 ns dead time'],
-    ['Silicon', 'STM32G431 · DRV8323S · 6 × ISC030N10NM6 · AS5047P'],
-    ['Result', '2000 rpm open-loop on a T-Motor MN601-S at 12 V'],
-  ], { accentLast: true });
+  body(s, 'Quasi-direct drive: a 6:1 to 10:1 gear so the joint is backdrivable and torque tracks motor current almost directly. That makes current-sense accuracy the primary spec, and the joint must hold torque at standstill, so the encoder has to be absolute. Six of these sit on one CAN-FD bus.', rx, 1.55, rw, 1.5);
+  specs(s, rx, 3.2, rw, [
+    ['Bus', '12S Li-ion · 36 V cutoff, 50.4 V full · 60 V ceiling'],
+    ['Phase current', '10 A RMS continuous, from the joint torque budget'],
+    ['Switching', 'Inaudible, > 20 kHz · 25 kHz built, 40 kHz planned'],
+    ['Position', 'Absolute, available at zero speed'],
+    ['Safety', 'Fault = coast · no uncommanded torque · independent stop'],
+    ['Size', '≤ 80 × 80 mm, it hangs on a limb'],
+  ], { lw: 1.25 });
+  cap(s, 'Design history: Rev A 40 V FETs on a 50 V bus · Rev B lowest-RDS(on) FET had the highest loss · Rev C protected every fault on the board, 19 sheets · Rev 1 trimmed to the requirement and built.', rx, 5.9, rw);
 }
 
-/* ============================================================ 04 AeroDesign */
+/* ============================================================ 04 theory */
 {
   const s = slide('light');
-  title(s, 'AeroDesign power system, 2024 → 2025');
-  const cw = (CW - 0.6) / 2;
-  [[M, '2024 · Shadow · flown, 5th overall', 'Wiring hub with the Cube Orange seated, straight down on white paper. 4:3.',
-    [['Buck', 'ISL8117A · 2S–4S → 5 V, 15 A'], ['Path', 'Two batteries, ideal-diode OR'], ['Board', '4-layer hub · 2-layer power modules'], ['Lesson', 'A shoot-through killed four servos']]],
-   [M + cw + 0.6, '2025 · Rev 2 · ' + todo('flown?'), '2025 power board, top, straight down on white paper. 4:3.',
-    [['Buck', 'LM5146 · 7–25 V → 5 V, 15 A'], ['Protect', 'TPS25983 e-fuse, input and output'], ['Board', '6 layers · V and I telemetry'], ['Fix', 'Locking connectors · pinouts on the silkscreen']]],
-  ].forEach(([x, head, shot, rows]) => {
-    T(s, head, { x, y: 1.5, w: cw, h: 0.3, fontSize: 11, color: GRAY });
-    ph(s, x, 1.85, cw, cw * 0.5, shot);
-    specs(s, x, 1.85 + cw * 0.5 + 0.25, cw, rows, { lw: 1.0 });
-  });
-  cap(s, 'My role · Power and controls lead 2023–24 · Avionics lead 2024–25, about 30 people · 2025 board designed with B. Liu ' + todo('who did what'), M, H - 1.0, CW);
+  title(s, 'Background: what field-oriented control does');
+  const r = img(s, 'foc-theory.png', M, 1.5, CW, 4.1);
+  cap(s, 'Fig 1 · Clarke and Park transforms move the three phase currents into the rotor frame; inverse Park and space-vector PWM bring the result back to the bridge.', M, r.y + r.h + 0.1, CW);
+  body(s, 'Why it matters here: torque is proportional to i_q, so controlling i_q is controlling joint torque. Sensorless observers need back-EMF and have no signal at zero speed, which is where a leg spends much of its time. Hence the on-board 14-bit absolute encoder, placed at the board centre on the rotor axis.', M, r.y + r.h + 0.5, CW, 0.9, { fontSize: 11, lineSpacing: 16 });
 }
 
-/* ============================================================ 05 SoM */
+/* ============================================================ 05 architecture */
 {
   const s = slide('light');
-  title(s, 'Flight controller module');
-  const fw = 6.4;
-  const r = img(s, 'som-arch.png', M, 1.6, fw, 4.4);
-  cap(s, 'Architecture. Dashed: footprints fitted on a later build.', M, r.y + r.h + 0.1, fw);
-  const rx = M + fw + 0.6, rw = W - M - rx;
-  body(s, 'An STM32H757 autopilot module for ArduPilot that plugs into a carrier board, so a new airframe needs a new carrier, not a new autopilot. Everything flight-critical lives on the module: processor, IMU and barometer, magnetometer, FRAM, microSD, two CAN buses, power conditioning.', rx, 1.6, rw, 1.7);
-  specs(s, rx, 3.5, rw, [
-    ['My role', 'Lead designer · a junior designer owns power and primary sensors'],
-    ['MCU', 'STM32H757XIH6 · TFBGA240'],
-    ['Sensing', 'LSM6DSV32X + DPS368 on SPI1 · second pair on SPI2'],
-    ['Buses', 'CAN1 flight · CAN2 payload'],
-    ['Board', '36 × 55 mm · 6 layers · two board-to-board connectors'],
-    ['Status', 'Interface freeze Oct 2026 · boards Feb 2027'],
-  ]);
+  title(s, 'Schematic: 14 sheets, one block per function');
+  const fw = 6.6;
+  const r = img(s, 'sch-arch.png', M, 1.5, fw, 5.0);
+  cap(s, 'Fig 2 · Sheet 2, project architecture. Each box is a sheet; the wires are the only signals that cross sheets.', M, r.y + r.h + 0.08, fw);
+  const rx = M + fw + 0.5, rw = W - M - rx;
+  specs(s, rx, 1.5, rw, [
+    ['Power path', 'TVS → +VPROT → 3 × 100 µF polymer + 9 × 4.7 µF MLCC → bridge'],
+    ['Rails', 'LMR36520 buck, 400 kHz → 5 V → TLV75733 LDO → 3.3 V'],
+    ['Gate drive', 'DRV8323S: IDRIVE/TDRIVE over SPI, charge pump, 3 current amps, VDS OCP'],
+    ['MCU', 'STM32G431, 170 MHz · TIM1 PWM · injected ADC on TIM1_TRGO2 · FDCAN'],
+    ['Grounds', 'PGND, AGND, DGND star-joined at the shunts; chassis isolated, one 0 Ω bond'],
+    ['Interfaces', 'CAN-FD in/out · UART · aux encoder SPI · motor NTC · E-stop · SWD'],
+  ], { lw: 1.05, fs: 10.5 });
+  body(s, 'What was removed on the way to Rev 1: a hot-swap front end (bus-level job, moved to the distribution board), USB-C and a bridge chip (SWD does it), an off-board encoder (unshielded SPI through a moving joint was the top field-failure risk), and a CAN ID ladder.', rx, 5.0, rw, 1.4, { fontSize: 10.5, lineSpacing: 15 });
 }
 
-/* ============================================================ 06 more boards */
+/* ============================================================ 06 power stage */
 {
   const s = slide('light');
-  title(s, 'More boards');
-  const tiles = [
-    ['Electronic load', 'STM32F103, DAC-controlled MOSFETs · 150 W target · paused at 5 V, 1 A, thermally limited', 'Control board and power board side by side, on white.'],
-    ['Micromouse Rev 02', 'STM32F411 · DRV8833 · IR pulsed at 100 mA for 60 µs · gyro + PD control · ' + todo('status'), 'Micromouse on white, three-quarter angle.'],
-    ['Flight computers, five generations', 'Four protoboard builds from 2019, then a 4-layer PCB: IMU, barometer, logging, state machine', 'Gen 1 protoboard and Gen 5 PCB together, on white.'],
-    ['Glowstick V3', 'ESP32-C3 · BQ25628E USB-C charging · audio-reactive LEDs · ' + todo('status'), 'Board, or KiCad render on white.'],
-    ['Battery management', 'bq77915 protector · ' + todo('cell count, status'), 'KiCad render on white.'],
-    ['Power meter', 'STM32F103 · INA211 · CAN · designed, not built', 'KiCad render on white.'],
-  ];
-  const tw = (CW - 2 * 0.4) / 3, th = 1.45;
-  tiles.forEach((t, i) => {
-    const x = M + (i % 3) * (tw + 0.4), y = 1.55 + Math.floor(i / 3) * (th + 1.15);
-    ph(s, x, y, tw, th, t[2]);
-    T(s, t[0], { x, y: y + th + 0.12, w: tw, h: 0.3, fontSize: 12 });
-    T(s, t[1], { x, y: y + th + 0.42, w: tw, h: 0.6, fontSize: 10, color: GRAY, lineSpacing: 14 });
-  });
+  title(s, 'Power stage: the FET was chosen on figure of merit, not RDS(on)');
+  const fw = 7.0;
+  const r = img(s, 'sch-bridge.png', M, 1.5, fw, 3.2);
+  cap(s, 'Fig 3 · Sheet 7: DC-link capacitors and the three-phase bridge. Red X: RC snubber footprints, fitted DNP.', M, r.y + r.h + 0.08, fw);
+  table(s, M, r.y + r.h + 0.5, fw, ['RDS(on)', 'P conduction', 'P switching', 'Total per FET'], [
+    ['1.50 mΩ (IPT015N10N5)', '1.80 W', '3.85 W', '5.65 W, worst'],
+    ['2.24 mΩ', '2.69 W', '1.58 W', '4.27 W'],
+    ['2.70 mΩ', '3.24 W', '1.36 W', '4.60 W'],
+  ], [2.4, 1.4, 1.4, 1.8], { fs: 10 });
+  cap(s, 'Table 1 · Loss per FET at 40 A RMS, 40 kHz, 50 V, IDRIVE 1 A. Switching loss dominates; the lowest-RDS(on) part loses.', M, r.y + r.h + 0.5 + 1.25, fw);
+  const rx = M + fw + 0.5, rw = W - M - rx;
+  specs(s, rx, 1.5, rw, [
+    ['FET', 'ISC030N10NM6 · 100 V · 3.0 mΩ · Qg 55 nC · 5 × 6 mm'],
+    ['Why', 'FoM RDS(on) × Qg · TDSON-8 instead of six TOLL (~700 mm²) for < 1 W per FET'],
+    ['Gate drive', 'IDRIVE 0.33 / 0.66 A, 0 Ω series · charge pump 4.1 mA of 25 mA at 25 kHz'],
+    ['Dead time', '200 ns · TDRIVE adaptive · ISTRONG 2 A pulldown on the opposite gate'],
+    ['DC link', 'Sized by ripple current, ~7.8 A RMS at 10 A per phase, not by capacitance'],
+    ['Snubbers', 'Ring 89.7 MHz self-damps in 40 ns in simulation; 32 RC combinations gave nothing. Footprints kept, DNP.'],
+    ['Sense', '3 mΩ Kelvin shunts × gain 20 → ±27.5 A full scale, 13.4 mA/LSB'],
+  ], { lw: 1.0, fs: 10.5 });
 }
 
-/* ============================================================ A1 */
+/* ============================================================ 07 sim 1 */
 {
-  const s = slide('light', 'A · FOC motor controller');
-  title(s, 'The bridge was simulated before layout');
+  const s = slide('light');
+  title(s, 'Simulation: double pulse and the shoot-through question');
   const w1 = 6.2;
-  const r1 = img(s, 'S1_dpt_waveforms.png', M, 1.55, w1, 3.7);
-  cap(s, 'Fig A1.1 · Double-pulse test, leg A · 50.4 V, 14.1 A · IDRIVE 0.33 / 0.66 A · LTspice', M, r1.y + r1.h + 0.08, w1);
+  const r1 = img(s, 'S1_dpt_waveforms.png', M, 1.5, w1, 3.7);
+  cap(s, 'Fig 4 · Double pulse, leg A · 50.4 V, 14.1 A · IDRIVE 0.33 / 0.66 A · ngspice, VDMOS model fitted to the datasheet (RDS(on) 2.56 mΩ, Qg 53.8 nC, plateau 4.57 V)', M, r1.y + r1.h + 0.08, w1);
+  body(s, 'Turn-off peaks at 52.6 V and rings itself out. Turn-on shows 32 A on a 14.1 A load: body-diode recovery plus Coss, pessimistic because the model has no soft-recovery term.', M, r1.y + r1.h + 0.55, w1, 1.0, { fontSize: 11, lineSpacing: 16 });
   const x2 = M + w1 + 0.5, w2 = W - M - x2;
-  const r2 = img(s, 'S2_shoot_through_margin.png', x2, 1.55, w2, 2.5);
-  cap(s, 'Fig A1.2 · Induced gate voltage on the off FET during the complementary edge, by driver model', x2, r2.y + r2.h + 0.08, w2);
-  body(s, 'The question was whether the low-side FET can be pulled on through its Miller capacitance while the high side switches. A resistive 14 Ω gate model says yes: 1.75 V induced against a 2.3 V threshold. The DRV8323 is a current sink, not a resistor; with the strong hold current the induced voltage falls to 0.08 V. Dead time stays at 200 ns and no gate–source capacitors are fitted, with footprints reserved.', x2, r2.y + r2.h + 0.45, w2, 2.2);
+  const r2 = img(s, 'S2_shoot_through_margin.png', x2, 1.5, w2, 2.5);
+  cap(s, 'Fig 5 · Induced high-side gate voltage at low-side turn-on, 200 ns after the high side is told to turn off', x2, r2.y + r2.h + 0.08, w2);
+  body(s, 'Can the off FET be pulled on through its Miller capacitance while its partner switches? With a resistive 14 Ω gate model, yes: 1.75 V against a 2.3 V minimum threshold. The DRV8323 is a current sink with a 2 A strong pulldown, and the induced voltage falls to 0.08 V. That is why the gate–source RC networks stayed unpopulated.', x2, r2.y + r2.h + 0.5, w2, 2.0, { fontSize: 11, lineSpacing: 16 });
 }
 
-/* ============================================================ A2 */
+/* ============================================================ 08 sim 2 */
 {
   const s = slide('light');
-  title(s, 'Drive strength, loop inductance and heat set the design point');
+  title(s, 'Simulation: drive strength, loop inductance and junction temperature');
   const gw = (CW - 2 * 0.4) / 3;
-  const figs = [['S3_idrive_sweep.png', 'Fig A2.1 · IDRIVE sweep at 14.1 A'], ['S4_loop_inductance.png', 'Fig A2.2 · Overshoot vs commutation-loop inductance'], ['S5_thermal.png', 'Fig A2.3 · Loss and junction temperature vs phase current']];
-  figs.forEach((f, i) => { const x = M + i * (gw + 0.4); img(s, f[0], x, 1.55, gw, 2.4); cap(s, f[1], x, 1.55 + 2.4 + 0.08, gw); });
+  const figs = [['S3_idrive_sweep.png', 'Fig 6 · IDRIVE sweep at 50.4 V, 14.1 A'], ['S4_loop_inductance.png', 'Fig 7 · Overshoot vs commutation-loop inductance'], ['S5_thermal.png', 'Fig 8 · Loss and Tj per FET vs phase current, 25 kHz, 40 °C, no heatsink']];
+  figs.forEach((f, i) => { const x = M + i * (gw + 0.4); img(s, f[0], x, 1.5, gw, 2.4); cap(s, f[1], x, 1.5 + 2.4 + 0.08, gw); });
   const notes = [
-    'IDRIVE 0.33 / 0.66 A. Switching energy falls fast up to about 0.4 A and flattens; above 0.6 A the high-side overshoot climbs through the 80 % derating line. The chosen setting sits where both curves are flat.',
-    'Loop inductance. At 50.4 V and 14.1 A the high-side overshoot crosses the 100 V rating above roughly 12 nH. That number drove the layout: via-in-pad on the high-side drains, 2 oz copper, solid ground on L2 directly under the stage.',
-    'Thermal. At the 10 A design point the low-side FET sits near 72 °C with no heatsink. The as-built low side has no vertical thermal path, so 10 A is the rating; the earlier 20 A stress figure was withdrawn.',
+    'Faster drive cuts turn-on energy from 33 to 10 µJ, but the high-side recovery overshoot goes 51 → 69 → 111 V at 0.33 / 0.57 / 1.0 A, through the 100 V rating. IDRIVE stays at 0.33 / 0.66 A until the switch node has been scoped.',
+    'Overshoot against total loop inductance: 53 / 64 / 77 / 97 V at 2.4 / 12.4 / 22.4 / 42.4 nH. The layout budget became "keep the HF loop under ~10 nH"; the built board extracts at about 2.4 nH.',
+    'At the 10 A design point Tj is about 63 °C high side and 73 °C low side. Six-FET total 3.9 W at 25 kHz. The low side has no vertical thermal path (switch node kept on L1), so 10 A is the rating until its case temperature is measured.',
   ];
-  notes.forEach((n, i) => body(s, n, M + i * (gw + 0.4), 4.5, gw, 2.2, { fontSize: 11, lineSpacing: 16 }));
+  notes.forEach((n, i) => body(s, n, M + i * (gw + 0.4), 4.4, gw, 2.3, { fontSize: 11, lineSpacing: 16 }));
 }
 
-/* ============================================================ A3 */
+/* ============================================================ 09 layout */
 {
   const s = slide('light');
-  title(s, 'Rev 01 bring-up: five findings, from bit-shifted SPI to a motor model 2.5× off');
-  table(s, M, 1.55, 7.6, ['', 'Symptom', 'Cause', 'Change'], [
-    ['1', 'SPI reads bit-shifted', 'DRV8323 SDO is open-drain; the pull-up is too weak at 2.66 MHz', 'SPI throttled to 332 kHz; stable since'],
-    ['2', 'Current offset 0.15–0.46 A', 'Offset taken in the driver\'s internal calibration mode', 'Calibrate the amps in normal mode at 0 A: ±1 mV, 11–14 mA rms floor'],
-    ['3', 'Phase C current inverted', 'Sense wiring reversed on phase C', '−1 in firmware ' + todo('hardware fix in Rev B?')],
-    ['4', 'Pins don\'t match the schematic', 'DRV_ENABLE and encoder CS routed differently from their labels', todo('fix')],
-    ['5', 'Motor model off', 'MN601-S phase resistance measured 98 mΩ; datasheet says 39 mΩ', 'Measured values in the model'],
-  ], [0.3, 1.9, 2.9, 2.5], { fs: 10 });
-  cap(s, 'Table A3.1 · Bench log, September 2026', M, 5.0, 7.6);
-  const x2 = M + 7.6 + 0.5, w2 = W - M - x2;
-  const r = img(s, 'T2_voltage_limited_speed.png', x2, 1.55, w2, 2.6);
-  cap(s, 'Fig A3.1 · Open-loop I/f speed against the voltage limit, MN601-S', x2, r.y + r.h + 0.08, w2);
-  body(s, 'The first spin tripped over-current at about 960 rpm with a 2 V limit; raising the limit in RAM reached 2000 rpm. The speed line uses the measured KV and phase resistance, which is why the motor-model correction above mattered.', x2, r.y + r.h + 0.45, w2, 1.6, { fontSize: 11, lineSpacing: 16 });
+  title(s, 'Layout: six layers, two of them unbroken ground');
+  const lw = 2.55, gap = 0.22;
+  [['layer-L1.png', 'L1 · signal + power'], ['layer-L2.png', 'L2 · ground, solid'], ['layer-L3.png', 'L3 · signal + power'], ['layer-L6.png', 'L6 · bus copper + signal']].forEach((f, i) => {
+    const x = M + i * (lw + gap); img(s, f[0], x, 1.5, lw, lw); cap(s, f[1], x, 1.5 + lw + 0.06, lw);
+  });
+  cap(s, 'Fig 9 · Copper, from the fab package. Stackup: Sig/Pwr · GND · Sig/Pwr · Sig/Pwr · GND · Sig/Pwr', M, 1.5 + lw + 0.32, 4 * lw + 3 * gap);
+  const ty = 1.5 + lw + 0.75;
+  const cw2 = (CW - 0.5) / 2;
+  specs(s, M, ty, cw2, [
+    ['Power stage', 'Phases and bus on one edge, next to the FET row · MLCCs 6 mm from the FETs · loop ~2.4 nH'],
+    ['High side', '16 via-in-pad per drain into the inner bus plane · stencil windowpaned on every thermal pad'],
+    ['Switch node', 'Kept on L1 only: no switching copper on inner layers, no via stubs on the noisiest nets'],
+  ], { lw: 1.0, fs: 10.5 });
+  specs(s, M + cw2 + 0.5, ty, cw2, [
+    ['Encoder', 'AS5047P at (40.00, 40.00), the geometric centre, on the bottom · aux SPI connector kept'],
+    ['Chassis', 'Isolated: one 0 Ω bond, 1 nF / 1 kV at every hole, moat cut on the inner planes'],
+    ['Fab', '70.1 × 70.1 mm · 344 vias at 0.25 / 0.55 mm · 38 test points · 159 + 33 parts, JLCPCB PCBA'],
+  ], { lw: 1.0, fs: 10.5 });
 }
 
-/* ============================================================ A4 */
+/* ============================================================ 10 sensing + protection */
 {
   const s = slide('light');
-  title(s, 'Firmware: the control interrupt fits its 40 µs window');
-  const w1 = 5.4;
-  const r1 = img(s, 'T1_isr_budget.png', M, 1.55, w1, 3.0);
-  cap(s, 'Fig A4.1 · Control-ISR execution time vs streamed scope signals, firmware 0.6.1', M, r1.y + r1.h + 0.08, w1);
-  body(s, 'The current loop runs in the PWM interrupt every 40 µs. Idle it takes 17.5 µs; spinning, with five signals streamed to the host, the recorder peaks at 38 µs. That is the budget line for Rev B at 40 kHz, and it is why telemetry is framed, not printed.', M, r1.y + r1.h + 0.45, w1, 1.6, { fontSize: 11, lineSpacing: 16 });
-  const x2 = M + w1 + 0.5, w2 = W - M - x2;
-  const r2 = img(s, 'gui.png', x2, 1.55, w2, 3.6);
-  cap(s, 'Fig A4.2 · Host GUI: bench sync, spin control, limits, live telemetry. FOCLINK/1 over UART, FOCCAN/1 over CAN FD.', x2, r2.y + r2.h + 0.08, w2);
-  specs(s, x2, r2.y + r2.h + 0.5, w2, [['Rev B', 'ODrive M8325s, 60 V bus, 40 kHz · in design review'], ['Open points', todo('what carries over from the bring-up list')]], { lw: 1.1 });
+  title(s, 'Sensing and protection: timing rejects the noise, hardware holds the line');
+  const cw2 = (CW - 0.5) / 2;
+  body(s, 'Current sense is the primary spec, because in a QDD joint sense error is torque error. The shunt and gain are one decision: 3 mΩ × 20 gives ±23.3 A linear, 16.3 A RMS. Gain 40 would clip at 13.75 A. Switching noise is rejected by sampling at the PWM counter peak, when every low side conducts and the bridge is quiet, not by filtering; the 56 Ω / 2.2 nF RC is edge damping only. Offsets are calibrated in normal mode with the bridge idle on every wake, because the driver\'s own calibration mode left 0.15 to 0.46 A of error.', M, 1.5, cw2, 2.6, { fontSize: 11, lineSpacing: 16 });
+  specs(s, M, 4.2, cw2, [
+    ['Resolution', '13.4 mA per LSB · noise 11–14 mA rms per sample'],
+    ['Bus sense', '24.9 k + 12.4 k over 2 k · 15.8 mV/LSB · 838 Hz, monitor only'],
+    ['Temperature', 'Board NTC, motor NTC, MCU sensor · every reading carries an age'],
+  ], { lw: 1.1, fs: 10.5 });
+  table(s, M + cw2 + 0.5, 1.5, cw2, ['Layer', 'Mechanism', 'Behaviour'], [
+    ['Input transient', 'SMCJ51CA TVS', 'Clamps at 82 V'],
+    ['VDS over-current', 'DRV8323, VDS_LVL 0.06 V', '~13 A hot, 20 A cold'],
+    ['Firmware OC', 'Control ISR', '4.5 A trip in the current bench tier'],
+    ['Driver fault', 'nFAULT → TIM1 break input', 'Outputs off in hardware, no software in the path'],
+    ['Output lock', 'ISR + main loop', 'Illegal enable bits cleared, fault latched'],
+    ['Dead-man, watchdog', '100 ms, 500 ms', 'Coast'],
+    ['Stale inputs', '> 500 ms old', 'Refuse ARM, fault an armed board'],
+    ['Regen', 'Guard above ~120 rpm', 'Every stop is a coast'],
+  ], [1.6, 2.1, cw2 - 3.7], { fs: 10 });
+  cap(s, 'Table 2 · Protection layers. Fault state is always coast: shorting the low sides at speed would drive ~180 A.', M + cw2 + 0.5, 5.9, cw2);
+}
+
+/* ============================================================ 11 bring-up */
+{
+  const s = slide('light');
+  title(s, 'Bring-up: what the bench found, and 2000 rpm');
+  table(s, M, 1.5, 7.4, ['', 'Symptom', 'Cause', 'Change'], [
+    ['1', 'SPI reads bit-shifted', 'DRV8323 SDO is open-drain; the pull-up is too weak at 2.66 MHz', 'SPI at 332 kHz; stable since'],
+    ['2', 'Current offset 0.15–0.46 A', 'Offset taken in the driver\'s internal calibration mode', 'Calibrate in normal mode at 0 A: ±1 mV'],
+    ['3', 'Phase C current inverted', 'Sense wiring reversed on phase C', '−1 in firmware ' + todo('Rev B fix')],
+    ['4', 'Pins differ from the schematic', 'DRV_ENABLE and encoder CS routed differently from their labels', 'Firmware pin map updated'],
+    ['5', 'Motor model 2.5× off', 'MN601-S phase R measured 98 mΩ; datasheet 39 mΩ', 'On-board ID of R, Ld/Lq, flux linkage'],
+  ], [0.3, 1.9, 2.8, 2.4], { fs: 10 });
+  cap(s, 'Table 3 · Rev 01 bench log, September 2026. Measured: 200 ns dead time, zero overlap, duty ±0.3 %.', M, 4.95, 7.4);
+  const x2 = M + 7.4 + 0.5, w2 = W - M - x2;
+  const r = img(s, 'T2_voltage_limited_speed.png', x2, 1.5, w2, 2.6);
+  cap(s, 'Fig 10 · Open-loop I/f speed against the voltage limit. First spin tripped over-current near 960 rpm; raising the limit reached 2000 rpm.', x2, r.y + r.h + 0.08, w2);
+  specs(s, x2, r.y + r.h + 0.6, w2, [
+    ['Validated', 'Switching, motor ID, I/f to 2000 rpm at 12 V'],
+    ['Not yet', 'Closed loop (magnet not fitted), > 12 V, load, thermal at rating'],
+    ['Control ISR', '18 µs idle, 29 µs spinning, of 40 µs'],
+    ['Result', '2000 rpm open-loop, MN601-S, 12 V bench supply'],
+  ], { lw: 1.0, fs: 10.5, accentLast: true });
 }
 
 /* ============================================================ B1 */
 {
-  const s = slide('light', 'B · AeroDesign power system');
-  title(s, '2024: one wiring hub replaced the rat\'s nest, and the plane flew');
+  const s = slide('light', 'AeroDesign power system');
+  title(s, 'AeroDesign: the aircraft as a system, 2024');
   const w1 = 6.0;
   const r1 = img(s, 'power-arch.jpg', M, 1.55, w1, 3.4);
   cap(s, 'Fig B1.1 · Power architecture of Shadow, 2023–24 season', M, r1.y + r1.h + 0.08, w1);
@@ -284,7 +319,7 @@ const todo = t => `[ ${t} ]`;
     ['Output', '330 µF · ±10.6 mV on a two-servo stall'],
     ['Result', 'Flew · 5th overall, SAE Aero Design Advanced Class'],
   ], { lw: 0.9, accentLast: true });
-  body(s, 'Hub: vertical signals on top, high current on the bottom, TVS and 0.1 µF at every connector.', M, r1.y + r1.h + 0.45, w1, 0.8, { fontSize: 11, lineSpacing: 16 });
+  body(s, 'The brief: a kill switch, two 16.8 V packs, a 2.4 GHz control link, ESC PWM, 900 MHz telemetry, cellular video and MAVLink to the flight controller, all through one 5 V rail. I split it into a wiring hub (the carrier for every connector), a power module, and a small tail hub, and sized the modules from the worst-case budget with every servo stalled at once.', M, r1.y + r1.h + 0.45, w1, 1.4, { fontSize: 11, lineSpacing: 16 });
 }
 
 /* ============================================================ B2 */
@@ -326,6 +361,27 @@ const todo = t => `[ ${t} ]`;
   ], { lw: 1.0 });
 }
 
+/* ============================================================ 06 more boards */
+{
+  const s = slide('light', 'More boards');
+  title(s, 'More boards');
+  const tiles = [
+    ['Electronic load', 'STM32F103, DAC-controlled MOSFETs · 150 W target · paused at 5 V, 1 A, thermally limited', 'Control board and power board side by side, on white.'],
+    ['Micromouse Rev 02', 'STM32F411 · DRV8833 · IR pulsed at 100 mA for 60 µs · gyro + PD control · ' + todo('status'), 'Micromouse on white, three-quarter angle.'],
+    ['Flight computers, five generations', 'Four protoboard builds from 2019, then a 4-layer PCB: IMU, barometer, logging, state machine', 'Gen 1 protoboard and Gen 5 PCB together, on white.'],
+    ['Glowstick V3', 'ESP32-C3 · BQ25628E USB-C charging · audio-reactive LEDs · ' + todo('status'), 'Board, or KiCad render on white.'],
+    ['Flight controller module', 'STM32H757 ArduPilot module, 36 × 55 mm, 6 layers · lead designer, with a junior designer · interface freeze Oct 2026', 'KiCad render or floorplan on white.'],
+    ['Power meter', 'STM32F103 · INA211 · CAN · designed, not built', 'KiCad render on white.'],
+  ];
+  const tw = (CW - 2 * 0.4) / 3, th = 1.45;
+  tiles.forEach((t, i) => {
+    const x = M + (i % 3) * (tw + 0.4), y = 1.55 + Math.floor(i / 3) * (th + 1.15);
+    ph(s, x, y, tw, th, t[2]);
+    T(s, t[0], { x, y: y + th + 0.12, w: tw, h: 0.3, fontSize: 12 });
+    T(s, t[1], { x, y: y + th + 0.42, w: tw, h: 0.6, fontSize: 10, color: GRAY, lineSpacing: 14 });
+  });
+}
+
 /* ============================================================ end */
 {
   const s = slide('dark', 'End');
@@ -335,5 +391,5 @@ const todo = t => `[ ${t} ]`;
   T(s, 'Rev A · November 2026', { x: M, y: H - 0.95, w: 6, h: 0.3, fontSize: 9, color: ACCENT });
 }
 
-const out = path.join(__dirname, 'WeymenKoo_HardwarePortfolio_2026.pptx');  // git-ignored
+const out = path.join(__dirname, 'WeymenKoo_HardwarePortfolio_2026.pptx');
 pres.writeFile({ fileName: out }).then(() => console.log('wrote', out, page, 'pages'));
