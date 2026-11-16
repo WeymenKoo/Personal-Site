@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # Playwright 1.56 has no browser build for Ubuntu 26.04 (ubuntu-latest since Oct 2026)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -38,7 +38,7 @@ jobs:
   deploy:
     needs: test
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # Playwright 1.56 has no browser build for Ubuntu 26.04 (ubuntu-latest since Oct 2026)
     # job-level permissions replace the workflow-level ones, so contents:read
     # must be repeated here or checkout can't see a private repo
     permissions:
