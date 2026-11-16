@@ -206,20 +206,22 @@ function somInterface() {
   // carrier
   b += `<rect x="0" y="40" width="1200" height="680" rx="10" fill="${T.paper}" stroke="${T.ink2}" stroke-width="2" stroke-dasharray="9 7"/>`;
   b += text(28, 84, 'CARRIER · airframe-specific', { size: 17, mono: true, fill: T.ink2, ls: 1.2 });
-  // module 36x55 scaled 7 px/mm -> 252 x 385, rotated landscape 385 x 252
-  const mx = 410, my = 230, mw = 385, mh = 252;
+  // module 55 x 40 mm at 7 px/mm -> 385 x 280
+  const mx = 410, my = 215, mw = 385, mh = 280;
   b += `<rect x="${mx}" y="${my}" width="${mw}" height="${mh}" rx="8" fill="${T.white}" stroke="${T.signal}" stroke-width="3"/>`;
   b += text(mx + mw / 2, my + 100, 'SoM', { size: 34, weight: 700, anchor: 'middle' });
-  b += text(mx + mw / 2, my + 134, '36 × 55 mm · 6 layers', { size: 16, mono: true, weight: 400, anchor: 'middle', fill: T.ink2 });
+  b += text(mx + mw / 2, my + 134, '55 × 40 mm · 8 layers', { size: 16, mono: true, weight: 400, anchor: 'middle', fill: T.ink2 });
   b += text(mx + mw / 2, my + 160, 'STM32H757 · sensors · storage · power', { size: 14, mono: true, weight: 400, anchor: 'middle', fill: T.ink2 });
-  // J1 / J2 strips
-  b += `<rect x="${mx + 30}" y="${my + 14}" width="${mw - 60}" height="26" fill="${T.ink}"/>` + text(mx + mw / 2, my + 33, 'J1', { size: 16, mono: true, fill: T.white, anchor: 'middle' });
-  b += `<rect x="${mx + 30}" y="${my + mh - 40}" width="${mw - 60}" height="26" fill="${T.ink}"/>` + text(mx + mw / 2, my + mh - 21, 'J2', { size: 16, mono: true, fill: T.white, anchor: 'middle' });
+  // J4 / J5: the two Hirose DF17 board-to-board connectors
+  b += `<rect x="${mx + 30}" y="${my + 14}" width="${mw - 60}" height="26" fill="${T.ink}"/>` + text(mx + mw / 2, my + 33, 'J4 · carrier · 80-pin', { size: 16, mono: true, fill: T.white, anchor: 'middle' });
+  b += `<rect x="${mx + 30}" y="${my + mh - 40}" width="${mw - 60}" height="26" fill="${T.ink}"/>` + text(mx + mw / 2, my + mh - 21, 'J5 · payload · 60-pin', { size: 16, mono: true, fill: T.white, anchor: 'middle' });
   // groups
-  const left = [['Flight I/O', ['PWM ×12 · UART ×6', 'I²C · ADC · SBUS']], ['Safety', ['buzzer · BOOT0']]];
-  const right = [['CAN1 · flight', ['TCAN3413']], ['Payload I/O', ['CAN2 · SPI6 · I²C · GPIO']]];
-  left.forEach((g, i) => { const y = 150 + i * 300; b += box(40, y, 290, 120, g[0], g[1], { tsize: 22 }); b += line([[330, y + 60], [mx, y < 300 ? my + 27 : my + mh - 27]], { arrow: 'both' }); });
-  right.forEach((g, i) => { const y = 150 + i * 300; b += box(870, y, 290, 120, g[0], g[1], { tsize: 22 }); b += line([[870, y + 60], [mx + mw, y < 300 ? my + 27 : my + mh - 27]], { arrow: 'both' }); });
+  // [title, sub-lines, connector]: everything on the carrier side goes through J4, the payload through J5
+  const J4 = my + 27, J5 = my + mh - 27;
+  const left = [['Flight I/O', ['PWM ×16 · UART ×8', 'I²C · ADC · SBUS'], J4], ['Safety', ['switch · LED', 'buzzer · arming'], J4]];
+  const right = [['CAN1 · flight', ['TCAN3414'], J4], ['Payload I/O', ['CAN2 · SPI6 · I²C · GPIO'], J5]];
+  left.forEach((g, i) => { const y = 150 + i * 300; b += box(40, y, 290, 120, g[0], g[1], { tsize: 22 }); b += line([[330, y + 60], [mx, g[2]]], { arrow: 'both' }); });
+  right.forEach((g, i) => { const y = 150 + i * 300; b += box(870, y, 290, 120, g[0], g[1], { tsize: 22 }); b += line([[870, y + 60], [mx + mw, g[2]]], { arrow: 'both' }); });
   b += box(475, 580, 255, 100, 'Power in', ['carrier 5 V · USB 5 V'], { tsize: 22 });
   b += line([[602, 580], [602, my + mh]], { color: T.ink });
   return svg(W, H, b, 'Flight controller module and its carrier interface');
@@ -229,33 +231,33 @@ function somInterface() {
 function somArch() {
   const W = 1200, H = 790;
   let b = '';
-  const grey = { dash: true, fill: T.paper };
-  b += box(420, 100, 360, 340, 'STM32H757', ['Cortex-M7 · 400 MHz', 'TFBGA240', 'runs ArduPilot'], { accent: true, tsize: 32 });
+  b += box(420, 100, 360, 340, 'STM32H757', ['Cortex-M7 · 400 MHz', 'TFBGA-265', 'runs ArduPilot'], { accent: true, tsize: 32 });
   b += text(0, 70, 'SENSING', { size: 16, mono: true, fill: T.signal, ls: 1.5 });
   b += box(0, 100, 300, 100, 'IMU 1 + baro 1', ['LSM6DSV32X · DPS368']);
-  b += box(0, 220, 300, 100, 'IMU 2 + baro 2', ['ICM-42688-P · MS5611'], grey);
-  b += box(0, 340, 300, 100, 'Magnetometer', ['LIS2MDL']);
+  b += box(0, 220, 300, 100, 'IMU 2 + baro 2', ['ICM-42688-P · MS5611']);
+  b += box(0, 340, 300, 100, 'Magnetometer', ['LIS2MDL (optional)']);
   b += line([[300, 150], [420, 150]]) + tag(360, 137, 'SPI1', { size: 14 });
-  b += line([[300, 270], [420, 270]], { dash: true }) + tag(360, 257, 'SPI2', { size: 14 });
+  b += line([[300, 270], [420, 270]]) + tag(360, 257, 'SPI5', { size: 14 });
   b += line([[300, 390], [420, 390]]) + tag(360, 377, 'I²C', { size: 14 });
   b += text(900, 70, 'STORAGE', { size: 16, mono: true, fill: T.signal, ls: 1.5 });
   b += box(900, 100, 300, 100, 'FRAM · parameters', ['FM25V02A']);
   b += box(900, 220, 300, 100, 'microSD · logs', ['4-bit SDMMC']);
   b += box(900, 340, 300, 100, 'Board ID', ['M24C64 EEPROM']);
-  b += line([[900, 150], [780, 150]]) + tag(840, 137, 'SPI3', { size: 14 });
+  b += line([[900, 150], [780, 150]]) + tag(840, 137, 'SPI2', { size: 14 });
   b += line([[900, 270], [780, 270]]) + tag(840, 257, 'SDMMC', { size: 14 });
   b += line([[900, 390], [780, 390]]) + tag(840, 377, 'I²C', { size: 14 });
   const by = 560, bh = 100;
-  b += box(0, by, 250, bh, 'CAN1 · flight', ['TCAN3413']);
-  b += box(290, by, 250, bh, 'CAN2 · payload', ['TCAN3413']);
-  b += box(660, by, 250, bh, 'USB-C', ['USB switch']);
+  b += box(0, by, 250, bh, 'CAN1 · flight', ['TCAN3414']);
+  b += box(290, by, 250, bh, 'CAN2 · payload', ['TCAN3414']);
+  b += box(660, by, 250, bh, 'USB-C', ['USB 2.0 FS']);
   b += box(950, by, 250, bh, 'Power', ['mux · e-fuse', 'buck · LDO']);
   b += line([[125, by], [125, 500], [470, 500], [470, 440]]);
   b += line([[415, by], [415, 520], [540, 520], [540, 440]]);
   b += line([[785, by], [785, 520], [660, 520], [660, 440]]);
   b += line([[1075, by], [1075, 500], [730, 500], [730, 440]]) + tag(1000, 494, '3.3 V', { size: 14 });
-  b += `<rect x="0" y="740" width="1200" height="44" rx="4" fill="${T.ink}"/>` + text(600, 769, 'J1 + J2 · board-to-board to the carrier', { size: 17, mono: true, fill: T.white, anchor: 'middle' });
-  [125, 415, 785, 1075].forEach(x => { b += line([[x, by + bh], [x, 740]], { arrow: 'both' }); });
+  b += `<rect x="0" y="740" width="1200" height="44" rx="4" fill="${T.ink}"/>` + text(600, 769, 'J4 + J5 · Hirose DF17 to the carrier and payload', { size: 17, mono: true, fill: T.white, anchor: 'middle' });
+  // USB-C is on the module itself, so it has no line to the connectors
+  [125, 415, 1075].forEach(x => { b += line([[x, by + bh], [x, 740]], { arrow: 'both' }); });
   return svg(W, H, b, 'Flight controller module architecture');
 }
 
@@ -265,10 +267,10 @@ function somPower() {
   let b = '';
   b += box(0, 60, 200, 100, 'Carrier 5 V', [], { tsize: 22 });
   b += box(0, 250, 200, 100, 'USB-C 5 V', [], { tsize: 22 });
-  b += box(280, 140, 210, 130, 'Priority mux', ['carrier wins'], { accent: true });
-  b += box(570, 140, 190, 130, 'e-fuse', ['protection']);
-  b += box(856, 30, 340, 120, 'Buck → 3.3 V', ['MCU · storage · CAN · USB']);
-  b += box(856, 260, 340, 120, 'LDO → 3.3 V', ['IMU · baro · mag']);
+  b += box(280, 140, 210, 130, 'Priority mux', ['TPS2116', 'carrier wins'], { accent: true });
+  b += box(570, 140, 190, 130, 'e-fuse', ['TPS259474A', '1.1 A limit']);
+  b += box(856, 30, 340, 120, 'Buck → 3.3 V', ['TLV62569', 'MCU · storage · CAN · USB']);
+  b += box(856, 260, 340, 120, 'LDO → 3.3 V', ['TPS7A20', 'IMU · baro · mag']);
   b += line([[200, 110], [240, 110], [240, 180], [280, 180]]);
   b += line([[200, 300], [240, 300], [240, 230], [280, 230]]);
   b += line([[490, 205], [570, 205]]);
