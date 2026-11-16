@@ -308,10 +308,14 @@ test.describe('the three articles, as shipped', () => {
       'Power flow', 'Input eFuse and reverse polarity', '5 V, 15 A: LM5146', 'Output eFuse and current sense',
       'Connectors', 'PCB layout', 'The flight controller (not my design)', 'SAE Aero Design 2025',
     ]);
-    await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; });
+    // load every image first: a lazy image arriving mid-test moves the chapters under the check
+    await page.evaluate(async () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+      for (const i of document.images) i.loading = 'eager';
+      await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+    });
     for (const [id, label] of [['power-flow', 'Late afternoon'], ['buck-converter', 'Dusk'], ['connectors', 'Blue hour'], ['flight-controller-v2', 'Night'], ['sae-aero-design-2025', 'Lights off']]) {
-      await page.evaluate(i => document.getElementById(i).scrollIntoView(), id);
-      await expect(page.locator('#hourLabel')).toHaveText(label);
+      await expect.poll(() => page.evaluate(i => { document.getElementById(i).scrollIntoView(); return document.getElementById('hourLabel').textContent; }, id)).toBe(label);
     }
     // every schematic sheet after the top one is shown, and the results link goes to SAE
     await expect(page.locator('img[src^="sch-"]')).toHaveCount(4);
