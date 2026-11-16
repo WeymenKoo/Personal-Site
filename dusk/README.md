@@ -3,20 +3,30 @@
 A day, from golden hour to night. Scroll down and the page changes hour.
 
 ```
-index.html              page shell: hero, section headings, career timeline
+index.html              page shell: hero and section headings
 assets/dusk.css         styling
 assets/dusk.js          hour snap, tape counter, liner notes, lightbox, record player
 assets/entries.js       builds projects / tapes / records from content/
-assets/article.css      long-form project pages (+ article.js)
+assets/article-md.js    builds a project's write-up page from its article.md
+assets/article.css      styling for those pages (+ article.js, vendor/marked)
 content/
   manifest.json         which projects and tapes appear, and in what order
   hero.jpg              the landing photo (add your own)
   placeholder.webp      shown for any image that's missing (the beach photo)
-  projects/<slug>/      entry.json + that project's images (+ index.html, its article)
+  projects/<slug>/      one folder per project:
+    entry.json            the card on the homepage
+    article.md            the write-up, in Markdown  <- the file you edit
+    *.jpg / *.png / *.gif its images
+    index.html            the page that shows article.md (same in every folder, never edited)
   tapes/<slug>/         entry.json + that roll's frames
   records.json          the record shelf
 design/                 logo sheet + toucan.svg (the mark, also the favicon)
 ```
+
+Side A currently holds three projects: `fc-som`, `foc-controller` and
+`avionics`. Side B (photo rolls) and the record shelf are empty for now and
+say "Nothing here yet." until you add an entry. The templates to copy are
+still in `content/projects/example` and `content/tapes/example`.
 
 ## Running it locally
 
@@ -47,11 +57,16 @@ spaces and no number (the number comes from the manifest order):
 
     cp -r content/projects/example content/projects/foc-controller
 
+The copy brings three files: `entry.json` (the card), `article.md` (the
+write-up) and `index.html` (the page that shows the write-up; leave it alone).
+
 **2. Add the images** to that folder. Filenames are up to you; you refer to
 them by name in step 3.
 
     content/projects/foc-controller/
       entry.json
+      article.md
+      index.html
       cover.jpg
       rev1.jpg
 
@@ -81,7 +96,12 @@ them by name in step 3.
 | `spec` | the one-line spec in accent colour; separate items with ` · ` |
 | `cover.fit` | `cover` crops to fill the frame; `contain` shows the whole image (use for renders on white) |
 | `strip` | optional row of thumbnails under the spec; `[]` hides it |
-| `link` | where "Read →" goes; `""` hides the link |
+| `link` | where "Read →" goes: `"content/projects/<slug>/index.html"` for the write-up in this folder (see "Writing an article"), or any URL; `""` hides the link |
+
+The card photo is shown about 600 px wide and the strip thumbnails about
+150 px. Give the card its own small copies (around 1200 px for the cover,
+480 px squares for the strip) and keep the full-size images for the
+article: big images in the cards make scrolling stutter.
 
 **4. List it in `content/manifest.json`.** Order here is order on the page:
 
@@ -92,8 +112,9 @@ them by name in step 3.
 }
 ```
 
-Remove `"example"` from the list once you have a real entry. You can delete
-its folder too, or keep it around to copy from.
+Leave `example` out of the list; its folder stays as the template to copy
+from. An empty list (`"tapes": []`) is fine: that side shows "Nothing here
+yet."
 
 ### A photo roll (Side B)
 
@@ -128,8 +149,10 @@ Same four steps, in `content/tapes/`:
 
 ### A record (the shelf)
 
-Records have no images, so there's no folder. Add an object to
-`content/records.json`. The first record is the one loaded in the player.
+Records have no images, so there's no folder. Add an object to the list in
+`content/records.json` (it starts empty: `[]`; separate objects with
+commas). The first record is the one loaded in the player. With no records,
+the shelf says "Nothing here yet." and the player is hidden.
 
 ```json
 {
@@ -147,55 +170,96 @@ on it. Pick an `ink` that reads clearly against both sleeve colours.
 
 ### Writing an article (the "Read →" page)
 
-A project card can link to a long-form page. The page lives in the
-project's own folder, next to its `entry.json` and images.
+Each project's write-up is one Markdown file in the project's own folder:
+`content/projects/<slug>/article.md`. Edit it in any text editor, save,
+reload the page. There is no build step.
 
-**1.** The template is already in the folder you copied:
-`content/projects/<slug>/index.html`.
+**1.** The template is already in the folder you copied: `article.md`.
 
-**2.** Point the card at it — in `entry.json`:
+**2.** Point the card at the page that shows it. In `entry.json`:
 
 ```json
 "link": "content/projects/<slug>/index.html"
 ```
 
-**3.** Edit `index.html`. Replace every `PLACEHOLDER`; delete what you
-don't need. Images are paths relative to the folder: `"cover.jpg"`,
-`"layers.gif"`.
+**3.** Write `article.md`:
 
-Each `<section data-hour="...">` snaps the page to that hour as you
-scroll, same as the homepage. Use them in order:
-`golden → afternoon → dusk → blue → night → off`. The deck's tape
-counter becomes a reading-progress counter, and its nav links point at
-your section `id`s.
+```markdown
+---
+title: FOC Motor Controller
+subtitle: One sentence under the title.
+team: Individual work
+role: Design, layout, bring-up
+date: Rev 1 · 2026
+---
 
-| component | markup | use it for |
-|---|---|---|
-| chapter | `<section class="ar-ch" data-hour="…">` + `.ar-kick` + `<h2>` | each part of the story |
-| slide quote | `<blockquote class="ar-slide"> … <cite>` | words lifted off an old deck, with where they came from |
-| image | `<figure class="ar-fig">` (add `ar-gif` for GIFs) | one picture |
-| full width | `<figure class="ar-bleed">` | the one photo that deserves the whole screen |
-| gallery | `<div class="ar-grid two">` / `three`, add `land` for 4:3 | photos side by side |
-| text message | `<div class="ar-chat">` (who, typing, msg, seen) | the 2 AM message; the dots "type" before it appears |
-| checklist | `<ul class="ar-check">`, `class="done"` on the ticked one | options you weighed |
-| three columns | `<div class="ar-gbu">` with `.good` `.bad` `.ugly` | a verdict |
-| before → after | `<table class="ar-fix">` | what broke, what changed |
-| specs | `<dl class="ar-specs">` | the numbers, at the end |
-| liner note | `<p class="liner liner-off" id="offLine">` | a random line from the homepage pool |
+The opening paragraph. Anything above the first ## sits under the title.
 
-**Give every image its `width` and `height`** (the file's real pixel size,
-e.g. `<img src="cover.jpg" width="1456" height="840" …>`). The browser then
-reserves the space before the image arrives. Without it, a photo loading
-late pushes the page down, and the hour label can end up showing the wrong
-section until you scroll again.
+| | |
+|---|---|
+| Bus | 12S LiPo, `50.4 V` full |
+| MCU | STM32G431 |
 
-**GIFs:** keep each under about 1 MB — around 500 px wide, a few
-frames, a shared palette. Always add `loading="lazy"`. A long GIF of a
-photo is the fastest way to make the page heavy; a slideshow of 3–5
-stills is usually better than a crossfade.
+## Renders
+
+![Top side render](render-top.jpg "Top: bridge, gate driver, MCU.")
+
+## Small label | The big heading
+
+Body text.
+```
+
+The block between the two `---` lines sets the header. Every line in it is
+optional: without `title`, the page uses the title from `entry.json`. The
+status dot and its label always come from `entry.json`, so the card and the
+article never disagree.
+
+**Each `##` heading starts a chapter.** Chapters are numbered for you, and
+each one moves the page on an hour, the way the homepage does: the title
+block is golden hour, the last chapter is lights off, and the chapters in
+between are spread across the afternoon, dusk, blue hour and night. The
+deck's tape counter becomes a reading-progress counter.
+
+| you write | you get |
+|---|---|
+| `## Heading` | a numbered chapter |
+| `## Small label \| Heading` | the same, with a small label beside the number |
+| `### Heading` | a smaller heading inside a chapter |
+| `![alt](file.jpg "Caption")` on its own line | one image with a caption (the caption is optional) |
+| two or three of those on consecutive lines | images side by side |
+| `file.jpg#wide` | a wider image; `#bleed` gives it the whole screen |
+| `file.jpg#tall` / `#land` on the first of a side-by-side group | crops the group to 3:4 / 4:3 so mixed shapes line up |
+| `> a quote` ending with a line `> — where it's from` | the quote box, with its source |
+| a table with an empty header row (`\| \| \|`) | a spec sheet: label on the left, value on the right |
+| any other table | a table; a cell holding only `→` gets the accent colour |
+| `` `5 V` `` | a number in the accent colour |
+| `- [ ]` / `- [x]` list | a checklist, with the ticked one highlighted |
+| `~~word~~` | struck through |
+| `[text](https://…)` | a link (opens in a new tab if it leaves the site) |
+
+Images are paths relative to the project folder: `cover.jpg`,
+`layers.gif`. The `alt` text in the square brackets is required: describe
+what's in the picture.
+
+**Fancier blocks are plain HTML inside the Markdown.** Paste the block
+on its own lines, with a blank line before and after and none inside it.
+`avionics/article.md` uses all of these:
+
+| block | markup |
+|---|---|
+| text message (the dots "type" before it appears) | `<div class="ar-chat">` with `.who`, `.typing`, `.msg`, `.seen` |
+| three-column verdict | `<div class="ar-gbu">` with `.good` `.bad` `.ugly` |
+| the ECG trace | `<div class="ar-ecg">` |
+
+**Previewing:** GitHub and most editors render `article.md` well enough to
+proofread, but only the site shows the real layout. Run it locally (above).
+
+**GIFs:** keep each under about 1 MB (around 500 px wide, a few frames, a
+shared palette). A slideshow of 3–5 stills is usually better than a
+crossfade. `npm test` fails on any image over 1 MB.
 
 **Quoting your old slides:** fine, it's your writing. Don't paste in
-memes or other people's images off those slides — they're copyrighted,
+memes or other people's images off those slides. They're copyrighted,
 and on a public site they're the part that gets taken down.
 
 ### Finding a Spotify track ID
@@ -229,6 +293,9 @@ load is logged there with `[entries]` and the file path.
 | one entry missing, console says `skipped …` | a JSON syntax error in that file: a trailing comma, or a missing quote or bracket. Paste the file into https://jsonlint.com |
 | the beach placeholder instead of your photo | the `src` filename doesn't match the file on disk (check case and extension) |
 | entry missing | its slug isn't in `manifest.json`, or is spelled differently from the folder |
+| "Read →" opens "Nothing to read yet." | the folder has no `article.md` (check the spelling; the console line starts with `[article]`) |
+| "Read →" opens a 404 | the folder has no `index.html`: copy it from `content/projects/example/` |
+| a heading or table shows as plain text | it needs a blank line before it |
 | everything empty | you opened the file directly (use the local server above), or `manifest.json` itself has a syntax error |
 
 ---
@@ -251,8 +318,10 @@ instant.
 ## Tests
 
 The suite lives in `tests/` at the repo root and runs in headless Chromium.
-It copies the site, adds projects, rolls and records **by following the
-steps in this README**, and checks that they render. It also covers the
+It copies the site, adds projects, rolls, records and a Markdown article
+**by following the steps in this README**, and checks that they render. It
+also opens the three published articles (every image loads and has alt
+text, nothing over 1 MB, no leftover `PLACEHOLDER`), and covers the
 lightbox, record player, hour snap, tape counter, nav, phone layout,
 broken-entry handling and scroll performance. One-time setup, from the
 repo root:
