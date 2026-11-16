@@ -172,6 +172,9 @@ test.describe('writing an article by following the README', () => {
     const fig = page.locator('figure.ar-fig').first();
     await expect(fig.locator('img')).toHaveAttribute('alt', 'A single image');
     await expect(fig.locator('figcaption em')).toHaveText('emphasis');
+    // clicking a figure opens the full-size file
+    await expect(fig.locator('a.ar-full')).toHaveAttribute('href', 'cover.jpg');
+    await expect(fig.locator('a.ar-full')).toHaveAttribute('target', '_blank');
     // two on consecutive lines: side by side; #wide after the file name: a wider figure
     await expect(page.locator('.ar-grid.two figure')).toHaveCount(2);
     await expect(page.locator('figure.ar-fig.wide img')).toHaveAttribute('src', 'cover.jpg');
@@ -252,7 +255,7 @@ test.describe('writing an article by following the README', () => {
 /* ================================================================= */
 test.describe('the three articles, as shipped', () => {
   let server;
-  const SLUGS = ['fc-som', 'foc-controller', 'avionics'];
+  const SLUGS = ['fc-som', 'foc-controller', 'power-board'];
   const url = slug => `content/projects/${slug}/index.html`;
   test.beforeAll(async () => { server = await startServer(SITE); });
   test.afterAll(async () => { await server.close(); });
@@ -282,8 +285,12 @@ test.describe('the three articles, as shipped', () => {
       const page = await ctx.newPage();
       await openArticle(page, server.url + url(slug));
       expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
-      await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; scrollTo(0, document.documentElement.scrollHeight); });
-      await expect(page.locator('#hourLabel')).toHaveText('Lights off');
+      // lazy images keep growing the page, so keep jumping to the bottom until it stops
+      await expect.poll(() => page.evaluate(() => {
+        document.documentElement.style.scrollBehavior = 'auto';
+        scrollTo(0, document.documentElement.scrollHeight);
+        return document.getElementById('hourLabel').textContent;
+      }), { timeout: 10000 }).toBe('Lights off');
       await ctx.close();
     });
 
@@ -295,14 +302,19 @@ test.describe('the three articles, as shipped', () => {
     });
   }
 
-  test('avionics: walks through every hour, golden to lights off', async ({ page }) => {
-    await openArticle(page, server.url + url('avionics'));
+  test('power-board: one chapter per stage, walking golden hour to lights off', async ({ page }) => {
+    await openArticle(page, server.url + url('power-board'));
+    await expect(page.locator('section.ar-ch h2')).toHaveText([
+      'Power flow', 'Input eFuse and reverse polarity', '5 V, 15 A: LM5146', 'Output eFuse and current sense',
+      'Connectors', 'PCB layout', 'The flight controller (not my design)', 'SAE Aero Design 2025',
+    ]);
     await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; });
-    for (const [id, label] of [['the-brief', 'Late afternoon'], ['the-heart', 'Dusk'], ['nobody-said-it-was-easy', 'Blue hour'], ['the-transplant', 'Night'], ['lights-off', 'Lights off']]) {
+    for (const [id, label] of [['power-flow', 'Late afternoon'], ['buck-converter', 'Dusk'], ['connectors', 'Blue hour'], ['flight-controller-v2', 'Night'], ['sae-aero-design-2025', 'Lights off']]) {
       await page.evaluate(i => document.getElementById(i).scrollIntoView(), id);
       await expect(page.locator('#hourLabel')).toHaveText(label);
     }
-    expect(await page.locator('img[src$=".gif"]').count()).toBe(6);
-    await expect(page.locator('.ar-chat')).toHaveCount(2);
+    // every schematic sheet after the top one is shown, and the results link goes to SAE
+    await expect(page.locator('img[src^="sch-"]')).toHaveCount(4);
+    await expect(page.locator('a[href*="saeaerodesign.com"]')).toHaveAttribute('target', '_blank');
   });
 });

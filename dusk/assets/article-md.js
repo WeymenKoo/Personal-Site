@@ -81,7 +81,10 @@
     img.removeAttribute("title");
     img.setAttribute("loading", "lazy");
     img.setAttribute("decoding", "async");
-    return el("figure", {}, [img, cap ? el("figcaption", { html: window.marked.parseInline(cap) }) : null]);
+    /* click a figure to open the full-size file (schematics are unreadable at column width) */
+    var full = el("a", { class: "ar-full", href: img.getAttribute("src"), target: "_blank", rel: "noopener",
+                         title: "Open full size" }, [img]);
+    return el("figure", {}, [full, cap ? el("figcaption", { html: window.marked.parseInline(cap) }) : null]);
   }
   function images(root) {
     Array.prototype.slice.call(root.querySelectorAll("p")).forEach(function (p) {

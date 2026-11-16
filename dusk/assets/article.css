@@ -174,6 +174,8 @@
   .ar-table.nohead td:first-child{margin-bottom:.2rem}
 }
 
+/* every figure links to its full-size file */
+.ar a.ar-full,.ar-bleed a.ar-full{display:block;border:0;cursor:zoom-in}
 /* images written as ![alt](file.jpg "caption"). A small image stays its
    own size instead of being stretched to the column. */
 #article .ar-fig img{width:auto;max-width:100%}

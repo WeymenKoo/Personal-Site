@@ -2,7 +2,7 @@
   "projects": [
     "fc-som",
     "foc-controller",
-    "avionics"
+    "power-board"
   ],
   "tapes": []
 }

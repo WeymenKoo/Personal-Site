@@ -1,0 +1,15 @@
+{
+  "title": "AeroDesign power board",
+  "status": "ok",
+  "statusLabel": "Flown 2025",
+  "year": "2025",
+  "spec": "2S–4S in · 5 V 15 A · LM5146 · 2 × TPS25983 · 6 layers",
+  "summary": "The power board for UBC AeroDesign's 2025 Advanced Class aircraft. It takes the flight battery and gives every servo, radio and sensor a protected 5 V rail, with eFuses on the input and the servo output, servo current sensing, and the flight controller plugged in on top.",
+  "cover": { "src": "card.jpg", "alt": "The power board, top side: LM5146 buck and Codaca inductor in the middle, servo connectors along both long edges, FORWARD arrow on the silkscreen", "fit": "cover" },
+  "strip": [
+    { "src": "thumb-installed.jpg", "alt": "The power board installed in the fuselage with the flight controller and GNSS board on top", "caption": "Installed" },
+    { "src": "thumb-launch.jpg", "alt": "Team members holding aircraft 22 up before a flight", "caption": "Aircraft 22" },
+    { "src": "thumb-flight.jpg", "alt": "Aircraft 22 in flight against a blue sky", "caption": "SAE 2025" }
+  ],
+  "link": "content/projects/power-board/index.html"
+}

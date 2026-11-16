@@ -31,7 +31,7 @@ test.describe('as shipped', () => {
 
   test('Side A has the three projects in order; Side B and the shelf are empty for now', async ({ page }) => {
     await open(page, server.url);
-    await expect(page.locator('.proj h3')).toHaveText(['Flight controller SoM', 'FOC motor controller', 'AeroDesign — the avionics']);
+    await expect(page.locator('.proj h3')).toHaveText(['Flight controller SoM', 'FOC motor controller', 'AeroDesign power board']);
     await expect(page.locator('.proj .no')).toHaveText(['A1', 'A2', 'A3']);
     await expect(page.locator('#projectCount')).toHaveText('03');
     await expect(page.locator('.tape')).toHaveCount(0);
