@@ -24,7 +24,7 @@ design/                 logo sheet + toucan.svg (the mark, also the favicon)
 ```
 
 Side A currently holds three projects: `fc-som`, `foc-controller` and
-`avionics`. Side B (photo rolls) and the record shelf are empty for now and
+`power-board`. Side B (photo rolls) and the record shelf are empty for now and
 say "Nothing here yet." until you add an entry. The templates to copy are
 still in `content/projects/example` and `content/tapes/example`.
 
@@ -238,12 +238,13 @@ deck's tape counter becomes a reading-progress counter.
 | `[text](https://…)` | a link (opens in a new tab if it leaves the site) |
 
 Images are paths relative to the project folder: `cover.jpg`,
-`layers.gif`. The `alt` text in the square brackets is required: describe
+`layers.gif`. Clicking any image opens the full-size file in a new tab, so a
+schematic can be exported large and still fit the column. The `alt` text in the square brackets is required: describe
 what's in the picture.
 
 **Fancier blocks are plain HTML inside the Markdown.** Paste the block
 on its own lines, with a blank line before and after and none inside it.
-`avionics/article.md` uses all of these:
+The styles for these live in `assets/article.css`:
 
 | block | markup |
 |---|---|
