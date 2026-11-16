@@ -11,5 +11,9 @@ tools/       scroll-profile.js, a frame-time profiler (npm run profile)
 .github/     test + deploy workflow for GitHub Pages
 ```
 
-Adding projects, photo rolls and records, running it locally, and deploying:
-see **[dusk/README.md](dusk/README.md)**.
+Each project is a folder under `dusk/content/projects/` with its images
+and one Markdown file, `article.md`, which is the write-up. Edit that file
+to change the article.
+
+Adding projects, photo rolls and records, writing an article, running it
+locally, and deploying: see **[dusk/README.md](dusk/README.md)**.

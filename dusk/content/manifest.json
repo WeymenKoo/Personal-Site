@@ -1,8 +1,8 @@
 {
   "projects": [
+    "fc-som",
+    "foc-controller",
     "avionics"
   ],
-  "tapes": [
-    "example"
-  ]
+  "tapes": []
 }

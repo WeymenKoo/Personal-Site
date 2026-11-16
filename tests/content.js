@@ -39,6 +39,12 @@ function image() {
   return png(60, 40, [(n * 70) % 256, (n * 130) % 256, (n * 40) % 256]);
 }
 
+/* the record from README "A record (the shelf)" */
+const TEMPLATE_RECORD = {
+  track: '75Suv3FnFQji4Lp3ATMLJ1', title: 'Johnny B. Goode', artist: 'Chuck Berry',
+  why: 'One line on why.', sleeve: ['#F2B45A', '#D9534F'], ink: '#2A1410',
+};
+
 /* A copy of the site reset to templates only, so tests that add entries
    start from a blank site no matter what real content has been published. */
 function copySite() {
@@ -46,6 +52,7 @@ function copySite() {
   fs.cpSync(SITE, dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'content', 'manifest.json'),
     JSON.stringify({ projects: ['example'], tapes: ['example'] }, null, 2));
+  fs.writeFileSync(path.join(dir, 'content', 'records.json'), JSON.stringify([TEMPLATE_RECORD], null, 2));
   return dir;
 }
 
