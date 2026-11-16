@@ -85,7 +85,7 @@
   <div class="wrap">
     <p class="jcard"><b>Side B</b><span>Photographs</span><i id="tapeCount">00</i></p>
     <p class="lede">Shot on film. Each roll comes with the song I'd want you listening to while you look.</p>
-    <!-- filled from content/tapes/ — see README -->
+    <!-- filled from content/tapes/ — see README. Empty for now. -->
     <div id="tapes"></div>
   </div>
 </section>
@@ -97,10 +97,10 @@
   <div class="wrap">
     <p class="jcard"><b>Side B</b><span>Records</span><i id="recordCount">00</i></p>
     <p class="lede">What's been on repeat. Pick one off the shelf.</p>
-    <!-- filled from content/records.json — see README -->
+    <!-- filled from content/records.json — see README. Empty for now. -->
     <div class="shelf" id="shelf"></div>
 
-    <div class="player">
+    <div class="player" id="deckPlayer">
       <div class="row"><span class="print">Now on the deck</span><span class="print" id="nowTitle"></span></div>
       <div id="playerSlot"></div>
     </div>
@@ -108,23 +108,10 @@
 </section>
 
 <!-- ================================================================
-     06 · LIGHTS OFF — career, quietly
+     06 · LIGHTS OFF — a liner note and where to find me
      ================================================================ -->
 <section id="off" data-hour="off" class="off">
   <div class="wrap">
-    <p class="jcard"><b>Off</b><span>Work, for the record</span><i>09</i></p>
-    <ol class="tl">
-      <li><span class="when">May – Dec 2025</span><span><span class="role">Test System Engineer, Electrical Co-op</span><span class="org">Tesla, Inc. · Palo Alto</span></span><span class="tag">HV · PyVISA</span></li>
-      <li><span class="when">Sep 2024 – Apr 2025</span><span><span class="role">Product Design Engineer, Electrical Co-op</span><span class="org">Dometic Marine · Vancouver</span></span><span class="tag">ESD · EOL</span></li>
-      <li><span class="when">May 2024 – May 2025</span><span><span class="role">Avionics Lead</span><span class="org">UBC AeroDesign · ~30 members</span></span><span class="tag">Lead</span></li>
-      <li><span class="when">Sep 2023 – May 2024</span><span><span class="role">Power &amp; Controls Lead</span><span class="org">UBC AeroDesign · Shadow</span></span><span class="tag">PDB</span></li>
-      <li><span class="when">May – Aug 2023</span><span><span class="role">Hardware &amp; Facilities Assistant</span><span class="org">UBC Computer Science</span></span><span class="tag">Support</span></li>
-      <li><span class="when">Sep 2021 – May 2023</span><span><span class="role">Airfoils Lead, then member</span><span class="org">UBC AeroDesign · mechanical</span></span><span class="tag">Composites</span></li>
-      <li><span class="when">Jan – May 2022</span><span><span class="role">Studio Assistant</span><span class="org">UBC Studios</span></span><span class="tag">Media</span></li>
-      <li><span class="when">Jul 2020 – Aug 2021</span><span><span class="role">Operations Assistant &amp; tutoring co-founder</span><span class="org">Najarian Furniture · Study Buddies · Vietnam</span></span><span class="tag">Ops</span></li>
-      <li><span class="when">2021 – 2027</span><span><span class="role">B.A.Sc. Electrical Engineering</span><span class="org">The University of British Columbia</span></span><span class="tag">Degree</span></li>
-    </ol>
-
     <p class="liner liner-off" id="offLine"></p>
 
     <div class="end">
