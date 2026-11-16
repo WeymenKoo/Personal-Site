@@ -39,7 +39,7 @@ const cards = [
   { to: '03', title: 'AeroDesign Power System', status: 'ok', statusLabel: 'Flown',
     line: 'Two seasons of 5 V, 15 A power for an SAE Aero Design plane: a shoot-through, then a protected rebuild.',
     image: { src: 'img/pb25-photo.jpg', alt: '2025 power board, assembled' },
-    long: { href: '../content/projects/avionics/index.html', label: 'Long read' } },
+    long: { href: '../content/projects/power-board/index.html', label: 'Long read' } },
   { to: '04', title: 'Flight Controller SoM', status: 'wip', statusLabel: 'Design complete',
     line: 'An STM32H757 ArduPilot module, 55 × 40 mm, 8 layers, designed with a junior engineer I mentor.',
     figure: 'fig/som-arch.svg' },
