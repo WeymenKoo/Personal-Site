@@ -4,9 +4,15 @@
   "scripts": {
     "serve": "node tests/serve.js",
     "test": "playwright test",
-    "profile": "node tools/scroll-profile.js"
+    "profile": "node tools/scroll-profile.js",
+    "portfolio": "node tools/portfolio/build.js",
+    "portfolio:pdf": "node tools/portfolio/build.js --pdf",
+    "portfolio:pptx": "node tools/portfolio/build.js --pptx",
+    "portfolio:todo": "node tools/portfolio/build.js --todo"
   },
   "devDependencies": {
-    "@playwright/test": "1.56.1"
+    "@playwright/test": "1.56.1",
+    "pptxgenjs": "4.0.1",
+    "sharp": "0.35.4"
   }
 }
