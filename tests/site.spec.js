@@ -43,6 +43,12 @@ test.describe('as shipped', () => {
     await expect(page.locator('.player')).toBeHidden();
   });
 
+  test('one site: no separate portfolio deck, and nothing links to one', async ({ page, request }) => {
+    await open(page, server.url);
+    await expect(page.locator('a[href*="portfolio"]')).toHaveCount(0);
+    expect((await request.get(server.url + 'portfolio/index.html')).status()).toBe(404);
+  });
+
   test('every project has a write-up, and the résumé timeline is gone', async ({ page }) => {
     await open(page, server.url);
     await expect(page.locator('.proj .more')).toHaveCount(3);
