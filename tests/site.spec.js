@@ -29,21 +29,58 @@ test.describe('as shipped', () => {
     expect(errors).toEqual([]);
   });
 
+  test('Side A has the three projects in order; Side B and the shelf are empty for now', async ({ page }) => {
+    await open(page, server.url);
+    await expect(page.locator('.proj h3')).toHaveText(['Flight controller SoM', 'FOC motor controller', 'AeroDesign — the avionics']);
+    await expect(page.locator('.proj .no')).toHaveText(['A1', 'A2', 'A3']);
+    await expect(page.locator('#projectCount')).toHaveText('03');
+    await expect(page.locator('.tape')).toHaveCount(0);
+    await expect(page.locator('.rec')).toHaveCount(0);
+    for (const id of ['tapeCount', 'recordCount']) await expect(page.locator('#' + id)).toHaveText('00');
+    // an empty side says so, and the record player is put away with the records
+    await expect(page.locator('#tapes .blank')).toHaveText('Nothing here yet.');
+    await expect(page.locator('#shelf .blank')).toHaveText('Nothing here yet.');
+    await expect(page.locator('.player')).toBeHidden();
+  });
+
+  test('every project has a write-up, and the résumé timeline is gone', async ({ page }) => {
+    await open(page, server.url);
+    await expect(page.locator('.proj .more')).toHaveCount(3);
+    await expect(page.locator('.tl')).toHaveCount(0);
+    await expect(page.locator('#off .end a[href^="mailto:"]')).toBeVisible();
+  });
+
+  test('every project image loads; only the hero (not added yet) falls back to the placeholder', async ({ page }) => {
+    await open(page, server.url);
+    await page.evaluate(async () => { for (const i of document.images) if (i.loading === 'lazy') i.loading = 'eager'; });
+    // nothing is ever a broken image: real photos load, missing ones become the placeholder
+    await page.waitForFunction(() => [...document.images].filter(i => i.getAttribute('src')).every(i => i.complete && i.naturalWidth > 0));
+    await expect(page.locator('.print-frame img')).toHaveAttribute('src', /placeholder\.webp$/);
+    const fellBack = await page.evaluate(() => [...document.querySelectorAll('.proj img')].filter(i => i.dataset.ph).map(i => i.alt));
+    expect(fellBack).toEqual([]);
+  });
+});
+
+/* ================================================================= */
+test.describe('the templates', () => {
+  let server, site;
+  test.beforeAll(async () => { site = copySite(); server = await startServer(site); });
+  test.afterAll(async () => { await server.close(); fs.rmSync(site, { recursive: true, force: true }); });
+
   test('one template of each type renders', async ({ page }) => {
     await open(page, server.url);
     await expect(page.locator('.proj')).toHaveCount(1);
     await expect(page.locator('.tape')).toHaveCount(1);
     await expect(page.locator('.rec')).toHaveCount(1);
     for (const id of ['projectCount', 'tapeCount', 'recordCount']) await expect(page.locator('#' + id)).toHaveText('01');
+    await expect(page.locator('.blank')).toHaveCount(0);
+    await expect(page.locator('.player')).toBeVisible();
   });
 
-  test('every missing image falls back to the placeholder, hero included', async ({ page }) => {
+  test('a template with no photos shows the placeholder in every frame', async ({ page }) => {
     await open(page, server.url);
     await page.evaluate(async () => { for (const i of document.images) if (i.loading === 'lazy') i.loading = 'eager'; });
-    // nothing is ever a broken image: real photos load, missing ones become the placeholder
     await page.waitForFunction(() => [...document.images].filter(i => i.getAttribute('src')).every(i => i.complete && i.naturalWidth > 0));
-    await expect(page.locator('.print-frame img')).toHaveAttribute('src', /placeholder\.webp$/);
-    // the template roll has no photos, so every frame fell back
     const tapeImgs = page.locator('.tape img');
     for (let k = 0; k < await tapeImgs.count(); k++) await expect(tapeImgs.nth(k)).toHaveAttribute('src', /placeholder\.webp$/);
   });

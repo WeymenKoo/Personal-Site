@@ -127,8 +127,11 @@
     ]);
   }
 
+  /* a side with nothing on it yet says so, instead of leaving a hole */
   function fill(id, nodes) {
     var box = document.getElementById(id);
+    box.classList.toggle("empty", !nodes.length);
+    if (!nodes.length) nodes = [el("p", { class: "blank", text: "Nothing here yet." })];
     box.replaceChildren.apply(box, nodes);
   }
   function count(id, n) { document.getElementById(id).textContent = pad(n, 2); }
@@ -161,6 +164,7 @@
 
     var recs = res[2];
     fill("shelf", recs.map(record)); count("recordCount", recs.length);
+    document.getElementById("deckPlayer").hidden = !recs.length;   /* no records, no player */
     if (recs[0]) {
       document.getElementById("nowTitle").textContent = recs[0].title + " — " + recs[0].artist;
       document.getElementById("playerSlot").replaceChildren(spotify(recs[0].track, "Record player", "player"));
