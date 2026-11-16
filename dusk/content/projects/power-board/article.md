@@ -8,7 +8,7 @@ date: 2024–25 season
 
 The power board sits between the flight battery and everything else in the aircraft. It takes a 2S–4S LiPo, makes one protected 5 V rail, and distributes it to nine servo outputs, the receiver, the telemetry radio, the camera, the sensors and the flight controller, which plugs into it from above.
 
-![The power board, top side, on white](cover.jpg "Top side. The silkscreen reads “Power Board Mar/25, W.Koo, B. Liu”.")
+![Render of Flight Controller v2 seated on the power board](render-stack.jpg#wide "The power board with Flight Controller v2 plugged in, rendered in Blender from the Altium STEP models and Gerbers.")
 
 **Status:** built and flown in UBC AeroDesign's aircraft in the Advanced Class of SAE Aero Design 2025. There is no recorded test data (ripple, regulation, temperature) for this board.
 
@@ -144,8 +144,6 @@ Every connector has a 100 nF capacitor on its 5 V pin and a PACDN042 ESD array o
 
 L2, L3 and L5 are the same solid ground pour. The battery comes in on the V+ and V− pads on one short edge; the 5 V and ground pads are on the other.
 
-![Animated: the board flipping between its top side and its bottom side](flip-the-board.gif "Top and bottom. Each connector's pinout is printed on the bottom side.")
-
 ![The assembled power board on a workbench](board-bench.jpg "Assembled.")
 
 ## Flight Controller v2 | The flight controller (not my design)
@@ -154,8 +152,6 @@ Flight Controller v2 was designed by another member of the avionics team. It is 
 
 ![Flight Controller v2 seated on the power board](fc-on-power-board.jpg "Flight Controller v2 on the power board, 4 May 2025.")
 ![The power board and flight controller installed in the fuselage, with the GNSS board on top and a telemetry radio in front](installed-2025.jpg "Installed in the fuselage, 1 May 2025, with the ZED-F9P GNSS board and a Holybro 915 MHz telemetry radio.")
-
-![Render of Flight Controller v2 seated on the power board](render-stack.jpg#wide "The two boards stacked, rendered in Blender from the Altium STEP models and Gerbers.")
 
 ## SAE Aero Design 2025
 
