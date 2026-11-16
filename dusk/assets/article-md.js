@@ -1,0 +1,290 @@
+/* =====================================================================
+   article-md.js — turns a project folder's article.md into its page.
+
+   content/projects/<slug>/index.html is a small shell that loads this
+   file. It reads, from the SAME folder:
+     entry.json   the card data (title, status) — reused for the header
+     article.md   the write-up, in Markdown
+   and builds the page: one "hour" per chapter, like the homepage.
+   How to write article.md is in dusk/README.md, "Writing an article".
+   ===================================================================== */
+(function () {
+  "use strict";
+
+  var ASSETS = document.currentScript.src.replace(/[^/]*$/, "");   /* …/assets/ */
+  var HOME = ASSETS + "../index.html#side-a";
+  var MIDDLE = ["afternoon", "dusk", "blue", "night"];             /* golden opens, off closes */
+  var TOUCAN =
+    '<svg class="mark" viewBox="40 28 176 108" role="img" aria-label="Toucan">' +
+    '<path d="M44 110 L44 72 C44 48 60 32 82 32 L100 32 L100 110 Z" fill="currentColor"/>' +
+    '<rect x="44" y="114" width="20" height="18" fill="currentColor"/>' +
+    '<rect x="95" y="114" width="6" height="18" fill="currentColor"/>' +
+    '<path d="M100 32 C150 34 190 52 212 74 C190 78 150 78 100 76 Z" fill="#E0892F"/>' +
+    '<path d="M100 76 C150 78 190 78 212 74 C190 94 150 106 100 110 Z" fill="#B24E26"/>' +
+    '<circle cx="80" cy="56" r="5" fill="var(--bg)"/></svg>';
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      if (k === "text") n.textContent = attrs[k];
+      else if (k === "html") n.innerHTML = attrs[k];
+      else if (k === "class") n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c) n.appendChild(c); });
+    return n;
+  }
+  function script(src) {
+    return new Promise(function (ok, fail) {
+      var s = el("script", { src: src });
+      s.onload = ok;
+      s.onerror = function () { fail(new Error(src + " failed to load")); };
+      document.body.appendChild(s);
+    });
+  }
+  function get(url, as) {
+    return fetch(url).then(function (r) {
+      if (!r.ok) throw new Error(url + " → " + r.status);
+      return r[as]();
+    });
+  }
+  function slug(s) {
+    return s.toLowerCase().normalize("NFKD").replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "part";
+  }
+
+  /* ---------- front matter: "key: value" lines between two --- lines ---------- */
+  function frontMatter(src) {
+    src = src.replace(/^﻿/, "").replace(/\r\n?/g, "\n");
+    var meta = {};
+    var m = /^---\n([\s\S]*?)\n---[ \t]*(\n|$)/.exec(src);
+    if (!m) return { meta: meta, body: src };
+    m[1].split("\n").forEach(function (line) {
+      var kv = /^([A-Za-z][\w-]*)\s*:\s*(.*)$/.exec(line);
+      if (kv) meta[kv[1].toLowerCase()] = kv[2].trim().replace(/^(["'])(.*)\1$/, "$2");
+    });
+    return { meta: meta, body: src.slice(m[0].length) };
+  }
+
+  /* ---------- images ----------
+     ![alt](file.jpg "Caption")       one image on its own line  -> a figure
+     two or three on consecutive lines                          -> side by side
+     flags go after a # on the file name: file.jpg#wide, #bleed, #tall, #land */
+  function flagsOf(img) {
+    var src = img.getAttribute("src") || "";
+    var i = src.indexOf("#");
+    if (i < 0) return [];
+    img.setAttribute("src", src.slice(0, i));
+    return src.slice(i + 1).split(/[#,+]/);
+  }
+  function figure(img) {
+    var cap = img.getAttribute("title");
+    img.removeAttribute("title");
+    img.setAttribute("loading", "lazy");
+    img.setAttribute("decoding", "async");
+    return el("figure", {}, [img, cap ? el("figcaption", { html: window.marked.parseInline(cap) }) : null]);
+  }
+  function images(root) {
+    Array.prototype.slice.call(root.querySelectorAll("p")).forEach(function (p) {
+      var imgs = [], other = false;
+      Array.prototype.forEach.call(p.childNodes, function (n) {
+        if (n.nodeName === "IMG") imgs.push(n);
+        else if (n.nodeName !== "BR" && !(n.nodeType === 3 && !n.textContent.trim())) other = true;
+      });
+      if (!imgs.length || other) return;
+      var flags = [];
+      imgs.forEach(function (i) { flags = flags.concat(flagsOf(i)); });
+      var has = function (f) { return flags.indexOf(f) >= 0; };
+      var box;
+      if (imgs.length === 1) {
+        box = figure(imgs[0]);
+        box.className = has("bleed") ? "ar-bleed" : "ar-fig" + (has("wide") ? " wide" : "");
+        if (/\.gif$/i.test(imgs[0].getAttribute("src"))) box.classList.add("ar-gif");
+      } else {
+        box = el("div", {
+          class: "ar-grid " + (imgs.length === 3 ? "three" : "two") +
+                 (has("tall") ? "" : has("land") ? " land" : " nat") + (has("wide") ? " wide" : "")
+        }, imgs.map(figure));
+      }
+      p.replaceWith(box);
+    });
+  }
+
+  /* ---------- the rest of the Markdown -> the article's own components ---------- */
+  function dress(root) {
+    images(root);
+
+    /* > a quote            -> the slide-quote box; a last line starting with
+       > — where it's from     an em dash becomes the source line */
+    root.querySelectorAll("blockquote").forEach(function (q) {
+      q.classList.add("ar-slide");
+      var last = q.querySelector("p:last-of-type");
+      if (!last) return;
+      var lines = last.innerHTML.split("\n");
+      var tail = lines[lines.length - 1];
+      if (!/^\s*(—|--)/.test(tail)) return;
+      lines.pop();
+      if (lines.length) last.innerHTML = lines.join("\n"); else last.remove();
+      q.appendChild(el("cite", { html: tail.replace(/^\s*--(?!-)/, "—") }));
+    });
+
+    /* tables: scroll sideways on a phone; an all-empty header row is dropped */
+    root.querySelectorAll("table").forEach(function (t) {
+      if (t.className) return;                      /* hand-written HTML table: leave it */
+      t.className = "ar-table";
+      var heads = t.querySelectorAll("thead th");
+      if (heads.length && Array.prototype.every.call(heads, function (h) { return !h.textContent.trim(); })) {
+        t.classList.add("nohead");
+      }
+      t.querySelectorAll("td").forEach(function (c) { if (c.textContent.trim() === "→") c.className = "arrow"; });
+      var wrap = el("div", { class: "ar-scroll" });
+      t.replaceWith(wrap);
+      wrap.appendChild(t);
+    });
+
+    /* - [ ] option / - [x] the one you picked -> the checklist */
+    root.querySelectorAll('li > input[type="checkbox"]').forEach(function (box) {
+      var li = box.parentNode;
+      li.parentNode.classList.add("ar-check");
+      if (box.checked) li.classList.add("done");
+      box.remove();
+    });
+
+    /* `5 V` -> a number in the accent colour; ~~word~~ -> struck through */
+    root.querySelectorAll("code").forEach(function (c) { if (!c.closest("pre")) c.className = "ar-num"; });
+    root.querySelectorAll("del").forEach(function (d) { d.className = "ar-strike"; });
+
+    /* links that leave the site open in a new tab */
+    root.querySelectorAll("a[href]").forEach(function (a) {
+      if (/^https?:/i.test(a.getAttribute("href"))) { a.target = "_blank"; a.rel = "noopener"; }
+    });
+  }
+
+  /* ---------- "## Heading" starts a chapter; each chapter is an hour ---------- */
+  function chapters(root) {
+    var intro = [], list = [], cur = null;
+    Array.prototype.slice.call(root.childNodes).forEach(function (n) {
+      if (n.nodeName === "H2") { cur = { h2: n, nodes: [] }; list.push(cur); }
+      else (cur ? cur.nodes : intro).push(n);
+    });
+    return { intro: intro, list: list };
+  }
+  function hourFor(i, n) {
+    if (i === n - 1) return "off";                                   /* the last chapter turns the lights off */
+    return MIDDLE[Math.floor(i * MIDDLE.length / (n - 1))];
+  }
+
+  function header(entry, meta) {
+    var kids = [];
+    if (entry.statusLabel) kids.push(el("span", { class: "st " + (entry.status || "idle"), text: entry.statusLabel }));
+    kids.push(el("h1", { text: meta.title || entry.title || "Untitled" }));
+    if (meta.subtitle) kids.push(el("p", { class: "ar-sub", text: meta.subtitle }));
+    var row = [];
+    if (meta.team) row.push(el("span", {}, [el("b", { text: meta.team })]));
+    [["role", "Role/ "], ["date", "Date/ "]].forEach(function (f) {
+      if (!meta[f[0]]) return;
+      var s = el("span", { text: f[1] });
+      s.appendChild(el("b", { text: meta[f[0]] }));
+      row.push(s);
+    });
+    if (row.length) kids.push(el("p", { class: "ar-meta" }, row));
+    return el("header", { class: "ar-head" }, kids);
+  }
+
+  function build(entry, md) {
+    var fm = frontMatter(md);
+    var body = el("div", { html: window.marked.parse(fm.body, { gfm: true }) });
+    dress(body);
+    var parts = chapters(body);
+    var title = fm.meta.title || entry.title || "Untitled";
+
+    document.title = title + " — Weymen Koo";
+    var desc = fm.meta.subtitle || entry.summary;
+    if (desc) document.head.appendChild(el("meta", { name: "description", content: desc }));
+
+    /* golden hour: back link, title block, anything written above the first ## */
+    var lead = parts.intro.filter(function (n) { return n.nodeName === "P"; })[0];
+    if (lead) lead.classList.add("ar-lead");
+    var top = el("section", { id: "top", "data-hour": "golden" }, [
+      el("div", { class: "ar-bar", html: TOUCAN }, [el("a", { href: HOME, html: "&larr; Side A" })]),
+      el("div", { class: "ar" }, [header(entry, fm.meta)].concat(parts.intro))
+    ]);
+
+    var used = { top: 1, end: 1 }, nav = [];
+    var sections = parts.list.map(function (c, i) {
+      /* "## Kicker | Big heading": the part before the bar goes in the little label */
+      var bar = c.h2.innerHTML.split(/\s+\|\s+/);
+      var label = bar.length > 1 ? bar.shift() : "";
+      c.h2.innerHTML = bar.join(" | ");
+      var no = ("0" + (i + 1)).slice(-2);
+      var id = slug(el("i", { html: label || c.h2.innerHTML }).textContent);
+      while (used[id]) id += "-" + no;
+      used[id] = 1;
+      nav.push(el("a", { href: "#" + id, text: no, title: c.h2.textContent }));
+      var kick = el("p", { class: "ar-kick" }, [el("b", { text: no }), label ? el("span", { html: label }) : null]);
+      return el("section", { id: id, "data-hour": hourFor(i, parts.list.length), class: "ar-ch" }, [
+        el("div", { class: "ar" }, [kick, c.h2].concat(c.nodes))
+      ]);
+    });
+
+    /* lights off: a liner note and the way back, at the end of the last chapter */
+    var foot = [
+      el("p", { class: "liner liner-off", id: "offLine" }),
+      el("div", { class: "ar-end" }, [el("a", { href: HOME, html: "&larr; Back to Side A" })])
+    ];
+    if (sections.length) {
+      var lastAr = sections[sections.length - 1].firstChild;
+      foot.forEach(function (n) { lastAr.appendChild(n); });
+    } else {
+      sections.push(el("section", { id: "end", "data-hour": "off", class: "ar-ch" }, [el("div", { class: "ar" }, foot)]));
+    }
+
+    var deck = el("div", { class: "deck", "aria-label": "Reading position" }, [
+      el("span", { class: "lcd", "data-ghost": "888", id: "counter", text: "000" }),
+      el("span", { class: "hr", id: "hourLabel", text: "Golden hour" }),
+      nav.length ? el("nav", { class: nav.length > 5 ? "many" : "" }, nav) : null
+    ]);
+
+    var main = document.getElementById("article");
+    main.replaceChildren.apply(main, [deck, top].concat(sections));
+    return main;
+  }
+
+  function sorry(err) {
+    console.error("[article]", err.message);
+    var why = location.protocol === "file:"
+      ? "Browsers block loading files on file:// — run a local server (see dusk/README.md)."
+      : "This write-up isn't here yet.";
+    document.getElementById("article").replaceChildren(
+      el("section", { id: "top", "data-hour": "golden" }, [
+        el("div", { class: "ar-bar", html: TOUCAN }, [el("a", { href: HOME, html: "&larr; Side A" })]),
+        el("div", { class: "ar" }, [el("header", { class: "ar-head" }, [el("h1", { text: "Nothing to read yet." }), el("p", { class: "ar-sub", text: why })])])
+      ])
+    );
+  }
+
+  window.articleReady = Promise.all([
+    script(ASSETS + "vendor/marked.umd.js"),
+    get("entry.json", "json").catch(function (e) { console.error("[article]", e.message); return {}; }),
+    get("article.md", "text")
+  ]).then(function (r) {
+    var main = build(r[1], r[2]);
+    /* the article has no width/height on its images, so the page grows as
+       they arrive: re-measure which hour we're in each time one lands */
+    var t;
+    main.addEventListener("load", function () {
+      clearTimeout(t);
+      t = setTimeout(function () { window.dispatchEvent(new Event("resize")); }, 60);
+    }, true);
+  }).catch(sorry).then(function () {
+    /* dusk.js (hours, counter, liner note) and article.js (text-message
+       reveal) read the page when they start, so they load after it's built */
+    return script(ASSETS + "dusk.js");
+  }).then(function () {
+    return script(ASSETS + "article.js");
+  }).then(function () {
+    if (location.hash.length > 1) {
+      var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      if (target) target.scrollIntoView();
+    }
+  });
+})();

@@ -1,5 +1,6 @@
 /* =====================================================================
-   article.css — long-form project pages (content/projects/<slug>/index.html)
+   article.css — long-form project pages (content/projects/<slug>/).
+   The page is built from that folder's article.md by article-md.js.
    Loaded AFTER dusk.css, so it inherits the hour colours (--bg, --fg,
    --dim, --line, --accent) and the fonts. Every class is prefixed ar-
    so nothing collides with the homepage styles.
@@ -142,6 +143,50 @@
 .ar-end{padding:4rem 0 6rem;text-align:center}
 .ar-end a{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;
   color:var(--dim);text-decoration:none;border-bottom:1px solid var(--line)}
+
+/* =====================================================================
+   MARKDOWN — what article-md.js makes out of article.md
+   ===================================================================== */
+#article{display:block;min-height:100svh}
+.ar ol{padding-left:1.4rem;margin:0 0 1.2rem}
+.ar hr{border:0;border-top:1px solid var(--line);margin:2.6rem 0}
+.ar pre{font-family:var(--mono);font-size:.8rem;line-height:1.6;overflow-x:auto;margin:1.6rem 0;
+  padding:1rem 1.1rem;border:1px solid var(--line);border-radius:3px}
+.ar img{max-width:100%;height:auto}
+.ar details{margin:1.6rem 0}
+.ar summary{font-family:var(--mono);font-size:.78rem;color:var(--dim);cursor:pointer}
+
+/* tables: | a | b |. An empty header row (| | |) makes a spec sheet */
+.ar-scroll{overflow-x:auto;margin:1.8rem 0 2rem}
+.ar-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.8rem}
+.ar-table th{text-align:left;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+  font-weight:600;padding:.5rem .6rem .5rem 0;border-bottom:1px solid var(--fg)}
+.ar-table td{padding:.7rem .6rem .7rem 0;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.55}
+.ar-table td:first-child{color:var(--dim)}
+.ar-table td.arrow{color:var(--accent);width:1.5rem;text-align:center}
+.ar-table.nohead{border-top:1px solid var(--fg)}
+.ar-table.nohead thead{display:none}
+.ar-table.nohead td:first-child{width:9.5rem;padding-right:1.4rem;font-size:.68rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase}
+@media(max-width:620px){
+  .ar-table.nohead tr{display:block;padding:.7rem 0;border-bottom:1px solid var(--line)}
+  .ar-table.nohead td{display:block;width:auto!important;padding:0;border:0}
+  .ar-table.nohead td:first-child{margin-bottom:.2rem}
+}
+
+/* images written as ![alt](file.jpg "caption"). A small image stays its
+   own size instead of being stretched to the column. */
+#article .ar-fig img{width:auto;max-width:100%}
+.ar-grid.nat img{aspect-ratio:auto;object-fit:contain}
+.ar-grid.nat{align-items:start}
+@media(min-width:64rem){
+  .ar-fig.wide,.ar-grid.wide{margin-inline:-7rem}
+  /* file.jpg#bleed: the one image that gets the whole screen */
+  .ar > .ar-bleed{width:min(var(--maxw),100vw - 1rem);max-width:none;margin-left:50%;transform:translateX(-50%)}
+}
+@media(max-width:63.99rem){.ar > .ar-bleed{padding-inline:0}}
+/* a long chapter list doesn't fit beside the counter on a phone */
+@media(max-width:640px){.deck nav.many{display:none}}
 
 @media (prefers-reduced-motion:reduce){
   .ar-ecg .trace{animation:none;stroke-dashoffset:0}
