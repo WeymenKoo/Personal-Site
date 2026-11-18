@@ -10,6 +10,10 @@
     "alt": "Render of the power board with Flight Controller v2 plugged in on top, on a dark background",
     "fit": "cover"
   },
+  "tldr": {
+    "src": "tldr.jpg",
+    "alt": "The assembled power board held in a hand, top side, with the FORWARD arrow and the Codaca inductor"
+  },
   "strip": [
     {
       "src": "thumb-built.jpg",
