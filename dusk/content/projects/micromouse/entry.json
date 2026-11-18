@@ -1,0 +1,35 @@
+{
+  "title": "Micromouse",
+  "status": "ok",
+  "statusLabel": "V2 built",
+  "year": "2023–24",
+  "spec": "STM32F411 · DRV8833 · 4 IR pairs · LSM6DS3 · encoders · USB-C",
+  "summary": "A maze-solving robot on a single board. V1 failed because the motor driver inputs were put on STM32 pins with no timer behind them, so the motors couldn't be driven with PWM. V2 fixed the pinout, swapped to one DRV8833, and added IR wall sensors, an IMU and wheel encoders.",
+  "cover": {
+    "src": "card.jpg",
+    "alt": "Micromouse V2, a round blue board with two wheels, four IR emitters at the front and a buzzer",
+    "fit": "cover"
+  },
+  "tldr": {
+    "src": "tldr.jpg",
+    "alt": "Micromouse V2 assembled on a wooden desk, with its battery lead"
+  },
+  "strip": [
+    {
+      "src": "thumb-v1.jpg",
+      "alt": "Micromouse V1, a black board with two gear motors, powered from a battery with jumper wires soldered on",
+      "caption": "V1"
+    },
+    {
+      "src": "thumb-v2.jpg",
+      "alt": "Micromouse V2 assembled with wheels",
+      "caption": "V2 built"
+    },
+    {
+      "src": "thumb-v2-march.jpg",
+      "alt": "Micromouse V2 in March 2024 with larger wheels",
+      "caption": "V2, March 2024"
+    }
+  ],
+  "link": "content/projects/micromouse/index.html"
+}

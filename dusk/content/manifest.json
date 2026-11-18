@@ -4,7 +4,9 @@
     "foc-controller",
     "power-board",
     "avionics-2024",
-    "kyogre-spirit"
+    "kyogre-spirit",
+    "dc-load",
+    "micromouse"
   ],
   "tapes": []
 }
