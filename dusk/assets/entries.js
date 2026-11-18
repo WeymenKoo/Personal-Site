@@ -35,7 +35,7 @@
   }
   function pad(n, w) { return ("000" + n).slice(-w); }
   function getJSON(url) {
-    return fetch(url).then(function (r) {
+    return fetch(url, { cache: "no-cache" }).then(function (r) {   /* always revalidate: a new project shows up at once */
       if (!r.ok) throw new Error(url + " → " + r.status);
       return r.json();
     });

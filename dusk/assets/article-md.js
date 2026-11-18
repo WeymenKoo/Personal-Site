@@ -43,7 +43,7 @@
     });
   }
   function get(url, as) {
-    return fetch(url).then(function (r) {
+    return fetch(url, { cache: "no-cache" }).then(function (r) {   /* always revalidate: a new project shows up at once */
       if (!r.ok) throw new Error(url + " → " + r.status);
       return r[as]();
     });
