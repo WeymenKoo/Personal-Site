@@ -10,6 +10,10 @@
     "alt": "Render of the FOC motor controller, top side: three-phase bridge, bulk capacitors, DRV8323S and STM32G431, on brass standoffs",
     "fit": "cover"
   },
+  "tldr": {
+    "src": "tldr.jpg",
+    "alt": "The assembled Rev 1 board, top side: the three-phase bridge, bulk capacitors, STM32G431 and JST-GH connectors"
+  },
   "strip": [
     {
       "src": "thumb-layers.jpg",

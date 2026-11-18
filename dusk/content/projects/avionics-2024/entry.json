@@ -10,6 +10,10 @@
     "alt": "Render of the wiring hub with the Cube Orange, sensor board and GPS-RTK2 on top, next to the tail power module",
     "fit": "cover"
   },
+  "tldr": {
+    "src": "tldr.jpg",
+    "alt": "The wiring hub from above, with the sensor board and the SparkFun GPS-RTK2 stacked on it"
+  },
   "strip": [
     {
       "src": "thumb-built.jpg",
