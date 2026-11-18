@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="assets/theme.js?v=bafeba7c"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Résumé and transcript — Weymen Koo</title>
+<meta name="description" content="Weymen Koo's work history and his UBC transcript, bad grades included (if you can pass the exam).">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0d0820" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4eefb" media="(prefers-color-scheme: light)">
+<link rel="icon" href="design/toucan.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300..800;1,300..800&family=Noto+Sans+SC:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css?v=bafeba7c">
+<link rel="stylesheet" href="assets/resume.css?v=bafeba7c">
+</head>
+<body class="resume">
+
+<header class="topbar">
+  <a class="brand" href="index.html">WK · TOP FLOOR</a>
+  <nav><a href="index.html#projects">Projects</a><a href="resume.html" aria-current="page">Résumé</a><a href="contact.html">Contact</a></nav>
+</header>
+
+<main class="wrap cv">
+  <!-- ================= RÉSUMÉ ================= -->
+  <section class="cv-head">
+    <p class="kicker">Résumé</p>
+    <h1>Weymen Koo</h1>
+    <p class="cv-contact"><a href="mailto:kchweymen@gmail.com">kchweymen@gmail.com</a> · <a href="tel:+16049689695">+1 604 968 9695</a> · Vancouver, Canada</p>
+    <p class="cv-jump"><a href="#transcript">Skip to the transcript ▾</a></p>
+  </section>
+
+  <section class="cv-sec">
+    <h2>Education</h2>
+    <div class="job">
+      <div class="job-top"><h3>B.A.Sc., Electrical Engineering</h3><span class="when">09/2021 – 06/2027</span></div>
+      <p class="org">The University of British Columbia · Vancouver, Canada</p>
+    </div>
+  </section>
+
+  <section class="cv-sec">
+    <h2>Skills</h2>
+    <dl class="skills">
+      <div><dt>Hardware design</dt><dd>PCB design (Altium, KiCad), schematic capture, component selection and BOMs, power electronics, DC-DC converters, high-voltage systems, LTspice, hardware bring-up, DFM / DFT, SolidWorks CSWA, harness making</dd></div>
+      <div><dt>Embedded and controls</dt><dd>STM32, embedded systems integration, C / C++, Python automation, PyVISA, CAN bus and diagnostics, UART / SPI / I2C, Git</dd></div>
+      <div><dt>Test and validation</dt><dd>Test automation, oscilloscopes, logic analysers, e-loads, bi-directional PSUs, hi-pot and ground-bond testing, PCBA rework, soldering, prototyping and debugging</dd></div>
+    </dl>
+  </section>
+
+  <section class="cv-sec">
+    <h2>Experience</h2>
+
+    <article class="job">
+      <div class="job-top"><h3>Test System Engineer, Electrical Co-op</h3><span class="when">05/2025 – 12/2025</span></div>
+      <p class="org">Tesla, Inc. · Palo Alto, USA</p>
+      <ul>
+        <li>Designed and validated high-voltage PCBAs with power stages, e-fuse protection, isolated DC-DC converters and isolated CAN transceivers.</li>
+        <li>Supported development of internal HV charging platforms: selected 1 kV-rated components, verified safety architectures, and delivered 10+ field-ready units.</li>
+        <li>Ran CAN diagnostics and end-of-line (EOL) validation with Tesla test tools to verify system integrity.</li>
+        <li>Automated instrumentation and load testing with Python / PyVISA; built a thermal stress box to characterise PCBAs.</li>
+        <li>Performed hi-pot and ground-bond compliance testing on industrial electrical enclosures.</li>
+        <li>Configured and validated industrial safety controllers (Pilz PNOZmulti) for HV test systems.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-top"><h3>Product Design Engineer, Electrical Co-op</h3><span class="when">09/2024 – 04/2025</span></div>
+      <p class="org">Dometic Marine · Vancouver, Canada</p>
+      <ul>
+        <li>Designed a hot-swap protection circuit for a specified working condition: selected components and captured the schematic in Altium Designer for a box-build assembly.</li>
+        <li>Wrote and ran electrostatic discharge (ESD) test plans to IEC 61000-4-2, found failures and their root causes to guide design changes.</li>
+        <li>Bring-up, assembly, automated EOL testing, troubleshooting and rework on 2 kW PCBAs for 12 / 24 / 48 V boat control systems.</li>
+        <li>Assisted in radiated emission and immunity testing.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-top"><h3>Avionics Lead</h3><span class="when">05/2024 – 05/2025</span></div>
+      <p class="org">UBC AeroDesign · Vancouver, Canada</p>
+      <ul>
+        <li>Led the avionics architecture for an autonomous SAE Aero Design aircraft, for payload delivery and capture missions.</li>
+        <li>Directed the design and bring-up of a custom flight controller with integrated sensors and a revised power distribution system.</li>
+        <li>Managed three multidisciplinary subteams (about 30 members) across propulsion, data acquisition, controls and ground systems.</li>
+        <li>Ran technical reviews and program coordination.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-top"><h3>Power and Propulsion Team Lead</h3><span class="when">05/2023 – 05/2025</span></div>
+      <p class="org">UBC AeroDesign · Vancouver, Canada</p>
+      <ul>
+        <li>Integrated, tested and debugged embedded hardware with PX4 on the CubePilot Cube Orange, hardware interfaces and firmware configuration, for two competition aircraft.</li>
+        <li>Led the design of a power distribution module in Altium Designer, a steady 5 V at up to 10 A each, for the added load of an optical system and servos.</li>
+        <li>Standardised the team's hardware design process: component selection, schematic capture, PCB layout, LTspice simulation and BOM management.</li>
+        <li>Taught members to characterise propulsion configurations on a custom thrust stand.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-top"><h3>Computing, Hardware and Facilities Assistant</h3><span class="when">05/2023 – 08/2023</span></div>
+      <p class="org">UBC Computer Science Department · Vancouver, Canada</p>
+      <ul>
+        <li>Installed and maintained Dell PowerEdge and other servers in UBC's data centre and server rooms; network cable routing.</li>
+        <li>Weekly IT support: computer hardware repairs, server parts, custom network cables.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-top"><h3>Mechanical Team Lead</h3><span class="when">09/2021 – 05/2023</span></div>
+      <p class="org">UBC AeroDesign · Vancouver, Canada</p>
+      <ul>
+        <li>Led a subteam through the full build of composite wings and control surfaces, from CAD through fabrication, assembly and flight testing.</li>
+        <li>Built wing structures from laser-cut ribs, drill-press-machined spars and fittings, and hand-laid fibreglass / carbon-fibre skins, vacuum-bagged.</li>
+        <li>Optimised lifting and control surface geometry with MATLAB / Python, Excel and XFLR5, against real manufacturing limits.</li>
+        <li>Trained new members each term on the laser cutter, drill press, band saw and composite layup.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-top"><h3>Project Assistant</h3><span class="when">01/2022 – 05/2022</span></div>
+      <p class="org">UBC Studios, Emerging Media Lab · Vancouver, Canada</p>
+      <ul>
+        <li>Supported the photogrammetry and volumetric video capture services; produced media for cross-faculty collaborators.</li>
+        <li>Revamped the website's front page in WordPress with HTML / CSS.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-top"><h3>Operations Department</h3><span class="when">07/2020 – 08/2021</span></div>
+      <p class="org">Najarian Furniture · Binh Duong, Vietnam</p>
+      <ul>
+        <li>Supported the QC team in production-line inspection and reported deviations from customer standards.</li>
+        <li>Reviewed AutoCAD designs and product samples for manufacturability and compliance.</li>
+      </ul>
+    </article>
+  </section>
+
+  <!-- ================= TRANSCRIPT ================= -->
+  <section class="cv-sec tr" id="transcript">
+    <h2>Transcript</h2>
+    <p class="tr-intro">The whole record, bad grades highlighted, nothing left out. Two courses came in under 55%. Those grades are sealed: <b>sit the final-exam question</b> for the course, in exam time, to see them.</p>
+
+    <div class="tr-paper">
+      <div class="tr-hdr">
+        <p class="tr-uni">The University of British Columbia <span>Transcript of academic record</span></p>
+        <dl class="tr-id">
+          <div><dt>Name</dt><dd><span class="redact" aria-label="redacted">██████████</span></dd></div>
+          <div><dt>Student no.</dt><dd><span class="redact" aria-label="redacted">████████</span></dd></div>
+          <div><dt>Date of birth</dt><dd><span class="redact" aria-label="redacted">███████████</span></dd></div>
+          <div><dt>Program</dt><dd id="trProgram"></dd></div>
+        </dl>
+        <span class="stamp" aria-hidden="true">Redacted</span>
+      </div>
+      <div class="shame" id="shame"></div>
+      <div id="sessions"></div>
+      <p class="tr-total" id="trTotal"></p>
+      <p class="tr-src" id="trSrc"></p>
+    </div>
+  </section>
+
+  <p class="back"><a href="index.html#projects">← Back to the projects</a></p>
+</main>
+
+<!-- ================= THE EXAM ROOM ================= -->
+<div class="exam" id="exam" role="dialog" aria-modal="true" aria-labelledby="examTitle" hidden>
+  <div class="exam-paper">
+    <div class="exam-top">
+      <p class="exam-course" id="examTitle"></p>
+      <p class="exam-clock" aria-live="off"><span id="examClock">10:00</span><small>remaining</small></p>
+    </div>
+    <ol class="exam-rules">
+      <li>One question, ten minutes. Pens down at 0:00.</li>
+      <li>Work it on paper, then upload a photo or PDF of your written answer.</li>
+      <li>Leaving this tab counts as leaving the exam room. Twice and the attempt is void.</li>
+      <li>The question is printed as an image. Copy it out by hand like it's 1998.</li>
+    </ol>
+    <canvas class="exam-q" id="examQ" width="1100" height="440" role="img"></canvas>
+    <div class="exam-work">
+      <label class="exam-up" id="upLabel" for="examFile"><b>1.</b> Upload your written answer <span id="upName">(photo or PDF, required)</span></label>
+      <input id="examFile" type="file" accept="image/*,application/pdf">
+      <img class="exam-thumb" id="upThumb" alt="Your uploaded working" hidden>
+      <label for="examAns"><b>2.</b> Final answer to <span id="examAsk"></span></label>
+      <input id="examAns" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="e.g. 0.4167, 5/12 or sqrt(2)/2">
+      <p class="exam-note">Exact form (a fraction or sqrt) or at least 4 decimal places. Your upload never leaves your device.</p>
+      <p class="exam-msg" id="examMsg" role="status"></p>
+      <div class="exam-btns">
+        <button class="go" id="examSubmit" type="button" disabled>Hand in</button>
+        <button class="mini" id="examQuit" type="button">Walk out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="assets/fx.js?v=bafeba7c"></script>
+<script src="assets/resume.js?v=bafeba7c"></script>
+</body>
+</html>

@@ -6,6 +6,8 @@ projects. Light or dark follows the device's setting.
 ```
 index.html              page shell: the title screen, the projects, the footer
 contact.html            the telegraph (+ assets/contact.css, contact.js)
+resume.html             work history and the transcript (+ assets/resume.css, resume.js,
+                        content/transcript.json)
 assets/site.css         the look (dark and light themes at the top)
 assets/fx.js            the moving parts: quotes, the sky, the bar, pets,
                         the article lightbox and the hidden things
@@ -250,17 +252,24 @@ load is logged there with `[entries]` and the file path.
 - **The sky.** One scene per visit, picked at random: the patrol (the ship
   shoots down the aliens that drift in), a launch with hot staging, a
   shuttle landing, the station going over, or a capsule under parachutes.
-  `SCENE_LIST` in `fx.js`. Clicking the ship makes it barrel-roll.
+  `SCENE_LIST` in `fx.js`; `index.html?scene=launch` (or `patrol`,
+  `landing`, `station`, `capsule`) picks one. Clicking the ship makes it barrel-roll.
 - **The bar.** A different two or three drinks every visit, in different
   places (`DRINKS`); clicking one says what it is.
-- **Pets.** Three to start (a whale, a manta, a hedgehog that stays on the
-  ground); "+ spawn a pet" in the footer, or typing `pet`, adds one, up to
-  14. They drift around the whole window and keep away from the cursor.
-  The sprites are rows of letters in `SPR`, one colour per letter.
+- **The dock** (bottom-right, on every page): the theme button cycles
+  Auto (follow the device) → Light → Dark and is remembered from page to
+  page (`assets/theme.js` applies it before the page paints). "Pets: on /
+  off" puts them away or lets them out, and stays that way. "+ Pet" adds
+  one, up to 14.
+- **Pets.** A whale, a manta and a hedgehog (which stays on the ground) to
+  start; the jellyfish and the little whale come with "+ Pet" or typing
+  `pet`. They drift around the whole window, keep away from the cursor,
+  and the same ones follow you from page to page. The sprites are rows of
+  letters in `SPR`, one colour per letter.
 - **Pictures in articles** open big on the page (← → to step, Esc to
   close) instead of in a new tab.
 - **Reduced motion** (an OS setting): the sky holds still, nothing
-  shines or blinks, and no pets are let out.
+  shines or blinks, and no pets are let out (the pet buttons are greyed).
 
 ### The contact page (contact.html)
 
@@ -273,6 +282,32 @@ to attach a file (dropped or pasted files are turned away). To change the
 address or number, edit them in `contact.html` and at the top of
 `assets/contact.js`. Timing (how long a dash is) is at the top of that file
 too.
+
+### The résumé page (resume.html)
+
+The work history is written straight into `resume.html`. The transcript is
+`content/transcript.json`, typed out from the official PDF with the name,
+student number and date of birth left out (the PDF itself is never
+published).
+
+Rows with an `exam` are sealed: grades under 55%. Each has two or three
+original final-exam-style questions (`variants`), printed onto a canvas so
+the text can't be selected. A visitor gets one at random, ten minutes, and
+has to upload a photo or PDF of their working (it stays on their device;
+nobody marks it) and type the final answer. The grade is stored only
+encrypted, with a key made from the right answer, so the right answer is
+the only thing that shows it. Leaving the tab twice voids the attempt; a
+retake gets a different question.
+
+To change a sealed grade or a question, edit the `lines` / `ask` in
+`transcript.json`, then re-seal from a file kept OUTSIDE the repo (it holds
+the grades and the answers):
+
+    node tools/seal-grades.js ~/private/sealed-grades.json
+
+The format is in the comment at the top of `tools/seal-grades.js`. It is a
+joke lock, not a vault: the answers are short numbers, and someone patient
+could brute-force them.
 
 ### After editing anything in assets/
 
