@@ -5,6 +5,7 @@ projects. Light or dark follows the device's setting.
 
 ```
 index.html              page shell: the title screen, the projects, the footer
+contact.html            the telegraph (+ assets/contact.css, contact.js)
 assets/site.css         the look (dark and light themes at the top)
 assets/fx.js            the moving parts: quotes, the sky, the bar, pets,
                         the article lightbox and the hidden things
@@ -261,12 +262,35 @@ load is logged there with `[entries]` and the file path.
 - **Reduced motion** (an OS setting): the sky holds still, nothing
   shines or blinks, and no pets are let out.
 
+### The contact page (contact.html)
+
+A Morse cheat sheet with the email and phone number written on it in plain
+sight, and a telegraph key. Tapping `HI` (or `SOS`) on the key, with the
+mouse, a finger or the space bar, opens a message box. The message is words
+only: "Send by email" and "Send as a text" open the visitor's own mail or
+messages app with it written out, so nothing is stored and there is nowhere
+to attach a file (dropped or pasted files are turned away). To change the
+address or number, edit them in `contact.html` and at the top of
+`assets/contact.js`. Timing (how long a dash is) is at the top of that file
+too.
+
+### After editing anything in assets/
+
+    npm run stamp
+
+This puts a fresh `?v=…` on every link to the CSS, JS and images, so a
+returning visitor's browser can't pair the new page with an old cached
+script (that shows up as a broken-looking page for ten minutes). `npm test`
+fails if you forget. Editing `article.md` or `entry.json` doesn't need it.
+
 ### Hidden things
 
 - The white car lights are Morse: `IT WORKS ON MY BENCH`.
 - The red car lights are 8-bit ASCII, a lit dot for 1: `DONT LET THE SMOKE OUT`.
 - One window on the tallest tower blinks `SOS`.
 - The footer's faint binary says `hi`.
+- On the contact page, tapping `73` or `CQ` gets an answer; the sheet's
+  bottom corner says `73`.
 - ↑↑↓↓←→←→ B A on the title screen starts an invasion. Typing `sudo`,
   `smoke` or `42` gets an answer. The console has a note.
 
