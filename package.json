@@ -4,7 +4,8 @@
   "scripts": {
     "serve": "node tests/serve.js",
     "test": "playwright test",
-    "profile": "node tools/scroll-profile.js"
+    "profile": "node tools/scroll-profile.js",
+    "tldr": "node tools/tldr/build.js"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1"
