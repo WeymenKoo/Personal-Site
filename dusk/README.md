@@ -252,17 +252,24 @@ load is logged there with `[entries]` and the file path.
 - **The sky.** One scene per visit, picked at random: the patrol (the ship
   shoots down the aliens that drift in), a launch with hot staging, a
   shuttle landing, the station going over, or a capsule under parachutes.
-  `SCENE_LIST` in `fx.js`. Clicking the ship makes it barrel-roll.
+  `SCENE_LIST` in `fx.js`; `index.html?scene=launch` (or `patrol`,
+  `landing`, `station`, `capsule`) picks one. Clicking the ship makes it barrel-roll.
 - **The bar.** A different two or three drinks every visit, in different
   places (`DRINKS`); clicking one says what it is.
-- **Pets.** Three to start (a whale, a manta, a hedgehog that stays on the
-  ground); "+ spawn a pet" in the footer, or typing `pet`, adds one, up to
-  14. They drift around the whole window and keep away from the cursor.
-  The sprites are rows of letters in `SPR`, one colour per letter.
+- **The dock** (bottom-right, on every page): the theme button cycles
+  Auto (follow the device) → Light → Dark and is remembered from page to
+  page (`assets/theme.js` applies it before the page paints). "Pets: on /
+  off" puts them away or lets them out, and stays that way. "+ Pet" adds
+  one, up to 14.
+- **Pets.** A whale, a manta and a hedgehog (which stays on the ground) to
+  start; the jellyfish and the little whale come with "+ Pet" or typing
+  `pet`. They drift around the whole window, keep away from the cursor,
+  and the same ones follow you from page to page. The sprites are rows of
+  letters in `SPR`, one colour per letter.
 - **Pictures in articles** open big on the page (← → to step, Esc to
   close) instead of in a new tab.
 - **Reduced motion** (an OS setting): the sky holds still, nothing
-  shines or blinks, and no pets are let out.
+  shines or blinks, and no pets are let out (the pet buttons are greyed).
 
 ### The contact page (contact.html)
 
