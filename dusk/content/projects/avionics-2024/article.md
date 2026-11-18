@@ -10,11 +10,11 @@ date: 2023–24 season
 
 ![Render of the wiring hub with the Cube Orange flight controller, sensor board and GPS-RTK2 on top, next to the tail power module](render-table.jpg#wide "The wiring hub (left), with the Cube Orange, the sensor board and a SparkFun GPS-RTK2 stacked on it, and the tail power module (right). Rendered in Blender from the Altium STEP models and Gerbers.")
 
-**Result:** *Shadow* placed **5th overall** in the Advanced Class. By the team's own review, it was the only team that pursued custom electronics.
+**Result:** *Shadow* placed **7th of 14** ranked teams in the Advanced Class, with `75.20` points. By the team's own review, it was the only team that pursued custom electronics.
 
 | | |
 |---|---|
-| Aircraft | *Shadow*, SAE Aero Design West 2024, Advanced Class |
+| Aircraft | *Shadow*, SAE Aero Design West 2024, Advanced Class, 7th of 14 |
 | Boards | Wiring hub (4 layers) · main power module (soldered to the hub) · tail power module (2 layers) |
 | Flight controller | CubePilot Cube Orange, on the wiring hub |
 | Input | 2 × 4S LiPo (16.8 V), 7.4–20 V design range |
@@ -242,13 +242,23 @@ Other issues:
 
 ![Shadow climbing away from the runway, small against the sky](things-worked.jpg#bleed "Things worked.")
 
-*Shadow* placed **5th overall** in the Advanced Class at SAE Aero Design West 2024.
+Official overall results, SAE Aero Design West 2024, Advanced Class:
+
+| | |
+|---|---|
+| Place | 7th of 14 ranked teams |
+| Design report | `37.3505` |
+| Presentation | `37.8500` |
+| Mission | `0.0000` |
+| Total | `75.2005` |
+
+Source: [SAE Aero Design West 2024, Overall Results, Advanced Class (PDF)](https://www.saeaerodesign.com/content/2024_AeroDesignWest_Overall_Advanced.pdf), generated 14 April 2024.
 
 The evaluation afterwards:
 
 <div class="ar-gbu">
 <div class="good"><b>The good</b><ul><li>Student competition, not a business</li><li>Only team that pursued custom electronics</li><li>Challenged, and things worked technically</li></ul></div>
-<div class="bad"><b>The bad</b><ul><li>Placed 5th overall</li><li>Expensive; cost optimization</li><li>High risk</li><li>Unpopular amongst other subteams</li></ul></div>
+<div class="bad"><b>The bad</b><ul><li>Placed 7th overall</li><li>Expensive; cost optimization</li><li>High risk</li><li>Unpopular amongst other subteams</li></ul></div>
 <div class="ugly"><b>The ugly</b><ul><li>Risk mitigation</li><li>FMEA</li><li>Comprehensive system test plan</li><li>Hardware design</li><li>Mechanical integration</li><li>Validate and verify</li></ul></div>
 </div>
 
