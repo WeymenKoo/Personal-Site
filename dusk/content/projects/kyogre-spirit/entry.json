@@ -1,0 +1,31 @@
+{
+  "title": "Kyogre and Spirit",
+  "status": "ok",
+  "statusLabel": "Flown once",
+  "year": "2023",
+  "spec": "2 airframes · 120 in span · S1223 wing · NACA 0012 tail · balsa, ply and carbon fibre",
+  "summary": "Two seasons as mechanical lead for lifting surfaces and aerodynamics on UBC AeroDesign's Advanced Class team: Kyogre in 2021–22, then Spirit, a blended wing body built twice in 2022–23. The analysis behind Kyogre, then mostly photos: a crash, Spirit's one flight and two shipments lost by UPS.",
+  "cover": {
+    "src": "card.jpg",
+    "alt": "Three aircraft: Kyogre in blue and red on a turf field, the first Spirit in purple and white on a gravel field, and the second Spirit in transparent red on a concrete apron",
+    "fit": "cover"
+  },
+  "strip": [
+    {
+      "src": "thumb-concept.jpg",
+      "alt": "Pencil sketch of a low-wing aircraft in a notebook, dated 16 June 2022",
+      "caption": "Concept"
+    },
+    {
+      "src": "thumb-build.jpg",
+      "alt": "Spirit's wing panels in red covering on the bare fuselage frame",
+      "caption": "Build"
+    },
+    {
+      "src": "thumb-flight.jpg",
+      "alt": "Spirit banking just after takeoff at dusk",
+      "caption": "One flight"
+    }
+  ],
+  "link": "content/projects/kyogre-spirit/index.html"
+}
