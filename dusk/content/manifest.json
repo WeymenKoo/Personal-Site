@@ -2,7 +2,8 @@
   "projects": [
     "fc-som",
     "foc-controller",
-    "power-board"
+    "power-board",
+    "avionics-2024"
   ],
   "tapes": []
 }

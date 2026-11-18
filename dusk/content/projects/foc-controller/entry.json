@@ -5,11 +5,27 @@
   "year": "2026",
   "spec": "12S bus · 10 A RMS · STM32G431 + DRV8323S · CAN-FD",
   "summary": "A single-axis, sensored field-oriented-control motor controller for one joint of a cat-scale bipedal robot: 70 × 70 mm, 6 layers. Rev 1 is fabricated and partly bench-validated on a 12 V supply, with a motor identified and spun open-loop up to 1000 rpm.",
-  "cover": { "src": "card.jpg", "alt": "Render of the FOC motor controller, top side: three-phase bridge, bulk capacitors, DRV8323S and STM32G431, on brass standoffs", "fit": "cover" },
+  "cover": {
+    "src": "card.jpg",
+    "alt": "Render of the FOC motor controller, top side: three-phase bridge, bulk capacitors, DRV8323S and STM32G431, on brass standoffs",
+    "fit": "cover"
+  },
   "strip": [
-    { "src": "thumb-rev1.jpg", "alt": "Two Rev 1 boards from the first JLCPCB run", "caption": "Rev 1" },
-    { "src": "thumb-motor.jpg", "alt": "Render of the board on the test upright with the motor behind it", "caption": "On the motor" },
-    { "src": "thumb-layers.jpg", "alt": "Exploded view of the six copper layers", "caption": "6 layers" }
+    {
+      "src": "thumb-layers.jpg",
+      "alt": "Exploded view of the six copper layers",
+      "caption": "Layout"
+    },
+    {
+      "src": "thumb-built.jpg",
+      "alt": "The assembled Rev 1 board, top side",
+      "caption": "Rev 1"
+    },
+    {
+      "src": "thumb-bench.jpg",
+      "alt": "Rev 1 on the bench, wired to a motor and a bench supply",
+      "caption": "Bench test"
+    }
   ],
   "link": "content/projects/foc-controller/index.html"
 }

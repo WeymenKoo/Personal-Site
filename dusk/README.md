@@ -23,8 +23,8 @@ content/
 design/                 logo sheet + toucan.svg (the mark, also the favicon)
 ```
 
-Side A currently holds three projects: `fc-som`, `foc-controller` and
-`power-board`. Side B (photo rolls) and the record shelf are empty for now and
+Side A currently holds four projects: `fc-som`, `foc-controller`,
+`power-board` and `avionics-2024`. Side B (photo rolls) and the record shelf are empty for now and
 say "Nothing here yet." until you add an entry. The templates to copy are
 still in `content/projects/example` and `content/tapes/example`.
 
