@@ -5,7 +5,7 @@ const { startServer } = require('./serve');
 const { copySite, addEntry, SITE } = require('./content');
 
 async function offline(page) {
-  await page.route(/open\.spotify\.com|fonts\.(googleapis|gstatic)\.com/, r => r.abort());
+  await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
 }
 async function openArticle(page, url) {
   const errors = [];
@@ -80,16 +80,16 @@ test.describe('writing an article by following the README', () => {
   test.beforeAll(async () => {
     site = copySite();
     // step 1: copying the template folder brings article.md and the page that shows it
-    addEntry(site, 'projects', 'writeup', {
+    addEntry(site, 'writeup', {
       title: 'A write-up', status: 'ok', statusLabel: 'Flown', year: '2024',
       spec: 'One · two · three', summary: 'Has an article.',
       cover: { src: 'cover.jpg', alt: 'Cover' }, strip: [], link: ARTICLE,   // step 2: point the card at it
     }, ['cover.jpg']);
-    addEntry(site, 'projects', 'untouched', {
+    addEntry(site, 'untouched', {
       title: 'Straight from the template', status: 'wip', statusLabel: 'In progress', year: '2024',
       spec: 's', summary: 's', cover: { src: 'cover.jpg', alt: 'Cover' }, link: 'content/projects/untouched/index.html',
     }, ['cover.jpg']);
-    addEntry(site, 'projects', 'unwritten', {
+    addEntry(site, 'unwritten', {
       title: 'Not written yet', status: 'idle', statusLabel: 'Idle', year: '2024',
       spec: 's', summary: 's', cover: { src: 'cover.jpg', alt: 'Cover' }, link: '',
     }, ['cover.jpg']);
@@ -152,18 +152,39 @@ test.describe('writing an article by following the README', () => {
     await expect(page.locator('.ar-kick b')).toHaveText(['01', '02', '03', '04']);
     await expect(page.locator('section.ar-ch').nth(1).locator('.ar-kick span')).toHaveText('The label');
     await expect(page.locator('section.ar-ch').nth(0).locator('.ar-kick span')).toHaveCount(0);
-    await expect(page.locator('.deck nav a')).toHaveText(['01', '02', '03', '04']);
   });
 
-  test('chapters walk the page through the hours, golden to lights off', async ({ page }) => {
+  test('no hours, no tape deck: one theme for the whole page', async ({ page }) => {
     await openArticle(page, server.url + ARTICLE);
-    await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; });
-    await expect(page.locator('#hourLabel')).toHaveText('Golden hour');
-    for (const [id, label] of [['first-chapter', 'Late afternoon'], ['the-label', 'Dusk'], ['third-chapter', 'Blue hour'], ['last-chapter', 'Lights off']]) {
-      await page.evaluate(i => document.getElementById(i).scrollIntoView(), id);
-      await expect(page.locator('#hourLabel')).toHaveText(label);
+    await expect(page.locator('.deck, #hourLabel, [data-hour]')).toHaveCount(0);
+    expect(await page.evaluate(() => getComputedStyle(document.body).cursor)).toContain('cursor.svg');
+  });
+
+  test('a picture opens big on the page (not a new tab); arrows step, Esc closes', async ({ page }) => {
+    await openArticle(page, server.url + ARTICLE);
+    const pages = page.context().pages().length;
+    await page.locator('a.ar-full').first().click();
+    await expect(page.locator('#lb')).toHaveClass(/\bon\b/);
+    await expect(page.locator('#lb .cap')).toHaveText('A caption with emphasis.');
+    await expect(page.locator('#lb .n')).toHaveText('1 / 4');
+    expect(page.context().pages().length).toBe(pages);
+    await page.keyboard.press('ArrowRight');
+    await expect(page.locator('#lb .n')).toHaveText('2 / 4');
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('ArrowLeft');
+    await expect(page.locator('#lb .n')).toHaveText('4 / 4');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#lb')).not.toHaveClass(/\bon\b/);
+  });
+
+  test('follows the device theme', async ({ browser }) => {
+    for (const [scheme, bg] of [['dark', 'rgb(13, 8, 32)'], ['light', 'rgb(244, 238, 251)']]) {
+      const ctx = await browser.newContext({ colorScheme: scheme });
+      const page = await ctx.newPage();
+      await openArticle(page, server.url + ARTICLE);
+      expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim())).toBe(scheme === 'dark' ? '#0d0820' : '#f4eefb');
+      await ctx.close();
     }
-    await expect(page.locator('.deck nav a.on')).toHaveText('04');
   });
 
   test('Markdown turns into the article components', async ({ page }) => {
@@ -172,9 +193,9 @@ test.describe('writing an article by following the README', () => {
     const fig = page.locator('figure.ar-fig').first();
     await expect(fig.locator('img')).toHaveAttribute('alt', 'A single image');
     await expect(fig.locator('figcaption em')).toHaveText('emphasis');
-    // clicking a figure opens the full-size file
+    // the figure links to the full-size file (the lightbox opens it on the page)
     await expect(fig.locator('a.ar-full')).toHaveAttribute('href', 'cover.jpg');
-    await expect(fig.locator('a.ar-full')).toHaveAttribute('target', '_blank');
+    await expect(fig.locator('a.ar-full')).not.toHaveAttribute('target', '_blank');
     // two on consecutive lines: side by side; #wide after the file name: a wider figure
     await expect(page.locator('.ar-grid.two figure')).toHaveCount(2);
     await expect(page.locator('figure.ar-fig.wide img')).toHaveAttribute('src', 'cover.jpg');
@@ -217,12 +238,13 @@ test.describe('writing an article by following the README', () => {
     await ctx.close();
   });
 
-  test('a liner note renders at the end', async ({ page }) => {
+  test('a quote renders at the end', async ({ page }) => {
     await openArticle(page, server.url + ARTICLE);
-    await expect(page.locator('#offLine .lsrc')).not.toBeEmpty();
+    await expect(page.locator('#offLine blockquote')).toHaveText(/^“.+”$/);
+    await expect(page.locator('#offLine figcaption')).not.toBeEmpty();
   });
 
-  test('the back links return to Side A, and no request escapes /Personal-Site/', async ({ page }) => {
+  test('the back links return to the projects, and no request escapes /Personal-Site/', async ({ page }) => {
     const escaped = [];
     page.on('request', r => {
       const u = new URL(r.url());
@@ -232,7 +254,7 @@ test.describe('writing an article by following the README', () => {
     await page.waitForLoadState('networkidle');
     expect(escaped).toEqual([]);
     await page.locator('.ar-end a').click();
-    await expect(page).toHaveURL(/\/Personal-Site\/index\.html#side-a$/);
+    await expect(page).toHaveURL(/\/Personal-Site\/index\.html#projects$/);
   });
 
   test('phone width: no sideways scroll', async ({ browser }) => {
@@ -247,13 +269,13 @@ test.describe('writing an article by following the README', () => {
     const errors = await openArticle(page, server.url + 'content/projects/unwritten/index.html');
     await expect(page.locator('.ar-head h1')).toHaveText('Nothing to read yet.');
     await page.locator('.ar-bar a').click();
-    await expect(page).toHaveURL(/\/Personal-Site\/index\.html#side-a$/);
+    await expect(page).toHaveURL(/\/Personal-Site\/index\.html#projects$/);
     expect(errors).toEqual([]);
   });
 });
 
 /* ================================================================= */
-test.describe('the five articles, as shipped', () => {
+test.describe('the seven articles, as shipped', () => {
   let server;
   const SLUGS = ['fc-som', 'foc-controller', 'power-board', 'avionics-2024', 'kyogre-spirit', 'dc-load', 'micromouse'];
   const url = slug => `content/projects/${slug}/index.html`;
@@ -264,7 +286,7 @@ test.describe('the five articles, as shipped', () => {
     await offline(page);
     await page.goto(server.url + 'index.html');
     await page.evaluate(() => window.entriesReady);
-    for (const [i, slug] of SLUGS.entries()) await expect(page.locator('.proj .more').nth(i)).toHaveAttribute('href', url(slug));
+    for (const [i, slug] of SLUGS.entries()) await expect(page.locator('a.proj').nth(i)).toHaveAttribute('href', url(slug));
   });
 
   for (const slug of SLUGS) {
@@ -280,17 +302,13 @@ test.describe('the five articles, as shipped', () => {
       expect(errors).toEqual([]);
     });
 
-    test(`${slug}: ends with the lights off, and fits a phone`, async ({ browser }) => {
+    test(`${slug}: ends with a quote and the way back, and fits a phone`, async ({ browser }) => {
       const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
       const page = await ctx.newPage();
       await openArticle(page, server.url + url(slug));
       expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
-      // lazy images keep growing the page, so keep jumping to the bottom until it stops
-      await expect.poll(() => page.evaluate(() => {
-        document.documentElement.style.scrollBehavior = 'auto';
-        scrollTo(0, document.documentElement.scrollHeight);
-        return document.getElementById('hourLabel').textContent;
-      }), { timeout: 10000 }).toBe('Lights off');
+      await expect(page.locator('section.ar-ch').last().locator('#offLine blockquote')).toHaveText(/^“.+”$/);
+      await expect(page.locator('.ar-end a')).toHaveAttribute('href', /index\.html#projects$/);
       await ctx.close();
     });
 
@@ -302,21 +320,12 @@ test.describe('the five articles, as shipped', () => {
     });
   }
 
-  test('power-board: one chapter per stage, walking golden hour to lights off', async ({ page }) => {
+  test('power-board: one chapter per stage', async ({ page }) => {
     await openArticle(page, server.url + url('power-board'));
     await expect(page.locator('section.ar-ch h2')).toHaveText([
       'Power flow', 'Input eFuse and reverse polarity', '5 V, 15 A: LM5146', 'Output eFuse and current sense',
       'Connectors', 'PCB layout', 'The flight controller (not my design)', 'SAE Aero Design 2025',
     ]);
-    // load every image first: a lazy image arriving mid-test moves the chapters under the check
-    await page.evaluate(async () => {
-      document.documentElement.style.scrollBehavior = 'auto';
-      for (const i of document.images) i.loading = 'eager';
-      await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
-    });
-    for (const [id, label] of [['power-flow', 'Late afternoon'], ['buck-converter', 'Dusk'], ['connectors', 'Blue hour'], ['flight-controller-v2', 'Night'], ['sae-aero-design-2025', 'Lights off']]) {
-      await expect.poll(() => page.evaluate(i => { document.getElementById(i).scrollIntoView(); return document.getElementById('hourLabel').textContent; }, id)).toBe(label);
-    }
     // every schematic sheet after the top one is shown, and the results link goes to SAE
     await expect(page.locator('img[src^="sch-"]')).toHaveCount(4);
     await expect(page.locator('a[href*="saeaerodesign.com"]')).toHaveAttribute('target', '_blank');

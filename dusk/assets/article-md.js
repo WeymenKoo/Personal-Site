@@ -5,23 +5,14 @@
    file. It reads, from the SAME folder:
      entry.json   the card data (title, status) — reused for the header
      article.md   the write-up, in Markdown
-   and builds the page: one "hour" per chapter, like the homepage.
+   and builds the page: a title block, then one section per ## chapter.
    How to write article.md is in dusk/README.md, "Writing an article".
    ===================================================================== */
 (function () {
   "use strict";
 
   var ASSETS = document.currentScript.src.replace(/[^/]*$/, "");   /* …/assets/ */
-  var HOME = ASSETS + "../index.html#side-a";
-  var MIDDLE = ["afternoon", "dusk", "blue", "night"];             /* golden opens, off closes */
-  var TOUCAN =
-    '<svg class="mark" viewBox="40 28 176 108" role="img" aria-label="Toucan">' +
-    '<path d="M44 110 L44 72 C44 48 60 32 82 32 L100 32 L100 110 Z" fill="currentColor"/>' +
-    '<rect x="44" y="114" width="20" height="18" fill="currentColor"/>' +
-    '<rect x="95" y="114" width="6" height="18" fill="currentColor"/>' +
-    '<path d="M100 32 C150 34 190 52 212 74 C190 78 150 78 100 76 Z" fill="#E0892F"/>' +
-    '<path d="M100 76 C150 78 190 78 212 74 C190 94 150 106 100 110 Z" fill="#B24E26"/>' +
-    '<circle cx="80" cy="56" r="5" fill="var(--bg)"/></svg>';
+  var HOME = ASSETS + "../index.html#projects";
 
   function el(tag, attrs, kids) {
     var n = document.createElement(tag);
@@ -43,7 +34,7 @@
     });
   }
   function get(url, as) {
-    return fetch(url).then(function (r) {
+    return fetch(url, { cache: "no-cache" }).then(function (r) {
       if (!r.ok) throw new Error(url + " → " + r.status);
       return r[as]();
     });
@@ -81,9 +72,9 @@
     img.removeAttribute("title");
     img.setAttribute("loading", "lazy");
     img.setAttribute("decoding", "async");
-    /* click a figure to open the full-size file (schematics are unreadable at column width) */
-    var full = el("a", { class: "ar-full", href: img.getAttribute("src"), target: "_blank", rel: "noopener",
-                         title: "Open full size" }, [img]);
+    /* click a figure to see it big, in the lightbox (fx.js); the link
+       still points at the full-size file for a middle-click or no JS */
+    var full = el("a", { class: "ar-full", href: img.getAttribute("src"), title: "Enlarge" }, [img]);
     return el("figure", {}, [full, cap ? el("figcaption", { html: window.marked.parseInline(cap) }) : null]);
   }
   function images(root) {
@@ -162,7 +153,7 @@
     });
   }
 
-  /* ---------- "## Heading" starts a chapter; each chapter is an hour ---------- */
+  /* ---------- "## Heading" starts a chapter ---------- */
   function chapters(root) {
     var intro = [], list = [], cur = null;
     Array.prototype.slice.call(root.childNodes).forEach(function (n) {
@@ -170,10 +161,6 @@
       else (cur ? cur.nodes : intro).push(n);
     });
     return { intro: intro, list: list };
-  }
-  function hourFor(i, n) {
-    if (i === n - 1) return "off";                                   /* the last chapter turns the lights off */
-    return MIDDLE[Math.floor(i * MIDDLE.length / (n - 1))];
   }
 
   function header(entry, meta) {
@@ -204,15 +191,15 @@
     var desc = fm.meta.subtitle || entry.summary;
     if (desc) document.head.appendChild(el("meta", { name: "description", content: desc }));
 
-    /* golden hour: back link, title block, anything written above the first ## */
+    /* back link, title block, anything written above the first ## */
     var lead = parts.intro.filter(function (n) { return n.nodeName === "P"; })[0];
     if (lead) lead.classList.add("ar-lead");
-    var top = el("section", { id: "top", "data-hour": "golden" }, [
-      el("div", { class: "ar-bar", html: TOUCAN }, [el("a", { href: HOME, html: "&larr; Side A" })]),
+    var top = el("section", { id: "top" }, [
+      el("div", { class: "ar-bar" }, [el("a", { href: HOME, html: "&larr; Projects" }), el("span", { class: "brand", text: "WK · TOP FLOOR" })]),
       el("div", { class: "ar" }, [header(entry, fm.meta)].concat(parts.intro))
     ]);
 
-    var used = { top: 1, end: 1 }, nav = [];
+    var used = { top: 1, end: 1 };
     var sections = parts.list.map(function (c, i) {
       /* "## Kicker | Big heading": the part before the bar goes in the little label */
       var bar = c.h2.innerHTML.split(/\s+\|\s+/);
@@ -222,33 +209,26 @@
       var id = slug(el("i", { html: label || c.h2.innerHTML }).textContent);
       while (used[id]) id += "-" + no;
       used[id] = 1;
-      nav.push(el("a", { href: "#" + id, text: no, title: c.h2.textContent }));
       var kick = el("p", { class: "ar-kick" }, [el("b", { text: no }), label ? el("span", { html: label }) : null]);
-      return el("section", { id: id, "data-hour": hourFor(i, parts.list.length), class: "ar-ch" }, [
+      return el("section", { id: id, class: "ar-ch" }, [
         el("div", { class: "ar" }, [kick, c.h2].concat(c.nodes))
       ]);
     });
 
-    /* lights off: a liner note and the way back, at the end of the last chapter */
+    /* a quote and the way back, at the end of the last chapter */
     var foot = [
-      el("p", { class: "liner liner-off", id: "offLine" }),
-      el("div", { class: "ar-end" }, [el("a", { href: HOME, html: "&larr; Back to Side A" })])
+      el("figure", { class: "quote liner", id: "offLine" }, [el("blockquote"), el("figcaption")]),
+      el("div", { class: "ar-end" }, [el("a", { href: HOME, html: "&larr; Back to projects" })])
     ];
     if (sections.length) {
       var lastAr = sections[sections.length - 1].firstChild;
       foot.forEach(function (n) { lastAr.appendChild(n); });
     } else {
-      sections.push(el("section", { id: "end", "data-hour": "off", class: "ar-ch" }, [el("div", { class: "ar" }, foot)]));
+      sections.push(el("section", { id: "end", class: "ar-ch" }, [el("div", { class: "ar" }, foot)]));
     }
 
-    var deck = el("div", { class: "deck", "aria-label": "Reading position" }, [
-      el("span", { class: "lcd", "data-ghost": "888", id: "counter", text: "000" }),
-      el("span", { class: "hr", id: "hourLabel", text: "Golden hour" }),
-      nav.length ? el("nav", { class: nav.length > 5 ? "many" : "" }, nav) : null
-    ]);
-
     var main = document.getElementById("article");
-    main.replaceChildren.apply(main, [deck, top].concat(sections));
+    main.replaceChildren.apply(main, [top].concat(sections));
     return main;
   }
 
@@ -258,8 +238,8 @@
       ? "Browsers block loading files on file:// — run a local server (see dusk/README.md)."
       : "This write-up isn't here yet.";
     document.getElementById("article").replaceChildren(
-      el("section", { id: "top", "data-hour": "golden" }, [
-        el("div", { class: "ar-bar", html: TOUCAN }, [el("a", { href: HOME, html: "&larr; Side A" })]),
+      el("section", { id: "top" }, [
+        el("div", { class: "ar-bar" }, [el("a", { href: HOME, html: "&larr; Projects" })]),
         el("div", { class: "ar" }, [el("header", { class: "ar-head" }, [el("h1", { text: "Nothing to read yet." }), el("p", { class: "ar-sub", text: why })])])
       ])
     );
@@ -270,18 +250,11 @@
     get("entry.json", "json").catch(function (e) { console.error("[article]", e.message); return {}; }),
     get("article.md", "text")
   ]).then(function (r) {
-    var main = build(r[1], r[2]);
-    /* the article has no width/height on its images, so the page grows as
-       they arrive: re-measure which hour we're in each time one lands */
-    var t;
-    main.addEventListener("load", function () {
-      clearTimeout(t);
-      t = setTimeout(function () { window.dispatchEvent(new Event("resize")); }, 60);
-    }, true);
+    build(r[1], r[2]);
   }).catch(sorry).then(function () {
-    /* dusk.js (hours, counter, liner note) and article.js (text-message
-       reveal) read the page when they start, so they load after it's built */
-    return script(ASSETS + "dusk.js");
+    /* fx.js (quote, pets, lightbox) and article.js (text-message reveal)
+       read the page when they start, so they load after it's built */
+    return script(ASSETS + "fx.js");
   }).then(function () {
     return script(ASSETS + "article.js");
   }).then(function () {

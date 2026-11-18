@@ -1,6 +1,6 @@
 # Weymen Koo — personal site
 
-Circuit boards, film photographs, and records: a day, from golden hour to night.
+Circuit boards and flight hardware: a title screen over a pixel city, then the projects.
 
 **Live:** https://weymenkoo.github.io/Personal-Site/
 

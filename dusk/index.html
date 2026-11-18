@@ -4,133 +4,66 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Weymen Koo 许梣焕</title>
-<meta name="description" content="Circuit boards, film photographs, and records — a day, from golden hour to night.">
-<meta name="theme-color" content="#F4EBDD">
+<meta name="description" content="Weymen Koo — circuit boards, flight hardware and embedded projects.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0d0820" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4eefb" media="(prefers-color-scheme: light)">
 <link rel="icon" href="design/toucan.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:opsz,wght@7..72,380..680&family=Noto+Sans+SC:wght@400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/dusk.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300..800;1,300..800&family=Noto+Sans+SC:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
-
-<!-- ============ DECK: tape counter + hour + side nav ============ -->
-<div class="deck" aria-label="Page position">
-  <span class="lcd" data-ghost="888" id="counter">000</span>
-  <span class="hr" id="hourLabel">Golden hour</span>
-  <nav>
-    <a href="#side-a">A</a>
-    <a href="#side-b">B</a>
-    <a href="#records">Rec</a>
-    <a href="#off">Off</a>
-  </nav>
-</div>
+<body class="home">
 
 <!-- ================================================================
-     01 · GOLDEN HOUR
+     TITLE SCREEN — the view from the top-floor bar.
+     The sky (stars, the ship, the aliens) is drawn by fx.js.
      ================================================================ -->
-<section id="golden" data-hour="golden" class="hero-wrap">
-  <div class="wrap hero">
-    <div>
-      <svg class="mark" viewBox="40 28 176 108" role="img" aria-label="Toucan">
-        <path d="M44 110 L44 72 C44 48 60 32 82 32 L100 32 L100 110 Z" fill="currentColor"/>
-        <rect x="44" y="114" width="20" height="18" fill="currentColor"/>
-        <rect x="95" y="114" width="6" height="18" fill="currentColor"/>
-        <path d="M100 32 C150 34 190 52 212 74 C190 78 150 78 100 76 Z" fill="#E0892F"/>
-        <path d="M100 76 C150 78 190 78 212 74 C190 94 150 106 100 110 Z" fill="#B24E26"/>
-        <circle cx="80" cy="56" r="5" fill="var(--bg)"/>
-      </svg>
-      <h1>Weymen Koo</h1>
-      <p class="cjk">许梣焕</p>
-      <!-- REWRITE IN YOUR OWN WORDS -->
-      <p class="hello">I design <b>circuit boards</b>, shoot <b>film</b>, and keep too many <b>records</b>. This page is a day of that — it starts in the late afternoon and ends at night.</p>
-    </div>
+<header class="topbar">
+  <a class="brand" href="#hero">WK · TOP FLOOR</a>
+  <nav><a href="#projects">Projects</a><a href="#contact">Contact</a></nav>
+</header>
 
-    <figure class="print-frame">
-      <img src="content/hero.jpg" alt="PLACEHOLDER — describe the landing photo">
-      <figcaption><span>Tape 01 · Frame 01</span><span>Film</span></figcaption>
-    </figure>
-  </div>
-  <a class="play" href="#side-a"><i>&#9654;</i> Press play &mdash; scroll</a>
-</section>
+<section id="hero" class="hero">
+  <canvas class="sky" id="sky" aria-hidden="true"></canvas>
+  <div class="city" aria-hidden="true"></div>
+  <span class="sos" aria-hidden="true"></span>
+  <div class="glass" aria-hidden="true"><i></i><i></i><i></i></div>
+  <!-- the bar counter; fx.js sets out a different round of drinks on every visit -->
+  <div class="counter" id="counter"></div>
 
-<!-- ================================================================
-     02 · LATE AFTERNOON — SIDE A: things I've built
-     ================================================================ -->
-<section id="side-a" data-hour="afternoon" class="hour">
-  <div class="wrap">
-    <p class="jcard"><b>Side A</b><span>Things I've built</span><i id="projectCount">00</i></p>
-    <p class="lede">Boards I laid out, assembled, and debugged myself — some finished, some still on the bench.</p>
-    <!-- filled from content/projects/ — see README -->
-    <div class="projects" id="projects"></div>
+  <div class="hero-text">
+    <h1 class="shine">Weymen Koo</h1>
+    <p class="cjk">许梣焕</p>
+    <!-- REWRITE IN YOUR OWN WORDS -->
+    <p class="hello">I design circuit boards, shoot film, and keep too many records.</p>
+    <figure class="quote" id="heroQuote" aria-live="off"><blockquote></blockquote><figcaption></figcaption></figure>
+    <a class="cue" href="#projects">&#9656; <span id="projectCount">00</span> projects<i class="blink">_</i></a>
   </div>
 </section>
 
 <!-- ================================================================
-     03 · DUSK — flip the tape
+     PROJECTS — filled from content/projects/ (see README)
      ================================================================ -->
-<section id="flip" data-hour="dusk" class="hour flip">
-  <div class="wrap">
-    <p class="print">&mdash; end of side A &mdash;</p>
-    <p class="flip-title">Flip the tape.</p>
-    <p class="print">Side B &middot; photographs &amp; records</p>
-    <p class="liner" id="flipLine"></p>
+<main id="projects" class="wrap projects-wrap">
+  <p class="kicker">Projects</p>
+  <p class="lede">Boards I laid out, assembled, and debugged myself — some finished, some still on the bench.</p>
+  <div class="projects" id="projectGrid"></div>
+</main>
+
+<footer id="contact" class="wrap foot">
+  <figure class="quote liner" id="offLine"><blockquote></blockquote><figcaption></figcaption></figure>
+  <div class="end">
+    <p><a href="mailto:kchweymen@gmail.com">kchweymen@gmail.com</a> &nbsp;&middot;&nbsp; <a href="https://github.com/WeymenKoo">github</a></p>
+    <p class="print">WK-01 &middot; Vancouver &middot; Rev 2026 <span class="bin" title="8-bit ASCII">01101000 01101001</span></p>
+    <button class="pet-btn" type="button" id="petBtn">+ spawn a pet</button>
   </div>
-</section>
+</footer>
 
-<!-- ================================================================
-     04 · BLUE HOUR — SIDE B: photographs, each paired with a song
-     ================================================================ -->
-<section id="side-b" data-hour="blue" class="hour">
-  <div class="wrap">
-    <p class="jcard"><b>Side B</b><span>Photographs</span><i id="tapeCount">00</i></p>
-    <p class="lede">Shot on film. Each roll comes with the song I'd want you listening to while you look.</p>
-    <!-- filled from content/tapes/ — see README. Empty for now. -->
-    <div id="tapes"></div>
-  </div>
-</section>
-
-<!-- ================================================================
-     05 · NIGHT — the record shelf
-     ================================================================ -->
-<section id="records" data-hour="night" class="hour">
-  <div class="wrap">
-    <p class="jcard"><b>Side B</b><span>Records</span><i id="recordCount">00</i></p>
-    <p class="lede">What's been on repeat. Pick one off the shelf.</p>
-    <!-- filled from content/records.json — see README. Empty for now. -->
-    <div class="shelf" id="shelf"></div>
-
-    <div class="player" id="deckPlayer">
-      <div class="row"><span class="print">Now on the deck</span><span class="print" id="nowTitle"></span></div>
-      <div id="playerSlot"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ================================================================
-     06 · LIGHTS OFF — a liner note and where to find me
-     ================================================================ -->
-<section id="off" data-hour="off" class="off">
-  <div class="wrap">
-    <p class="liner liner-off" id="offLine"></p>
-
-    <div class="end">
-      <p class="print">WK-01 &middot; Vancouver &middot; Rev 2026</p>
-      <p><a href="mailto:kchweymen@gmail.com">kchweymen@gmail.com</a> &nbsp;&middot;&nbsp; <a href="https://github.com/WeymenKoo">github</a></p>
-    </div>
-  </div>
-</section>
-
-<!-- lightbox -->
-<div class="lb" id="lb" role="dialog" aria-label="Photo">
-  <img alt="">
-  <span class="cap"></span>
-  <button class="x" aria-label="Close">Close &times;</button>
-  <button class="prev" aria-label="Previous">&larr;</button>
-  <button class="next" aria-label="Next">&rarr;</button>
-</div>
+<div class="toast" id="toast" role="status"></div>
 
 <script src="assets/entries.js"></script>
-<script src="assets/dusk.js"></script>
+<script src="assets/fx.js"></script>
 </body>
 </html>
