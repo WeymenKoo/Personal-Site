@@ -67,7 +67,7 @@ A programmable DC load for testing power supplies and batteries. Rev B was built
 
 ### [Micromouse](https://weymenkoo.github.io/Personal-Site/content/projects/micromouse/index.html)
 
-<img src="dusk/content/projects/micromouse/tldr.jpg" alt="Micromouse V2 assembled on a wooden desk, with its battery lead" width="720">
+<img src="dusk/content/projects/micromouse/tldr.jpg" alt="Micromouse V2 assembled on a wooden desk" width="720">
 
 **V2 built** · 2023–24 · STM32F411 · DRV8833 · 4 IR pairs · LSM6DS3 · encoders · USB-C
 
