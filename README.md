@@ -57,6 +57,22 @@ The power distribution system for Shadow, UBC AeroDesign's 2023–24 Advanced Cl
 
 Two seasons as mechanical lead for lifting surfaces and aerodynamics on UBC AeroDesign's Advanced Class team: Kyogre in 2021–22, then Spirit, a blended wing body built twice in 2022–23. The analysis behind Kyogre, then mostly photos: a crash, Spirit's one flight and two shipments lost by UPS.
 
+### [DC electronic load](https://weymenkoo.github.io/Personal-Site/content/projects/dc-load/index.html)
+
+<img src="dusk/content/projects/dc-load/tldr.jpg" alt="The Rev B boards wired up on a desk, the power board on a CPU tower cooler, with a bench supply behind" width="720">
+
+**Rev E in layout** · 2024–26 · 150 W · 0.6–58 V · 0–10 A · 4 × IRFP250N · isolated USB-C
+
+A programmable DC load for testing power supplies and batteries. Rev B was built in late 2024 as a control board and a power board; a schematic review found errors in the power board. Rev E, the current design, uses four MOSFETs with one current loop each, isolation from USB, and is placed but not yet routed.
+
+### [Micromouse](https://weymenkoo.github.io/Personal-Site/content/projects/micromouse/index.html)
+
+<img src="dusk/content/projects/micromouse/tldr.jpg" alt="Micromouse V2 assembled on a wooden desk" width="720">
+
+**V2 built** · 2023–24 · STM32F411 · DRV8833 · 4 IR pairs · LSM6DS3 · encoders · USB-C
+
+A maze-solving robot on a single board. V1 failed because the motor driver inputs were put on STM32 pins with no timer behind them, so the motors couldn't be driven with PWM. V2 fixed the pinout, swapped to one DRV8833, and added IR wall sensors, an IMU and wheel encoders.
+
 <!-- tldr:end -->
 
 ## Editing

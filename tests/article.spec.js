@@ -255,7 +255,7 @@ test.describe('writing an article by following the README', () => {
 /* ================================================================= */
 test.describe('the five articles, as shipped', () => {
   let server;
-  const SLUGS = ['fc-som', 'foc-controller', 'power-board', 'avionics-2024', 'kyogre-spirit'];
+  const SLUGS = ['fc-som', 'foc-controller', 'power-board', 'avionics-2024', 'kyogre-spirit', 'dc-load', 'micromouse'];
   const url = slug => `content/projects/${slug}/index.html`;
   test.beforeAll(async () => { server = await startServer(SITE); });
   test.afterAll(async () => { await server.close(); });
