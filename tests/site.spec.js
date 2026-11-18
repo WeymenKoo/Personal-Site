@@ -123,7 +123,7 @@ test.describe('as shipped', () => {
     await page.setViewportSize({ width: 1200, height: 800 });
     await open(page, server.url);
     await expect(page.locator('.pets .pet')).toHaveCount(3);
-    await page.locator('#petBtn').click();
+    await page.locator('#petAdd').click();
     await expect(page.locator('.pets .pet')).toHaveCount(4);
     // park the whale, put the cursor right on it, and watch it leave
     const moved = await page.evaluate(async () => {
@@ -158,6 +158,7 @@ test.describe('as shipped', () => {
     const errors = await open(page, server.url);
     await page.waitForTimeout(300);
     await expect(page.locator('.pets .pet')).toHaveCount(0);
+    await expect(page.locator('#petAdd')).toBeDisabled();
     expect(await page.locator('.hero h1').evaluate(e => getComputedStyle(e).animationName)).toBe('none');
     expect(errors).toEqual([]);
     await ctx.close();
@@ -192,6 +193,77 @@ test.describe('as shipped', () => {
     await open(page, server.url);
     const href = await page.locator('link[rel="icon"]').getAttribute('href');
     expect((await request.get(server.url + href)).ok()).toBe(true);
+  });
+
+  test('the dock is on every page: theme, pets on/off, + Pet', async ({ page }) => {
+    for (const url of ['index.html', 'contact.html', 'resume.html', 'content/projects/dc-load/index.html']) {
+      await page.goto(server.url + url);
+      await expect(page.locator('.dock #themeBtn')).toBeVisible();
+      await expect(page.locator('.dock #petToggle')).toBeVisible();
+      await expect(page.locator('.dock #petAdd')).toBeVisible();
+    }
+  });
+
+  test('the theme button cycles auto, light, dark, overrides the device, and is remembered', async ({ browser }) => {
+    const ctx = await browser.newContext({ colorScheme: 'dark' });
+    const page = await ctx.newPage();
+    await open(page, server.url);
+    const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    await expect(page.locator('#themeBtn')).toHaveText('◐ Auto');
+    expect(await bg()).toBe('rgb(13, 8, 32)');
+    await page.locator('#themeBtn').click();
+    await expect(page.locator('#themeBtn')).toHaveText('☀ Light');
+    expect(await bg()).toBe('rgb(244, 238, 251)');
+    expect(await page.locator('.city').evaluate(e => getComputedStyle(e).backgroundImage)).toContain('city-light.png');
+    // remembered on the next page, before anything paints
+    await page.goto(server.url + 'contact.html');
+    expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe('light');
+    await page.locator('#themeBtn').click();
+    await expect(page.locator('#themeBtn')).toHaveText('☾ Dark');
+    await page.locator('#themeBtn').click();
+    await expect(page.locator('#themeBtn')).toHaveText('◐ Auto');
+    expect(await page.evaluate(() => document.documentElement.hasAttribute('data-theme'))).toBe(false);
+    await ctx.close();
+    // forced dark on a light device
+    const ctx2 = await browser.newContext({ colorScheme: 'light' });
+    const p2 = await ctx2.newPage();
+    await open(p2, server.url);
+    await p2.evaluate(() => window.fx.setTheme('dark'));
+    expect(await p2.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(13, 8, 32)');
+    expect(await p2.locator('.hero h1').evaluate(e => getComputedStyle(e).color)).toBe('rgb(246, 234, 255)');
+    await ctx2.close();
+  });
+
+  test('pets can be turned off, stay off, and follow you between pages when on', async ({ browser }) => {
+    const ctx = await browser.newContext();
+    const page = await ctx.newPage();
+    await open(page, server.url);
+    await expect(page.locator('.pets .pet')).toHaveCount(3);
+    await page.locator('#petAdd').click();
+    await page.goto(server.url + 'content/projects/micromouse/index.html');
+    await expect(page.locator('.pets .pet')).toHaveCount(4);                 // the same four came along
+    await page.locator('#petToggle').click();
+    await expect(page.locator('#petToggle')).toHaveText('Pets: off');
+    await expect(page.locator('.pets .pet')).toHaveCount(0);
+    await expect(page.locator('#petAdd')).toBeDisabled();
+    await page.keyboard.type('pet');
+    await expect(page.locator('.pets .pet')).toHaveCount(0);
+    await open(page, server.url);
+    await expect(page.locator('.pets .pet')).toHaveCount(0);                 // still off after a reload
+    await page.locator('#petToggle').click();
+    await expect(page.locator('.pets .pet')).toHaveCount(4);
+    await ctx.close();
+  });
+
+  test('every sky scene runs without errors', async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', e => errors.push(e.message));
+    for (const sc of ['patrol', 'launch', 'landing', 'station', 'capsule']) {
+      await page.goto(server.url + 'index.html?scene=' + sc);
+      await expect(page.locator('#sky')).toHaveAttribute('data-scene', sc);
+      await page.waitForTimeout(1500);
+    }
+    expect(errors).toEqual([]);
   });
 
   test('scrolling holds 60 fps (p95 frame under 20 ms)', async ({ browser }) => {

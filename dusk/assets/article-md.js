@@ -246,7 +246,7 @@
   }
 
   window.articleReady = Promise.all([
-    script(ASSETS + "vendor/marked.umd.js?v=00aaa57b"),
+    script(ASSETS + "vendor/marked.umd.js?v=bafeba7c"),
     get("entry.json", "json").catch(function (e) { console.error("[article]", e.message); return {}; }),
     get("article.md", "text")
   ]).then(function (r) {
@@ -254,9 +254,9 @@
   }).catch(sorry).then(function () {
     /* fx.js (quote, pets, lightbox) and article.js (text-message reveal)
        read the page when they start, so they load after it's built */
-    return script(ASSETS + "fx.js?v=00aaa57b");
+    return script(ASSETS + "fx.js?v=bafeba7c");
   }).then(function () {
-    return script(ASSETS + "article.js?v=00aaa57b");
+    return script(ASSETS + "article.js?v=bafeba7c");
   }).then(function () {
     if (location.hash.length > 1) {
       var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));

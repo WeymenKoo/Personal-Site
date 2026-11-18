@@ -1,0 +1,554 @@
+{
+  "source": "UBC Vancouver, official transcript of academic record, printed April 05, 2025",
+  "program": "Bachelor of Applied Science, Electrical Engineering",
+  "transfer": 12,
+  "cumulative": {
+    "credits": 115,
+    "avg": 69.7
+  },
+  "sessions": [
+    {
+      "name": "2021-22 Winter Session",
+      "year": "Year 1",
+      "rows": [
+        {
+          "term": "1",
+          "code": "APSC_V 100",
+          "credits": "3.0",
+          "title": "Introduction to Engineering I",
+          "pct": 82,
+          "letter": "A-",
+          "rec": "3.0",
+          "size": 247,
+          "avg": 77
+        },
+        {
+          "term": "1",
+          "code": "APSC_V 160",
+          "credits": "3.0",
+          "title": "Introduction to Computation in Engineering Design",
+          "pct": 85,
+          "letter": "A",
+          "rec": "3.0",
+          "size": 272,
+          "avg": 78
+        },
+        {
+          "term": "1",
+          "code": "CHEM_V 154",
+          "credits": "3.0",
+          "title": "Chemistry for Engineering",
+          "pct": 69,
+          "letter": "B-",
+          "rec": "3.0",
+          "size": 304,
+          "avg": 69
+        },
+        {
+          "term": "1",
+          "code": "MATH_V 100",
+          "credits": "3.0",
+          "title": "Differential Calculus with Applications to Physical Sciences and Engineering",
+          "pct": 57,
+          "letter": "C-",
+          "rec": "3.0",
+          "size": 117,
+          "avg": 65
+        },
+        {
+          "term": "1",
+          "code": "PHYS_V 157",
+          "credits": "3.0",
+          "title": "Introductory Physics for Engineers I",
+          "pct": 77,
+          "letter": "B+",
+          "rec": "3.0",
+          "size": 285,
+          "avg": 75
+        },
+        {
+          "term": "2",
+          "code": "APSC_V 101",
+          "credits": "3.0",
+          "title": "Introduction to Engineering II",
+          "pct": 72,
+          "letter": "B",
+          "rec": "3.0",
+          "size": 233,
+          "avg": 75
+        },
+        {
+          "term": "2",
+          "code": "MATH_V 101",
+          "credits": "3.0",
+          "title": "Integral Calculus with Applications to Physical Sciences and Engineering",
+          "pct": 59,
+          "letter": "C-",
+          "rec": "3.0",
+          "size": 107,
+          "avg": 75
+        },
+        {
+          "term": "2",
+          "code": "MATH_V 152",
+          "credits": "3.0",
+          "title": "Linear Systems",
+          "pct": 65,
+          "letter": "C+",
+          "rec": "3.0",
+          "size": 98,
+          "avg": 68
+        },
+        {
+          "term": "2",
+          "code": "PHYS_V 158",
+          "credits": "3.0",
+          "title": "Introductory Physics for Engineers II",
+          "pct": 58,
+          "letter": "C-",
+          "rec": "3.0",
+          "size": 268,
+          "avg": 62
+        },
+        {
+          "term": "2",
+          "code": "PHYS_V 159",
+          "credits": "1.0",
+          "title": "Introductory Physics Laboratory for Engineers",
+          "pct": 93,
+          "letter": "A+",
+          "rec": "1.0",
+          "size": 41,
+          "avg": 90
+        },
+        {
+          "term": "2",
+          "code": "PHYS_V 170",
+          "credits": "3.0",
+          "title": "Mechanics I",
+          "pct": 84,
+          "letter": "A-",
+          "rec": "3.0",
+          "size": 302,
+          "avg": 77
+        },
+        {
+          "term": "2",
+          "code": "WRDS_V 150B",
+          "credits": "3.0",
+          "title": "Writing and Research in the Disciplines",
+          "pct": 75,
+          "letter": "B",
+          "rec": "3.0",
+          "size": 27,
+          "avg": 73
+        }
+      ],
+      "awards": [
+        "Outstanding International Student Award (Vancouver)"
+      ]
+    },
+    {
+      "name": "2022-23 Winter Session",
+      "year": "Year 2",
+      "rows": [
+        {
+          "term": "1",
+          "code": "CPEN_V 211",
+          "credits": "5.0",
+          "title": "Computing Systems I",
+          "pct": 69,
+          "letter": "B-",
+          "rec": "5.0",
+          "size": 315,
+          "avg": 67
+        },
+        {
+          "term": "1",
+          "code": "CPSC_V 259",
+          "credits": "4.0",
+          "title": "Data Structures and Algorithms for Electrical Engineers",
+          "pct": 66,
+          "letter": "C+",
+          "rec": "4.0",
+          "size": 192,
+          "avg": 73
+        },
+        {
+          "term": "1",
+          "code": "ELEC_V 201",
+          "credits": "4.0",
+          "title": "Circuit Analysis I",
+          "pct": 73,
+          "letter": "B",
+          "rec": "4.0",
+          "size": 205,
+          "avg": 74
+        },
+        {
+          "term": "1",
+          "code": "MATH_V 253",
+          "credits": "3.0",
+          "title": "Multivariable Calculus",
+          "pct": 70,
+          "letter": "B-",
+          "rec": "3.0",
+          "size": 692,
+          "avg": 72
+        },
+        {
+          "term": "1",
+          "code": "MATH_V 256",
+          "credits": "3.0",
+          "title": "Differential Equations",
+          "pct": 64,
+          "letter": "C+",
+          "rec": "3.0",
+          "size": 97,
+          "avg": 65
+        },
+        {
+          "term": "2",
+          "code": "ELEC_V 202",
+          "credits": "4.0",
+          "title": "Circuit Analysis II",
+          "size": 66,
+          "avg": 69,
+          "exam": {
+            "subject": "Circuit Analysis II",
+            "minutes": 10,
+            "variants": [
+              {
+                "lines": [
+                  "ELEC 202 · FINAL EXAMINATION · QUESTION 4 (10 marks)",
+                  "",
+                  "A series RLC circuit has R = 4 Ω, L = 1 H and C = 1/3 F.",
+                  "All initial conditions are zero. At t = 0 a 12 V DC source",
+                  "is switched across the series combination.",
+                  "",
+                  "(a) Write the differential equation for the capacitor voltage v_C(t)",
+                  "    and classify the response (under-, critically or over-damped).",
+                  "(b) Solve for v_C(t), t ≥ 0.",
+                  "(c) Evaluate v_C(t) at t = ln 2 s, in volts."
+                ],
+                "ask": "(c), in volts",
+                "salt": "O8eupPqHsC9gQymvBV0Erw==",
+                "iv": "20Cw6jtoo86AGTiK",
+                "ct": "+GgVk8/KUf8K6tdfx1iizeTtSY2FkzDQfDIOw9wJnZxzmYs2QDPAQdoLVlGuOkUOfP/X",
+                "iter": 150000
+              },
+              {
+                "lines": [
+                  "ELEC 202 · FINAL EXAMINATION · QUESTION 2 (10 marks)",
+                  "",
+                  "A source v(t) = 10 cos(1000 t) V drives a 6 Ω resistor in series",
+                  "with an 8 mH inductor, in sinusoidal steady state.",
+                  "",
+                  "(a) Find the impedance seen by the source, in polar form.",
+                  "(b) Find the phasor current I and its phase relative to v(t).",
+                  "(c) Find the average power delivered to the circuit, in watts."
+                ],
+                "ask": "(c), in watts",
+                "salt": "6NsZhEfNiAe7Sav+GNQrXQ==",
+                "iv": "hGpvhNCUb1nZs9fD",
+                "ct": "HgdQsRDcjdARqzZ6evHwZgGXlvHcUNbg9h7n84TKd9VlSzQGIcy4/rUWePtqDrCIIwYE",
+                "iter": 150000
+              },
+              {
+                "lines": [
+                  "ELEC 202 · FINAL EXAMINATION · QUESTION 6 (10 marks)",
+                  "",
+                  "An RC low-pass filter has R = 1 kΩ in series, and C = 1 µF from",
+                  "the output to ground. The output is unloaded.",
+                  "",
+                  "(a) Derive the transfer function H(s) = V_out(s) / V_in(s).",
+                  "(b) Sketch the Bode magnitude plot; mark the corner frequency.",
+                  "(c) Find |H(jω)| at ω = 1000 rad/s."
+                ],
+                "ask": "(c), as a number",
+                "salt": "1FPhlFTS1LXgG/oqolJf8Q==",
+                "iv": "5v4v41+LD1vdb2zX",
+                "ct": "pSmgPl08RNa5HGjuB2AUe+3OaRUioEWZRwX9RUZDqH2ELWiP77yXEd6tkAgcAPjZ28GW",
+                "iter": 150000
+              }
+            ]
+          }
+        },
+        {
+          "term": "2",
+          "code": "ELEC_V 211",
+          "credits": "2.0",
+          "title": "Engineering Electromagnetics",
+          "pct": 65,
+          "letter": "C+",
+          "rec": "2.0",
+          "size": 96,
+          "avg": 66
+        },
+        {
+          "term": "2",
+          "code": "ELEC_V 221",
+          "credits": "4.0",
+          "title": "Signals and Systems",
+          "pct": 71,
+          "letter": "B-",
+          "rec": "4.0",
+          "size": 178,
+          "avg": 73
+        },
+        {
+          "term": "2",
+          "code": "ELEC_V 281",
+          "credits": "3.0",
+          "title": "Technical Communication",
+          "pct": 80,
+          "letter": "A-",
+          "rec": "3.0",
+          "size": 17,
+          "avg": 73
+        },
+        {
+          "term": "2",
+          "code": "ELEC_V 291",
+          "credits": "6.0",
+          "title": "Electrical Engineering Design Studio I",
+          "pct": 78,
+          "letter": "B+",
+          "rec": "6.0",
+          "size": 147,
+          "avg": 81
+        },
+        {
+          "term": "2",
+          "code": "MATH_V 264",
+          "credits": "1.0",
+          "title": "Vector Calculus for Electrical Engineering",
+          "pct": 65,
+          "letter": "C+",
+          "rec": "1.0",
+          "size": 96,
+          "avg": 66
+        }
+      ]
+    },
+    {
+      "name": "2023 Summer Session",
+      "year": "Year 2",
+      "rows": [
+        {
+          "code": "CIVL_V 250",
+          "credits": "3.0",
+          "title": "Engineering and Sustainable Development",
+          "pct": 83,
+          "letter": "A-",
+          "rec": "3.0",
+          "size": 285,
+          "avg": 87
+        }
+      ]
+    },
+    {
+      "name": "2023-24 Winter Session",
+      "year": "Year 3",
+      "rows": [
+        {
+          "term": "1",
+          "code": "CPEN_V 311",
+          "credits": "4.0",
+          "title": "Digital Systems Design",
+          "pct": 71,
+          "letter": "B-",
+          "rec": "4.0",
+          "size": 107,
+          "avg": 77
+        },
+        {
+          "term": "1",
+          "code": "ELEC_V 301",
+          "credits": "4.0",
+          "title": "Electronic Circuits",
+          "pct": 72,
+          "letter": "B",
+          "rec": "4.0",
+          "size": 109,
+          "avg": 80
+        },
+        {
+          "term": "1",
+          "code": "ELEC_V 341",
+          "credits": "4.0",
+          "title": "Systems and Control",
+          "pct": 68,
+          "letter": "B-",
+          "rec": "4.0",
+          "size": 70,
+          "avg": 80
+        },
+        {
+          "term": "1",
+          "code": "ELEC_V 342",
+          "credits": "4.0",
+          "title": "Electro-Mechanical Energy Conversion and Transmission",
+          "pct": 60,
+          "letter": "C",
+          "rec": "4.0",
+          "size": 109,
+          "avg": 72
+        },
+        {
+          "term": "1-2",
+          "code": "APSC_V 107",
+          "credits": "0.0",
+          "title": "Introduction to Applied Science Co-op",
+          "letter": "P"
+        },
+        {
+          "term": "2",
+          "code": "ELEC_V 311",
+          "credits": "4.0",
+          "title": "Electromagnetic Fields and Waves",
+          "pct": 78,
+          "letter": "B+",
+          "rec": "4.0",
+          "size": 66,
+          "avg": 81
+        },
+        {
+          "term": "2",
+          "code": "ELEC_V 315",
+          "credits": "4.0",
+          "title": "Electronic Materials and Devices",
+          "pct": 55,
+          "letter": "C-",
+          "rec": "4.0",
+          "size": 61,
+          "avg": 68
+        },
+        {
+          "term": "2",
+          "code": "ELEC_V 391",
+          "credits": "6.0",
+          "title": "Electrical Engineering Design Studio II",
+          "pct": 95,
+          "letter": "A+",
+          "rec": "6.0",
+          "size": 135,
+          "avg": 87
+        },
+        {
+          "term": "2",
+          "code": "MATH_V 302",
+          "credits": "3.0",
+          "title": "Introduction to Probability",
+          "size": 143,
+          "avg": 70,
+          "exam": {
+            "subject": "Introduction to Probability",
+            "minutes": 10,
+            "variants": [
+              {
+                "lines": [
+                  "MATH 302 · FINAL EXAMINATION · QUESTION 5 (10 marks)",
+                  "",
+                  "Let X and Y be independent, each Exponential with rate 1.",
+                  "",
+                  "(a) Show that W = X / (X + Y) is Uniform(0, 1).",
+                  "    Justify every change of variables, including the Jacobian.",
+                  "(b) Using (a) or otherwise, compute P(X > 2Y).",
+                  "",
+                  "No credit for an answer without a derivation."
+                ],
+                "ask": "(b), as a probability",
+                "salt": "OVb9rkcKjMhvRkEBAd2CZA==",
+                "iv": "Su9iH3cGJHemvNbx",
+                "ct": "7TB2pVvqFxAzOWIyfMThW5uxMBz/sVNVhl6thDUqbhKqFJFyuBCnzlPytjMhR3sem1Ui",
+                "iter": 150000
+              },
+              {
+                "lines": [
+                  "MATH 302 · FINAL EXAMINATION · QUESTION 3 (10 marks)",
+                  "",
+                  "N ~ Poisson(4) coins are tossed; each lands heads with probability 1/4,",
+                  "independently of N and of each other. Let H be the number of heads",
+                  "and T = N − H the number of tails.",
+                  "",
+                  "(a) Prove that H and T are independent Poisson random variables,",
+                  "    and state their means.",
+                  "(b) Compute E[T | H = 2]."
+                ],
+                "ask": "(b)",
+                "salt": "HLDMsFbgST2DMOmNr6SzDw==",
+                "iv": "Tkmn6mArp7u0vOLU",
+                "ct": "vlkIsIq7WJlVpNi3Lk6tjyjtwFnREbrMLRYEk8SqVq/j766xRglyrDs52pFrgMCG9Eds",
+                "iter": 150000
+              },
+              {
+                "lines": [
+                  "MATH 302 · FINAL EXAMINATION · QUESTION 7 (10 marks)",
+                  "",
+                  "U₁, U₂, U₃ are independent Uniform(0, 1). Let M = min(U₁, U₂, U₃).",
+                  "",
+                  "(a) Find the CDF and the density of M from first principles.",
+                  "(b) Compute E[M] and E[M²].",
+                  "(c) Compute Var(M)."
+                ],
+                "ask": "(c)",
+                "salt": "AlN8sb/UbxVe9F/X4HieFQ==",
+                "iv": "dPtBlDBLxhUUGd38",
+                "ct": "tx7kwinkVDBoPKCeG6EBviYA7CkVdYjKuve2OKoW6XeadHxM6ITevVgIEpSFRGhLj7J/",
+                "iter": 150000
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2024 Summer Session",
+      "year": "Year 4",
+      "rows": [
+        {
+          "code": "BIOL_V 111",
+          "credits": "3.0",
+          "title": "Introduction to Modern Biology",
+          "pct": 65,
+          "letter": "C+",
+          "rec": "3.0",
+          "size": 114,
+          "avg": 79
+        },
+        {
+          "code": "ELEC_V 481",
+          "credits": "3.0",
+          "title": "Economic Analysis of Engineering Projects",
+          "pct": 60,
+          "letter": "C",
+          "rec": "3.0",
+          "size": 129,
+          "avg": 70
+        }
+      ]
+    },
+    {
+      "name": "2024-25 Winter Session",
+      "year": "Year 4",
+      "rows": [
+        {
+          "term": "1",
+          "code": "APSC_V 110",
+          "credits": "3.0",
+          "title": "Co-operative Education Work Term I",
+          "letter": "P",
+          "rec": "3.0"
+        },
+        {
+          "term": "2",
+          "code": "APSC_V 210",
+          "credits": "3.0",
+          "title": "Co-operative Education Work Term",
+          "letter": "CIP"
+        }
+      ]
+    }
+  ]
+}
