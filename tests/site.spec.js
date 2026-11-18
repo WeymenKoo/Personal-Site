@@ -29,11 +29,11 @@ test.describe('as shipped', () => {
     expect(errors).toEqual([]);
   });
 
-  test('Side A has the five projects in order; Side B and the shelf are empty for now', async ({ page }) => {
+  test('Side A has the seven projects in order; Side B and the shelf are empty for now', async ({ page }) => {
     await open(page, server.url);
-    await expect(page.locator('.proj h3')).toHaveText(['Flight controller SoM', 'FOC motor controller', 'AeroDesign power board', 'Shadow: power distribution', 'Kyogre and Spirit']);
-    await expect(page.locator('.proj .no')).toHaveText(['A1', 'A2', 'A3', 'A4', 'A5']);
-    await expect(page.locator('#projectCount')).toHaveText('05');
+    await expect(page.locator('.proj h3')).toHaveText(['Flight controller SoM', 'FOC motor controller', 'AeroDesign power board', 'Shadow: power distribution', 'Kyogre and Spirit', 'DC electronic load', 'Micromouse']);
+    await expect(page.locator('.proj .no')).toHaveText(['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7']);
+    await expect(page.locator('#projectCount')).toHaveText('07');
     await expect(page.locator('.tape')).toHaveCount(0);
     await expect(page.locator('.rec')).toHaveCount(0);
     for (const id of ['tapeCount', 'recordCount']) await expect(page.locator('#' + id)).toHaveText('00');
@@ -51,7 +51,7 @@ test.describe('as shipped', () => {
 
   test('every project has a write-up, and the résumé timeline is gone', async ({ page }) => {
     await open(page, server.url);
-    await expect(page.locator('.proj .more')).toHaveCount(5);
+    await expect(page.locator('.proj .more')).toHaveCount(7);
     await expect(page.locator('.tl')).toHaveCount(0);
     await expect(page.locator('#off .end a[href^="mailto:"]')).toBeVisible();
   });
