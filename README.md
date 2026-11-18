@@ -51,7 +51,7 @@ The power distribution system for Shadow, UBC AeroDesign's 2023–24 Advanced Cl
 
 ### [Kyogre and Spirit](https://weymenkoo.github.io/Personal-Site/content/projects/kyogre-spirit/index.html)
 
-<img src="dusk/content/projects/kyogre-spirit/card.jpg" alt="Three aircraft: Kyogre in blue and red on a turf field, the first Spirit in purple and white on a gravel field, and the second Spirit in transparent red on a concrete apron" width="720">
+<img src="dusk/content/projects/kyogre-spirit/tldr.jpg" alt="Three aircraft: Kyogre in blue on a turf field, the first Spirit in purple and white on a gravel field, and the second Spirit in transparent red on a concrete apron" width="720">
 
 **Flown once** · 2023 · 2 airframes · 120 in span · S1223 wing · NACA 0012 tail · balsa, ply and carbon fibre
 
