@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — Weymen Koo</title>
+<meta name="description" content="Reach Weymen Koo. By email, by phone, or the hard way: by telegraph.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0d0820" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4eefb" media="(prefers-color-scheme: light)">
+<link rel="icon" href="design/toucan.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300..800;1,300..800&family=Noto+Sans+SC:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css?v=00aaa57b">
+<link rel="stylesheet" href="assets/contact.css?v=00aaa57b">
+</head>
+<body class="contact">
+
+<!-- the same sky and city as the title screen, held still behind the page -->
+<div class="backdrop" aria-hidden="true"><div class="city"></div></div>
+
+<header class="topbar">
+  <a class="brand" href="index.html">WK · TOP FLOOR</a>
+  <nav><a href="index.html#projects">Projects</a><a href="contact.html" aria-current="page">Contact</a></nav>
+</header>
+
+<main class="wrap tg">
+  <p class="kicker">Contact</p>
+  <h1>Send a telegram.</h1>
+  <p class="lede">The details are on the cheat sheet, in plain sight. Or tap <b>HI</b> on the key and a message line opens.</p>
+
+  <div class="tg-desk">
+
+    <!-- ============ the cheat sheet ============ -->
+    <section class="sheet" aria-label="Morse code cheat sheet">
+      <p class="sheet-head">International Morse code <span>Field cheat sheet · Station WK-01 · Vancouver</span></p>
+
+      <dl class="plain">
+        <div><dt>Email</dt><dd><a id="plainEmail" href="mailto:kchweymen@gmail.com">kchweymen@gmail.com</a></dd></div>
+        <div><dt>Phone</dt><dd><a id="plainPhone" href="tel:+16049689695">+1 604 968 9695</a></dd></div>
+      </dl>
+
+      <!-- filled by contact.js from the same table the decoder uses -->
+      <div class="codes" id="codes"></div>
+
+      <p class="sheet-how"><b>To open the line:</b> tap <b>HI</b> &nbsp;<span class="m">···· &nbsp;··</span><br>
+        A short tap is a dot. Hold for a dash. Pause between letters. The space bar works too.</p>
+      <p class="sheet-foot"><span class="m">−−··· ···−−</span></p>
+    </section>
+
+    <!-- ============ the key and the tape ============ -->
+    <section class="rig" aria-label="Telegraph">
+      <div class="tape" aria-live="polite">
+        <span class="tape-label">Tape</span>
+        <output id="tapeText"></output><span id="tapeNow" class="m"></span><i class="blink">_</i>
+      </div>
+
+      <button class="key" id="key" type="button" aria-label="Telegraph key. Tap for a dot, hold for a dash.">
+        <span class="key-base"></span>
+        <span class="key-post"></span>
+        <span class="key-arm"><span class="key-knob"></span></span>
+        <span class="key-contact"></span>
+      </button>
+      <p class="rig-hint" id="hint">Tap the key: <b>HI</b> is four dots, a pause, two dots.</p>
+      <div class="rig-row">
+        <button class="mini" id="clearTape" type="button">Clear tape</button>
+        <button class="mini" id="sound" type="button" aria-pressed="true">Sound: on</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ the message line: opens when HI is tapped ============ -->
+  <section class="line" id="line" hidden aria-label="Message">
+    <p class="kicker">Line open</p>
+    <label for="from">From</label>
+    <input id="from" type="text" maxlength="80" autocomplete="name" placeholder="Your name">
+    <label for="msg">Message <span id="count">0 / 1500</span></label>
+    <textarea id="msg" rows="6" maxlength="1500" placeholder="Words only. No files, no attachments, no pigeons."></textarea>
+    <p class="echo m" id="echo" aria-hidden="true"></p>
+    <div class="send">
+      <a class="go" id="sendEmail" href="mailto:kchweymen@gmail.com">Send by email ▸</a>
+      <a class="go alt" id="sendText" href="sms:+16049689695">Send as a text ▸</a>
+    </div>
+    <p class="fine">Sending opens your own email or messages app with the telegram written out. Nothing is stored on this site.</p>
+  </section>
+
+  <p class="back"><a href="index.html#projects">← Back to the projects</a></p>
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="assets/fx.js?v=00aaa57b"></script>
+<script src="assets/contact.js?v=00aaa57b"></script>
+</body>
+</html>
