@@ -27,7 +27,7 @@ A flight-controller system-on-module for UBC AeroDesign. The STM32H757, two IMUs
 
 ### [FOC motor controller](https://weymenkoo.github.io/Personal-Site/content/projects/foc-controller/index.html)
 
-<img src="dusk/content/projects/foc-controller/card.jpg" alt="Render of the FOC motor controller, top side: three-phase bridge, bulk capacitors, DRV8323S and STM32G431, on brass standoffs" width="720">
+<img src="dusk/content/projects/foc-controller/tldr.jpg" alt="The assembled Rev 1 board, top side: the three-phase bridge, bulk capacitors, STM32G431 and JST-GH connectors" width="720">
 
 **Bring-up** · 2026 · 12S bus · 10 A RMS · STM32G431 + DRV8323S · CAN-FD
 
@@ -35,7 +35,7 @@ A single-axis, sensored field-oriented-control motor controller for one joint of
 
 ### [AeroDesign power board](https://weymenkoo.github.io/Personal-Site/content/projects/power-board/index.html)
 
-<img src="dusk/content/projects/power-board/card.jpg" alt="Render of the power board with Flight Controller v2 plugged in on top, on a dark background" width="720">
+<img src="dusk/content/projects/power-board/tldr.jpg" alt="The assembled power board held in a hand, top side, with the FORWARD arrow and the Codaca inductor" width="720">
 
 **Flown 2025** · 2025 · 2S–4S in · 5 V 15 A · LM5146 · 2 × TPS25983 · 6 layers
 
@@ -43,7 +43,7 @@ The power board for UBC AeroDesign's 2025 Advanced Class aircraft. It takes the 
 
 ### [Shadow: power distribution](https://weymenkoo.github.io/Personal-Site/content/projects/avionics-2024/index.html)
 
-<img src="dusk/content/projects/avionics-2024/card.jpg" alt="Render of the wiring hub with the Cube Orange, sensor board and GPS-RTK2 on top, next to the tail power module" width="720">
+<img src="dusk/content/projects/avionics-2024/tldr.jpg" alt="The wiring hub from above, with the sensor board and the SparkFun GPS-RTK2 stacked on it" width="720">
 
 **Flown 2024** · 2024 · Wiring hub · 2 power modules · 5 V 15 A · ISL8117A · dual battery
 

@@ -5,6 +5,8 @@
 //                     and prints portfolio.pdf (one project per page)
 //
 // Edit the projects in their entry.json, never in README.md or here.
+// The picture is entry.json's "tldr" (a 4:3 photo of the real board) if
+// it has one, otherwise the card's "cover".
 const fs = require('fs');
 const path = require('path');
 
@@ -21,7 +23,8 @@ function projects() {
     return {
       slug, no: 'A' + (i + 1), title: e.title, status: e.status, statusLabel: e.statusLabel,
       year: e.year, spec: e.spec, summary: e.summary,
-      image: `dusk/content/projects/${slug}/${e.cover.src}`, alt: e.cover.alt,
+      // "tldr" in entry.json: a photo of the real board; without it, the card's cover
+      image: `dusk/content/projects/${slug}/${(e.tldr || e.cover).src}`, alt: (e.tldr || e.cover).alt,
       url: e.link ? SITE + e.link : null,
     };
   });
