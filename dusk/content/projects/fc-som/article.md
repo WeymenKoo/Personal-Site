@@ -29,8 +29,9 @@ The 55 × 40 mm, 8-layer module carries the MCU, two IMUs, two barometers, a mag
 
 ![Render of the bottom side at an angle](bottom-angle.jpg#wide "Bottom side: the two DF17 connectors and the microSD socket.")
 
-![Top view on white](top-white.jpg "Top")
-![Bottom view on white](bottom-white.jpg "Bottom")
+![Top side, straight on: STM32H757, IMUs, FRAM, EEPROM, magnetometer, USB-C, SWD, boot and reset buttons](top.jpg#wide "Top.")
+
+![Bottom side, straight on: microSD socket, the two DF17 connectors and the barometers, with a contour-map silkscreen](bottom.jpg#wide "Bottom.")
 
 ![Two modules on a table, one top side up and one bottom side up](duo.jpg "Top and bottom. Rendered in Blender (Cycles) from the Altium STEP model and the fabrication Gerbers.")
 
