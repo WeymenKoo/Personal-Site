@@ -144,7 +144,7 @@ Every connector has a 100 nF capacitor on its 5 V pin and a PACDN042 ESD array o
 
 L2, L3 and L5 are the same solid ground pour. The battery comes in on the V+ and V− pads on one short edge; the 5 V and ground pads are on the other.
 
-![The assembled power board on a workbench](board-bench.jpg "Assembled.")
+![The assembled power board held in a hand, top side, with the FORWARD arrow and the empty flight controller headers](board-in-hand.jpg "Assembled, 1 May 2025.")
 
 ## Flight Controller v2 | The flight controller (not my design)
 

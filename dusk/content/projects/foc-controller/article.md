@@ -6,7 +6,7 @@ date: Rev 1 · 2026
 
 70 × 70 mm, 6 layers, built for a 12S bus. Six boards (one per joint) are planned, sharing the bus and talking over CAN-FD.
 
-![Two Rev 1 boards from the first JLCPCB run: assembled top side in front, bare bottom side held up behind](photo-rev1-boards.jpg "Rev 1, from the first JLCPCB run. Top side in front, bottom side behind.")
+![The assembled Rev 1 board, top side, on a light background](photo-rev1.jpg "Rev 1, assembled by JLCPCB.")
 
 **Status:** Rev 1 is design-frozen, fabricated and partly bench-validated on a 12 V supply. The MCU, gate driver (SPI), current sensing and PWM are verified, and a T-Motor MN601-S has been identified (R, L, back-EMF) and spun open-loop up to 1000 rpm. Not yet tested on the 12S bus, under load, or in closed-loop FOC.
 
@@ -53,6 +53,10 @@ Stackup: L1 signal + power, L2 ground, L3 / L4 signal + power, L5 ground (identi
 ![Per-layer cards L1 to L6 and all signal layers](layers-overview.jpg#wide "One card per layer.")
 
 ![All four routing layers overlaid](all-signal-layers.jpg "All four routing layers, ground planes hidden.")
+
+## Bench test
+
+![Rev 1 on the bench: a bench supply set to 12 V, the board, and the motor on the desk](bench-test.jpg#wide "Bench test on a 12 V supply.")
 
 ## Simulation vs scope
 

@@ -1,0 +1,15 @@
+{
+  "title": "Shadow: power distribution",
+  "status": "ok",
+  "statusLabel": "Flown 2024",
+  "year": "2024",
+  "spec": "Wiring hub · 2 power modules · 5 V 15 A · ISL8117A · dual battery",
+  "summary": "The power distribution system for Shadow, UBC AeroDesign's 2023–24 Advanced Class aircraft: a wiring hub that carries the Cube Orange flight controller, and two custom 5 V, 15 A power modules with dual-battery OR-ing and voltage and current sensing. Flown at SAE Aero Design West 2024 in Van Nuys, California.",
+  "cover": { "src": "card.jpg", "alt": "Render of the wiring hub with the Cube Orange, sensor board and GPS-RTK2 on top, next to the tail power module", "fit": "cover" },
+  "strip": [
+    { "src": "thumb-built.jpg", "alt": "The bare wiring hub on a wooden desk, with XT60 battery connectors and the fuse", "caption": "Built" },
+    { "src": "thumb-installed.jpg", "alt": "The wiring hub installed in the fuselage with the Cube Orange and wiring attached", "caption": "Installed" },
+    { "src": "thumb-test.jpg", "alt": "Shadow on the grass on a test day", "caption": "Test day" }
+  ],
+  "link": "content/projects/avionics-2024/index.html"
+}
