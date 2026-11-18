@@ -39,35 +39,27 @@ function image() {
   return png(60, 40, [(n * 70) % 256, (n * 130) % 256, (n * 40) % 256]);
 }
 
-/* the record from README "A record (the shelf)" */
-const TEMPLATE_RECORD = {
-  track: '75Suv3FnFQji4Lp3ATMLJ1', title: 'Johnny B. Goode', artist: 'Chuck Berry',
-  why: 'One line on why.', sleeve: ['#F2B45A', '#D9534F'], ink: '#2A1410',
-};
-
-/* A copy of the site reset to templates only, so tests that add entries
+/* A copy of the site reset to the template only, so tests that add entries
    start from a blank site no matter what real content has been published. */
 function copySite() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dusk-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'site-'));
   fs.cpSync(SITE, dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, 'content', 'manifest.json'),
-    JSON.stringify({ projects: ['example'], tapes: ['example'] }, null, 2));
-  fs.writeFileSync(path.join(dir, 'content', 'records.json'), JSON.stringify([TEMPLATE_RECORD], null, 2));
+  fs.writeFileSync(path.join(dir, 'content', 'manifest.json'), JSON.stringify({ projects: ['example'] }, null, 2));
   return dir;
 }
 
 const readJSON = f => JSON.parse(fs.readFileSync(f, 'utf8'));
 const writeJSON = (f, d) => fs.writeFileSync(f, JSON.stringify(d, null, 2));
 
-/* README "Adding a project" / "Adding a photo roll", steps 1–4 */
-function addEntry(site, kind, slug, entry, files) {
-  const dir = path.join(site, 'content', kind, slug);
-  fs.cpSync(path.join(site, 'content', kind, 'example'), dir, { recursive: true }); // 1. copy the template
-  for (const f of files) fs.writeFileSync(path.join(dir, f), image());              // 2. add the images
-  writeJSON(path.join(dir, 'entry.json'), entry);                                   // 3. edit entry.json
-  const manifest = path.join(site, 'content', 'manifest.json');                     // 4. list it
+/* README "Adding a project", steps 1–4 */
+function addEntry(site, slug, entry, files) {
+  const dir = path.join(site, 'content', 'projects', slug);
+  fs.cpSync(path.join(site, 'content', 'projects', 'example'), dir, { recursive: true }); // 1. copy the template
+  for (const f of files) fs.writeFileSync(path.join(dir, f), image());                    // 2. add the images
+  writeJSON(path.join(dir, 'entry.json'), entry);                                         // 3. edit entry.json
+  const manifest = path.join(site, 'content', 'manifest.json');                           // 4. list it
   const m = readJSON(manifest);
-  m[kind].push(slug);
+  m.projects.push(slug);
   writeJSON(manifest, m);
 }
 
@@ -76,18 +68,7 @@ function removeExample(site) {
   const manifest = path.join(site, 'content', 'manifest.json');
   const m = readJSON(manifest);
   m.projects = m.projects.filter(s => s !== 'example');
-  m.tapes = m.tapes.filter(s => s !== 'example');
   writeJSON(manifest, m);
 }
 
-/* README "Adding a record" */
-function addRecord(site, record) {
-  const f = path.join(site, 'content', 'records.json');
-  writeJSON(f, [...readJSON(f), record]);
-}
-
-function addHero(site) {
-  fs.writeFileSync(path.join(site, 'content', 'hero.jpg'), image());
-}
-
-module.exports = { copySite, addEntry, addRecord, addHero, removeExample, SITE };
+module.exports = { copySite, addEntry, removeExample, SITE };

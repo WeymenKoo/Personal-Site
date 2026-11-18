@@ -1,6 +1,6 @@
 /* =====================================================================
    article.js — small extras for long-form project pages.
-   The hour snap, tape counter and liner note come from dusk.js.
+   The quote, pets and lightbox come from fx.js.
    ===================================================================== */
 (function () {
   "use strict";
