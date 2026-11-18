@@ -6,6 +6,8 @@ projects. Light or dark follows the device's setting.
 ```
 index.html              page shell: the title screen, the projects, the footer
 contact.html            the telegraph (+ assets/contact.css, contact.js)
+resume.html             work history and the transcript (+ assets/resume.css, resume.js,
+                        content/transcript.json)
 assets/site.css         the look (dark and light themes at the top)
 assets/fx.js            the moving parts: quotes, the sky, the bar, pets,
                         the article lightbox and the hidden things
@@ -273,6 +275,32 @@ to attach a file (dropped or pasted files are turned away). To change the
 address or number, edit them in `contact.html` and at the top of
 `assets/contact.js`. Timing (how long a dash is) is at the top of that file
 too.
+
+### The résumé page (resume.html)
+
+The work history is written straight into `resume.html`. The transcript is
+`content/transcript.json`, typed out from the official PDF with the name,
+student number and date of birth left out (the PDF itself is never
+published).
+
+Rows with an `exam` are sealed: grades under 55%. Each has two or three
+original final-exam-style questions (`variants`), printed onto a canvas so
+the text can't be selected. A visitor gets one at random, ten minutes, and
+has to upload a photo or PDF of their working (it stays on their device;
+nobody marks it) and type the final answer. The grade is stored only
+encrypted, with a key made from the right answer, so the right answer is
+the only thing that shows it. Leaving the tab twice voids the attempt; a
+retake gets a different question.
+
+To change a sealed grade or a question, edit the `lines` / `ask` in
+`transcript.json`, then re-seal from a file kept OUTSIDE the repo (it holds
+the grades and the answers):
+
+    node tools/seal-grades.js ~/private/sealed-grades.json
+
+The format is in the comment at the top of `tools/seal-grades.js`. It is a
+joke lock, not a vault: the answers are short numbers, and someone patient
+could brute-force them.
 
 ### After editing anything in assets/
 
