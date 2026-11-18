@@ -23,8 +23,8 @@ content/
 design/                 logo sheet + toucan.svg (the mark, also the favicon)
 ```
 
-Side A currently holds four projects: `fc-som`, `foc-controller`,
-`power-board` and `avionics-2024`. Side B (photo rolls) and the record shelf are empty for now and
+Side A currently holds five projects: `fc-som`, `foc-controller`,
+`power-board`, `avionics-2024` and `kyogre-spirit`. Side B (photo rolls) and the record shelf are empty for now and
 say "Nothing here yet." until you add an entry. The templates to copy are
 still in `content/projects/example` and `content/tapes/example`.
 
@@ -321,7 +321,7 @@ instant.
 The suite lives in `tests/` at the repo root and runs in headless Chromium.
 It copies the site, adds projects, rolls, records and a Markdown article
 **by following the steps in this README**, and checks that they render. It
-also opens the three published articles (every image loads and has alt
+also opens the published articles (every image loads and has alt
 text, nothing over 1 MB, no leftover `PLACEHOLDER`), and covers the
 lightbox, record player, hour snap, tape counter, nav, phone layout,
 broken-entry handling and scroll performance. One-time setup, from the
