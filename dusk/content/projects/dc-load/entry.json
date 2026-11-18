@@ -1,0 +1,35 @@
+{
+  "title": "DC electronic load",
+  "status": "wip",
+  "statusLabel": "Rev E in layout",
+  "year": "2024–26",
+  "spec": "150 W · 0.6–58 V · 0–10 A · 4 × IRFP250N · isolated USB-C",
+  "summary": "A programmable DC load for testing power supplies and batteries. Rev B was built in late 2024 as a control board and a power board; a schematic review found errors in the power board. Rev E, the current design, uses four MOSFETs with one current loop each, isolation from USB, and is placed but not yet routed.",
+  "cover": {
+    "src": "card.jpg",
+    "alt": "The Rev B power board and control board side by side on a wooden desk",
+    "fit": "cover"
+  },
+  "tldr": {
+    "src": "tldr.jpg",
+    "alt": "The Rev B boards wired up on a desk, the power board on a CPU tower cooler, with a bench supply behind"
+  },
+  "strip": [
+    {
+      "src": "thumb-boards.jpg",
+      "alt": "The Rev B power board and control board on a desk",
+      "caption": "Rev B built"
+    },
+    {
+      "src": "thumb-control.jpg",
+      "alt": "The Rev B control board held up in front of its Altium layout",
+      "caption": "Control board"
+    },
+    {
+      "src": "thumb-bench.jpg",
+      "alt": "The Rev B boards on a CPU cooler on the bench, wired to a supply and an ST-Link",
+      "caption": "On the bench"
+    }
+  ],
+  "link": "content/projects/dc-load/index.html"
+}
