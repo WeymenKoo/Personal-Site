@@ -101,5 +101,6 @@ body.resume{background:radial-gradient(60rem 40rem at 0% 0%,color-mix(in srgb,va
   background:none;border:1px solid var(--line);border-radius:3px;padding:.45rem .7rem}
 .exam .mini{color:#444;border-color:#bbb}
 
-@media (prefers-color-scheme: light){ .tr-paper{box-shadow:0 12px 40px rgba(36,26,74,.18)} }
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .tr-paper{box-shadow:0 12px 40px rgba(36,26,74,.18)}}
+:root[data-theme="light"] .tr-paper{box-shadow:0 12px 40px rgba(36,26,74,.18)}
 @media (prefers-reduced-motion:reduce){ .reveal{animation:none} .exam-clock.low{animation:none} }

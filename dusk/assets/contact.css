@@ -6,14 +6,16 @@
 .backdrop .city{bottom:0;height:min(38vh,340px);opacity:.9}
 .contact .topbar{z-index:5}
 .contact .topbar a{color:#e3d6ff}
-@media (prefers-color-scheme: light){.contact .topbar a{color:#3a2d6b}}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .contact .topbar a{color:#3a2d6b}}
+:root[data-theme="light"] .contact .topbar a{color:#3a2d6b}
 .contact .topbar a[aria-current]{color:var(--accent)}
 
 .tg{position:relative;z-index:1;padding-top:clamp(5rem,12vh,7.5rem);padding-bottom:5rem}
 .tg h1{margin:.4rem 0 0;font-size:clamp(2.2rem,6vw,4rem);line-height:1.05;font-weight:800;font-style:italic;letter-spacing:-.02em;color:#f6eaff}
 .tg .lede{color:#e8dcff;max-width:44rem}
 .tg .lede b{color:#fff}
-@media (prefers-color-scheme: light){.tg h1{color:#241a4a}.tg .lede{color:#33285f}.tg .lede b{color:#1a1140}}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .tg h1{color:#241a4a}:root:not([data-theme="dark"]) .tg .lede{color:#33285f}:root:not([data-theme="dark"]) .tg .lede b{color:#1a1140}}
+:root[data-theme="light"] .tg h1{color:#241a4a}:root[data-theme="light"] .tg .lede{color:#33285f}:root[data-theme="light"] .tg .lede b{color:#1a1140}
 .m{font-style:normal;letter-spacing:.12em;white-space:nowrap}
 
 .tg-desk{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:2rem;align-items:start}

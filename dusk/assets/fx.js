@@ -218,7 +218,9 @@
     /* ---- one scene per visit: the patrol (ship vs aliens), a launch,
        a shuttle landing, the station going over, or a capsule coming home */
     var SCENE_LIST = ["patrol", "launch", "landing", "station", "capsule"];
-    var scene = SCENE_LIST[Math.floor(Math.random() * SCENE_LIST.length)];
+    var asked = (location.search.match(/[?&]scene=(\w+)/) || [])[1];     /* ?scene=launch picks one */
+    var scene = SCENE_LIST.indexOf(asked) >= 0 ? asked : SCENE_LIST[Math.floor(Math.random() * SCENE_LIST.length)];
+    sky.dataset.scene = scene;
     var horizon = function () { return H - (parseFloat(css("--counterH")) || 92) - 40; };
     var big = 3;
     var SS = sprite("starship", big), BO = sprite("booster", big), SH = sprite("shuttle", big), ST = sprite("station", big),
@@ -336,11 +338,11 @@
 
     }
 
-    var last = 0, spawnT = 4;
+    var last = 0, spawnT = 4, starCol = "", starAge = 0;
     function frame(t) {
       var dt = Math.min(50, t - (last || t)) / 16.67; last = t;
       ctx.clearRect(0, 0, W, H);
-      var starCol = css("--star") || "#fff";
+      if (!starCol || ++starAge > 90) { starCol = css("--star") || "#fff"; starAge = 0; }   /* re-read now and then: the theme can change */
 
       stars.forEach(function (s) {
         s.t += .02 * s.s * dt;
@@ -413,12 +415,16 @@
      ================================================================ */
   var KINDS = ["whale", "manta", "hedgehog", "jelly", "whaleling"];
   var pets = [], layer = null, mouse = { x: -999, y: -999 }, nextKind = 0;
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
+  var petsOn = store("wk-pets") !== "off";
+  function saveKinds() { store("wk-pet-kinds", JSON.stringify(pets.map(function (p) { return p.kind; }))); }
   function petLayer() {
     if (!layer) { layer = el("div", "pets"); layer.setAttribute("aria-hidden", "true"); document.body.appendChild(layer); }
     return layer;
   }
   function spawnPet(kind) {
-    if (pets.length >= 14) { toast("The bar's at capacity. No more pets."); return; }
+    if (!petsOn) return null;
+    if (pets.length >= 14) { toast("The bar's at capacity. No more pets."); return null; }
     kind = kind || KINDS[nextKind++ % KINDS.length];
     var scale = kind === "whale" ? 4 : 3;
     var right = sprite(kind, scale, false), left = sprite(kind, scale, true);
@@ -431,6 +437,7 @@
       vx: rnd(-.6, .6) || .3, vy: SPR[kind].walks ? 0 : rnd(-.3, .3), bob: rnd(0, 6.28), spin: 0 };
     pets.push(p);
     place(p);
+    saveKinds();
     return p;
   }
   function place(p) {
@@ -480,18 +487,74 @@
   }
   document.addEventListener("pointermove", function (e) { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
   document.addEventListener("pointerleave", function () { mouse.x = mouse.y = -999; });
+  function clearPets() {
+    pets.splice(0).forEach(function (p) { p.node.remove(); });
+  }
   if (!REDUCED) {
     requestAnimationFrame(petLoop);
-    /* the home page lets three out to start with */
-    if (document.body.classList.contains("home")) { spawnPet("whale"); spawnPet("manta"); spawnPet("hedgehog"); nextKind = 3; }
+    /* the same pets follow you from page to page; a first visit gets three */
+    var kept = null;
+    try { kept = JSON.parse(store("wk-pet-kinds") || "null"); } catch (e) { kept = null; }
+    if (petsOn) {
+      if (Array.isArray(kept)) kept.filter(function (k) { return SPR[k]; }).slice(0, 14).forEach(function (k) { spawnPet(k); });
+      else { spawnPet("whale"); spawnPet("manta"); spawnPet("hedgehog"); }
+      nextKind = pets.length;
+    }
   }
-  var petBtn = $("#petBtn");
-  if (petBtn) petBtn.addEventListener("click", function () {
-    if (REDUCED) { toast("Pets stay in when reduced motion is on."); return; }
+
+  /* ================================================================
+     THE DOCK — always in the corner, on every page: light / dark /
+     auto, pets on / off, and another pet.
+     ================================================================ */
+  var THEMES = ["auto", "light", "dark"];
+  var LABEL = { auto: "◐ Auto", light: "☀ Light", dark: "☾ Dark" };
+  function theme() { var t = store("wk-theme"); return t === "light" || t === "dark" ? t : "auto"; }
+  function setTheme(t) {
+    if (t === "auto") { store("wk-theme", null); document.documentElement.removeAttribute("data-theme"); }
+    else { store("wk-theme", t); document.documentElement.setAttribute("data-theme", t); }
+    themeBtn.textContent = LABEL[t];
+    themeBtn.setAttribute("aria-label", "Theme: " + t + ". Change theme");
+  }
+  var dock = el("div", "dock"); dock.setAttribute("role", "group"); dock.setAttribute("aria-label", "Site controls");
+  var themeBtn = el("button", "dock-btn"); themeBtn.type = "button"; themeBtn.id = "themeBtn";
+  themeBtn.title = "Light, dark, or follow your device";
+  themeBtn.addEventListener("click", function () {
+    var next = THEMES[(THEMES.indexOf(theme()) + 1) % THEMES.length];
+    setTheme(next);
+    toast(next === "auto" ? "Theme follows your device." : next === "light" ? "Golden hour." : "Night shift.");
+  });
+  var petToggle = el("button", "dock-btn"); petToggle.type = "button"; petToggle.id = "petToggle";
+  var petAdd = el("button", "dock-btn"); petAdd.type = "button"; petAdd.id = "petAdd"; petAdd.textContent = "+ Pet";
+  petAdd.title = "Let another pet out";
+  function showPets() {
+    petToggle.textContent = petsOn ? "Pets: on" : "Pets: off";
+    petToggle.setAttribute("aria-pressed", String(petsOn));
+    petToggle.title = petsOn ? "Put the pets away" : "Let the pets out";
+    petAdd.disabled = !petsOn || REDUCED;
+    if (REDUCED) { petToggle.disabled = true; petToggle.title = petAdd.title = "Pets stay in when reduced motion is on"; }
+  }
+  petToggle.addEventListener("click", function () {
+    petsOn = !petsOn;
+    store("wk-pets", petsOn ? null : "off");
+    if (!petsOn) { clearPets(); toast("Pets put away."); }
+    else {
+      var kinds = [];
+      try { kinds = JSON.parse(store("wk-pet-kinds") || "[]"); } catch (e) { kinds = []; }
+      if (!kinds.length) kinds = ["whale", "manta", "hedgehog"];
+      kinds.forEach(function (k) { if (SPR[k]) spawnPet(k); });
+      toast("The pets are back.");
+    }
+    showPets();
+  });
+  petAdd.addEventListener("click", function () {
     var p = spawnPet();
     if (p) toast("A " + (p.kind === "whaleling" ? "little whale" : p.kind) + " wandered in.");
   });
-  window.fx = { spawnPet: spawnPet, pets: pets, game: game, toast: toast };
+  dock.appendChild(themeBtn); dock.appendChild(petToggle); dock.appendChild(petAdd);
+  document.body.appendChild(dock);
+  setTheme(theme());
+  showPets();
+  window.fx = { spawnPet: spawnPet, pets: pets, game: game, toast: toast, setTheme: function (t) { setTheme(t); } };
 
   /* ================================================================
      LIGHTBOX — every article picture opens here, not in a new tab.
@@ -560,7 +623,7 @@
     if (e.key.length === 1) {
       typed = (typed + k).slice(-12);
       if (/sudo$/.test(typed)) toast("Nice try. This incident will be reported.");
-      if (/pet$/.test(typed)) spawnPet();
+      if (/pet$/.test(typed) && petsOn && !REDUCED) spawnPet();
       if (/smoke$/.test(typed)) toast("Don't let it out. The red car lights told you.");
       if (/42$/.test(typed)) toast("The answer. Now what was the question?");
     }
