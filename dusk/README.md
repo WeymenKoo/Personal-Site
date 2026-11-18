@@ -1,32 +1,31 @@
-# Dusk
+# Top floor
 
-A day, from golden hour to night. Scroll down and the page changes hour.
+A title screen — the view from a top-floor bar over a pixel city — and the
+projects. Light or dark follows the device's setting.
 
 ```
-index.html              page shell: hero and section headings
-assets/dusk.css         styling
-assets/dusk.js          hour snap, tape counter, liner notes, lightbox, record player
-assets/entries.js       builds projects / tapes / records from content/
+index.html              page shell: the title screen, the projects, the footer
+assets/site.css         the look (dark and light themes at the top)
+assets/fx.js            the moving parts: quotes, the sky, the bar, pets,
+                        the article lightbox and the hidden things
+assets/entries.js       builds the project cards from content/
 assets/article-md.js    builds a project's write-up page from its article.md
 assets/article.css      styling for those pages (+ article.js, vendor/marked)
+assets/img/             the city (dark and light) and the pixel-ship cursor
 content/
-  manifest.json         which projects and tapes appear, and in what order
-  hero.jpg              the landing photo (add your own)
-  placeholder.webp      shown for any image that's missing (the beach photo)
+  manifest.json         which projects appear, and in what order
+  placeholder.webp      shown for any image that's missing
   projects/<slug>/      one folder per project:
     entry.json            the card on the homepage
     article.md            the write-up, in Markdown  <- the file you edit
     *.jpg / *.png / *.gif its images
     index.html            the page that shows article.md (same in every folder, never edited)
-  tapes/<slug>/         entry.json + that roll's frames
-  records.json          the record shelf
-design/                 logo sheet + toucan.svg (the mark, also the favicon)
+design/                 logo sheet + toucan.svg (the favicon)
 ```
 
-Side A currently holds five projects: `fc-som`, `foc-controller`,
-`power-board`, `avionics-2024` and `kyogre-spirit`. Side B (photo rolls) and the record shelf are empty for now and
-say "Nothing here yet." until you add an entry. The templates to copy are
-still in `content/projects/example` and `content/tapes/example`.
+There are seven projects: `fc-som`, `foc-controller`, `power-board`,
+`avionics-2024`, `kyogre-spirit`, `dc-load` and `micromouse`. The template to
+copy is `content/projects/example`.
 
 ## Running it locally
 
@@ -47,10 +46,10 @@ Leave it running. Save a file, reload the page, and you'll see the change.
 ## Adding entries
 
 Every entry works the same way: **a folder, a JSON file, and one line in
-the manifest.** Numbering (A1, A2… / Tape 01, 02…) and the counts in the
-section headings are worked out automatically from manifest order.
+the manifest.** Numbering (A1, A2…) and the project count are worked out
+automatically from manifest order.
 
-### A project (Side A)
+### A project
 
 **1. Copy the template folder.** Name it with a short lowercase slug, with no
 spaces and no number (the number comes from the manifest order):
@@ -99,75 +98,22 @@ them by name in step 3.
 | `tldr` | optional: `{ "src", "alt" }`, a 4:3 photo of the real board for the README and `portfolio.pdf` (`npm run tldr`); without it they use `cover` |
 | `link` | where "Read →" goes: `"content/projects/<slug>/index.html"` for the write-up in this folder (see "Writing an article"), or any URL; `""` hides the link |
 
-The card photo is shown about 600 px wide and the strip thumbnails about
-150 px. Give the card its own small copies (around 1200 px for the cover,
-480 px squares for the strip) and keep the full-size images for the
-article: big images in the cards make scrolling stutter.
+The card shows the `tldr` picture (the one in the repo README and the PDF)
+when there is one, otherwise the `cover`, at 4:3, about 600 px wide. Give it
+its own 1200 × 900 copy, centred on the subject, and keep the full-size
+images for the article: big images in the cards make scrolling stutter.
+`strip` is no longer shown on the homepage; it can stay in the file.
 
 **4. List it in `content/manifest.json`.** Order here is order on the page:
 
 ```json
 {
-  "projects": ["foc-controller", "micromouse"],
-  "tapes": ["hanoi-2024"]
+  "projects": ["foc-controller", "micromouse"]
 }
 ```
 
 Leave `example` out of the list; its folder stays as the template to copy
-from. An empty list (`"tapes": []`) is fine: that side shows "Nothing here
-yet."
-
-### A photo roll (Side B)
-
-Same four steps, in `content/tapes/`:
-
-    cp -r content/tapes/example content/tapes/hanoi-2024
-
-```json
-{
-  "title": "Humid afternoon",
-  "location": "Hanoi",
-  "film": "Portra 400",
-  "notes": "Two lines about this roll.",
-  "song": "75Suv3FnFQji4Lp3ATMLJ1",
-  "frames": [
-    { "src": "01.jpg", "alt": "Hawker cooking over a wok" },
-    { "src": "02.jpg", "alt": "Open-air café counter" },
-    { "src": "03.jpg", "alt": "Minaret between buildings" },
-    { "src": "04.jpg", "alt": "Motorbike in a doorway", "width": 6 },
-    { "src": "05.jpg", "alt": "The city from a high floor", "width": 6 }
-  ]
-}
-```
-
-- **The first frame is always the big one.** Put your strongest shot first.
-- The layout is a 12-column grid. After the big first frame, frames are
-  4 columns wide by default. `"width": 6` makes a frame half-width and
-  `"width": 12` makes it a full-width strip. Use them to tidy up an
-  awkward count.
-- `song` is a Spotify track ID (see below). `""` hides the player.
-- The frame count in the header is counted for you.
-
-### A record (the shelf)
-
-Records have no images, so there's no folder. Add an object to the list in
-`content/records.json` (it starts empty: `[]`; separate objects with
-commas). The first record is the one loaded in the player. With no records,
-the shelf says "Nothing here yet." and the player is hidden.
-
-```json
-{
-  "track": "75Suv3FnFQji4Lp3ATMLJ1",
-  "title": "Johnny B. Goode",
-  "artist": "Chuck Berry",
-  "why": "One line on why.",
-  "sleeve": ["#F2B45A", "#D9534F"],
-  "ink": "#2A1410"
-}
-```
-
-`sleeve` is the two gradient colours on the cover; `ink` is the text colour
-on it. Pick an `ink` that reads clearly against both sleeve colours.
+from.
 
 ### Writing an article (the "Read →" page)
 
@@ -215,11 +161,9 @@ optional: without `title`, the page uses the title from `entry.json`. The
 status dot and its label always come from `entry.json`, so the card and the
 article never disagree.
 
-**Each `##` heading starts a chapter.** Chapters are numbered for you, and
-each one moves the page on an hour, the way the homepage does: the title
-block is golden hour, the last chapter is lights off, and the chapters in
-between are spread across the afternoon, dusk, blue hour and night. The
-deck's tape counter becomes a reading-progress counter.
+**Each `##` heading starts a chapter.** Chapters are numbered for you. Every
+picture opens big on the page when clicked. The page ends with a quote and
+the way back to the projects.
 
 | you write | you get |
 |---|---|
@@ -264,13 +208,6 @@ crossfade. `npm test` fails on any image over 1 MB.
 memes or other people's images off those slides. They're copyrighted,
 and on a public site they're the part that gets taken down.
 
-### Finding a Spotify track ID
-
-Spotify → the song → Share → Copy song link. You get something like:
-
-    https://open.spotify.com/track/75Suv3FnFQji4Lp3ATMLJ1?si=abc123
-                                   └──────── this part ──┘
-
 ### Image checklist
 
 - Export at about **1800 px on the long side**, JPEG quality ~80. A full-size
@@ -302,29 +239,45 @@ load is logged there with `[entries]` and the file path.
 
 ---
 
-## The hours
+## The moving parts (assets/fx.js)
 
-Each `<section>` in index.html has a `data-hour`. When a section's top
-crosses a little past the middle of the screen, the page snaps to that hour:
+- **Theme.** `site.css` has the dark colours in `:root` and the light ones
+  in the `prefers-color-scheme: light` block under it. The city has a
+  picture for each: `assets/img/city-dark.png`, `city-light.png`.
+- **Quotes.** `LINES` near the top of `fx.js`. The title screen cycles
+  through them; the footer and the end of each article show one at random.
+- **The sky.** One scene per visit, picked at random: the patrol (the ship
+  shoots down the aliens that drift in), a launch with hot staging, a
+  shuttle landing, the station going over, or a capsule under parachutes.
+  `SCENE_LIST` in `fx.js`. Clicking the ship makes it barrel-roll.
+- **The bar.** A different two or three drinks every visit, in different
+  places (`DRINKS`); clicking one says what it is.
+- **Pets.** Three to start (a whale, a manta, a hedgehog that stays on the
+  ground); "+ spawn a pet" in the footer, or typing `pet`, adds one, up to
+  14. They drift around the whole window and keep away from the cursor.
+  The sprites are rows of letters in `SPR`, one colour per letter.
+- **Pictures in articles** open big on the page (← → to step, Esc to
+  close) instead of in a new tab.
+- **Reduced motion** (an OS setting): the sky holds still, nothing
+  shines or blinks, and no pets are let out.
 
-    golden -> afternoon -> dusk -> blue -> night -> off
+### Hidden things
 
-- **Colours:** `HOURS` at the top of `assets/dusk.js`.
-- **Fade speed:** `--fade` in the `HOUR SNAP` block at the top of
-  `assets/dusk.css` (default `.6s`).
-
-The ink colour flips halfway through the fade, so text never sits
-grey-on-grey. With "reduce motion" switched on in the OS, the change is
-instant.
+- The white car lights are Morse: `IT WORKS ON MY BENCH`.
+- The red car lights are 8-bit ASCII, a lit dot for 1: `DONT LET THE SMOKE OUT`.
+- One window on the tallest tower blinks `SOS`.
+- The footer's faint binary says `hi`.
+- ↑↑↓↓←→←→ B A on the title screen starts an invasion. Typing `sudo`,
+  `smoke` or `42` gets an answer. The console has a note.
 
 ## Tests
 
 The suite lives in `tests/` at the repo root and runs in headless Chromium.
-It copies the site, adds projects, rolls, records and a Markdown article
-**by following the steps in this README**, and checks that they render. It
-also opens the published articles (every image loads and has alt
-text, nothing over 1 MB, no leftover `PLACEHOLDER`), and covers the
-lightbox, record player, hour snap, tape counter, nav, phone layout,
+It copies the site, adds projects and a Markdown article **by following
+the steps in this README**, and checks that they render. It also opens the
+published articles (every image loads and has alt text, nothing over 1 MB,
+no leftover `PLACEHOLDER`), and covers both themes, the cursor, the bar,
+the pets, the hidden codes, the lightbox, reduced motion, the phone layout,
 broken-entry handling and scroll performance. One-time setup, from the
 repo root:
 

@@ -1,27 +1,19 @@
 /* =====================================================================
-   entries.js — builds Side A, Side B and the record shelf from content/.
-   Order and numbering come from content/manifest.json.
+   entries.js — builds the project cards from content/.
+   Order comes from content/manifest.json; numbering is A1, A2, …
    ===================================================================== */
 (function () {
   "use strict";
 
   var PLACEHOLDER = "content/placeholder.webp";
-  var SPOTIFY = "https://open.spotify.com/embed/track/";
 
-  /* any image that fails to load (e.g. a template photo you haven't added yet)
-     falls back to the placeholder */
-  function toPlaceholder(img) {
-    if (img.dataset.ph) return;
+  /* an image that fails to load falls back to the placeholder */
+  document.addEventListener("error", function (e) {
+    var img = e.target;
+    if (img.tagName !== "IMG" || img.dataset.ph) return;
     img.dataset.ph = "1";
     img.src = PLACEHOLDER;
-  }
-  document.addEventListener("error", function (e) {
-    if (e.target.tagName === "IMG") toPlaceholder(e.target);
   }, true);
-  /* images above this script (the hero) may have failed before the listener existed */
-  Array.prototype.forEach.call(document.images, function (img) {
-    if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) toPlaceholder(img);
-  });
 
   function el(tag, attrs, kids) {
     var n = document.createElement(tag);
@@ -33,142 +25,48 @@
     (kids || []).forEach(function (c) { if (c) n.appendChild(c); });
     return n;
   }
-  function pad(n, w) { return ("000" + n).slice(-w); }
+  function pad(n) { return ("0" + n).slice(-2); }
   function getJSON(url) {
-    return fetch(url).then(function (r) {
+    return fetch(url, { cache: "no-cache" }).then(function (r) {
       if (!r.ok) throw new Error(url + " → " + r.status);
       return r.json();
     });
   }
-  function img(src, alt, extra) {
-    var a = { src: src, alt: alt || "", loading: "lazy" };
-    Object.keys(extra || {}).forEach(function (k) { a[k] = extra[k]; });
-    return el("img", a);
-  }
-  function spotify(track, title, id) {
-    var a = { src: SPOTIFY + track + "?utm_source=generator&theme=0", loading: "lazy",
-              allow: "clipboard-write; encrypted-media; fullscreen; picture-in-picture", title: title };
-    if (id) a.id = id;
-    return el("iframe", a);
-  }
 
-  /* ---------- Side A: one project ---------- */
+  /* one card. The whole card is the link to the article; the picture is
+     the README / PDF one (tldr) when there is one, else the cover. */
   function project(p, dir, i) {
-    var cover = p.cover || {};
-    var strip = (p.strip || []).map(function (s) {
-      return el("figure", {}, [img(dir + s.src, s.alt), el("figcaption", { text: s.caption || "" })]);
-    });
-    return el("article", { class: "proj" }, [
-      el("div", { class: "pic" + (cover.fit === "contain" ? " contain" : "") }, [img(dir + cover.src, cover.alt)]),
-      el("div", {}, [
+    var pic = p.tldr || p.cover || {};
+    var kids = [
+      el("div", { class: "pic" }, [el("img", { src: dir + pic.src, alt: pic.alt || "", loading: i < 2 ? "eager" : "lazy" })]),
+      el("div", { class: "body" }, [
         el("div", { class: "row" }, [
-          el("span", { class: "no", text: "A" + (i + 1) }),
+          el("span", {}, [el("span", { class: "no", text: "A" + (i + 1) }), document.createTextNode(p.year ? " · " + p.year : "")]),
           el("span", { class: "st " + (p.status || "idle"), text: p.statusLabel || "" })
         ]),
         el("h3", { text: p.title }),
         el("p", { class: "spec", text: p.spec || "" }),
-        strip.length ? el("div", { class: "strip" }, strip) : null,
-        el("p", { text: p.summary || "" }),
-        el("div", { class: "foot" }, [
-          el("span", { class: "lcd", "data-ghost": "8888", text: p.year || "" }),
-          p.link ? el("a", { class: "more", href: p.link, text: "Read →" }) : null
-        ])
+        el("p", { class: "sum", text: p.summary || "" }),
+        p.link ? el("span", { class: "more", text: "Read ▸" }) : null
       ])
-    ]);
-  }
-
-  /* ---------- Side B: one photo roll ---------- */
-  function tape(t, dir, i) {
-    var no = pad(i + 1, 2);
-    var frames = (t.frames || []).map(function (f, j) {
-      var n = pad(j + 1, 2);
-      var b = el("button", { "data-full": dir + f.src, "data-cap": "Tape " + no + " · " + n }, [
-        img(dir + f.src, f.alt),
-        el("span", { class: "n", text: n })
-      ]);
-      if (f.width) b.classList.add("w" + f.width);
-      return b;
-    });
-    var meta = el("div", { class: "meta" });
-    meta.append(t.location || "", el("br"), (t.film || "Film") + " · " + frames.length + " frames");
-    return el("article", { class: "tape" }, [
-      el("header", { class: "tape-head" }, [
-        el("span", { class: "lcd", "data-ghost": "88", text: no }),
-        el("h3", { text: t.title }),
-        meta
-      ]),
-      el("p", { class: "notes", text: t.notes || "" }),
-      el("div", { class: "frames" }, frames),
-      t.song ? el("div", { class: "side" }, [
-        el("span", { class: "print", text: "Play with →" }),
-        spotify(t.song, "Song for tape " + no)
-      ]) : null
-    ]);
-  }
-
-  /* ---------- Records: the shelf + one shared player ---------- */
-  function record(r, i) {
-    var s = r.sleeve || ["#888", "#444"];
-    var cover = el("div", { class: "cover" }, [
-      el("span", { text: pad(i + 1, 2) }),
-      el("span", { text: r.artist || "" })
-    ]);
-    cover.style.background = "linear-gradient(160deg," + s[0] + "," + s[1] + ")";
-    cover.style.color = r.ink || "#fff";
-    return el("button", {
-      class: "rec" + (i === 0 ? " on" : ""),
-      "data-track": r.track,
-      "data-title": r.title + " — " + r.artist
-    }, [
-      el("div", { class: "sleeve" }, [el("span", { class: "disc" }), cover]),
-      el("p", { class: "t", text: r.title }),
-      el("p", { class: "a", text: r.artist }),
-      el("p", { class: "why", text: r.why || "" })
-    ]);
-  }
-
-  /* a side with nothing on it yet says so, instead of leaving a hole */
-  function fill(id, nodes) {
-    var box = document.getElementById(id);
-    box.classList.toggle("empty", !nodes.length);
-    if (!nodes.length) nodes = [el("p", { class: "blank", text: "Nothing here yet." })];
-    box.replaceChildren.apply(box, nodes);
-  }
-  function count(id, n) { document.getElementById(id).textContent = pad(n, 2); }
-
-  function skip(what) {
-    return function (err) { console.error("[entries] skipped " + what + ":", err.message); return null; };
+    ];
+    return p.link ? el("a", { class: "proj", href: p.link }, kids) : el("article", { class: "proj" }, kids);
   }
 
   /* a broken entry is skipped and logged; the rest still render */
-  function loadAll(kind, slugs, build) {
-    return Promise.all(slugs.map(function (slug) {
-      var dir = "content/" + kind + "/" + slug + "/";
+  window.entriesReady = getJSON("content/manifest.json").then(function (m) {
+    return Promise.all((m.projects || []).map(function (slug) {
+      var dir = "content/projects/" + slug + "/";
       return getJSON(dir + "entry.json")
         .then(function (data) { return { data: data, dir: dir }; })
-        .catch(skip(dir + "entry.json"));
-    })).then(function (list) {
-      return list.filter(Boolean).map(function (x, i) { return build(x.data, x.dir, i); });
-    });
-  }
-
-  window.entriesReady = getJSON("content/manifest.json").then(function (m) {
-    return Promise.all([
-      loadAll("projects", m.projects || [], project),
-      loadAll("tapes", m.tapes || [], tape),
-      getJSON("content/records.json").catch(skip("content/records.json")).then(function (r) { return r || []; })
-    ]);
-  }).then(function (res) {
-    fill("projects", res[0]); count("projectCount", res[0].length);
-    fill("tapes", res[1]);    count("tapeCount", res[1].length);
-
-    var recs = res[2];
-    fill("shelf", recs.map(record)); count("recordCount", recs.length);
-    document.getElementById("deckPlayer").hidden = !recs.length;   /* no records, no player */
-    if (recs[0]) {
-      document.getElementById("nowTitle").textContent = recs[0].title + " — " + recs[0].artist;
-      document.getElementById("playerSlot").replaceChildren(spotify(recs[0].track, "Record player", "player"));
-    }
+        .catch(function (err) { console.error("[entries] skipped " + dir + "entry.json:", err.message); return null; });
+    }));
+  }).then(function (list) {
+    var cards = list.filter(Boolean).map(function (x, i) { return project(x.data, x.dir, i); });
+    var grid = document.getElementById("projectGrid");
+    if (!cards.length) cards = [el("p", { class: "lede", text: "Nothing here yet." })];
+    grid.replaceChildren.apply(grid, cards);
+    document.getElementById("projectCount").textContent = pad(list.filter(Boolean).length);
   }).catch(function (err) {
     console.error("[entries]", err);
     if (location.protocol === "file:") {
