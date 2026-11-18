@@ -83,7 +83,7 @@ test.describe('as shipped', () => {
     await expect(page.locator('#heroQuote blockquote')).toHaveText(/^“.+”$/);
     await expect(page.locator('#offLine blockquote')).toHaveText(/^“.+”$/);
     expect(await page.locator('#heroQuote blockquote').textContent()).not.toBe(await page.locator('#offLine blockquote').textContent());
-    await expect(page.locator('#contact a[href^="mailto:"]')).toBeVisible();
+    await expect(page.locator('#contact a.telegram')).toHaveAttribute('href', 'contact.html');
   });
 
   test('follows the device theme: dark and light', async ({ browser }) => {
