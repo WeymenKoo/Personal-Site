@@ -35,7 +35,7 @@ A single-axis, sensored field-oriented-control motor controller for one joint of
 
 ### [AeroDesign power board](https://weymenkoo.github.io/Personal-Site/content/projects/power-board/index.html)
 
-<img src="dusk/content/projects/power-board/tldr.jpg" alt="The assembled power board from above on the bench, FORWARD arrow pointing left, the Codaca inductor and the servo headers" width="720">
+<img src="dusk/content/projects/power-board/tldr.jpg" alt="The power board on the bench next to a roll of solder, tweezers and a soldering iron, with an inset of the reworked flight controller" width="720">
 
 **Flown 2025** · 2025 · 2S–4S in · 5 V 15 A · LM5146 · 2 × TPS25983 · 6 layers
 
@@ -43,7 +43,7 @@ The power board for UBC AeroDesign's 2025 Advanced Class aircraft. It takes the 
 
 ### [Shadow: power distribution](https://weymenkoo.github.io/Personal-Site/content/projects/avionics-2024/index.html)
 
-<img src="dusk/content/projects/avionics-2024/tldr.jpg" alt="The wiring hub from above, with the sensor board and the SparkFun GPS-RTK2 stacked on it" width="720">
+<img src="dusk/content/projects/avionics-2024/tldr.jpg" alt="The wiring hub installed in Shadow, with the orange Cube Orange flight controller, the red GNSS board and the wiring around them" width="720">
 
 **Flown 2024** · 2024 · Wiring hub · 2 power modules · 5 V 15 A · ISL8117A · dual battery
 
