@@ -334,7 +334,9 @@ test.describe('as shipped', () => {
     const cx = 120;                                       // canvas px (3 page px each at this width); the stop is near 300
     const y = await page.evaluate(() => { const z = window.depths.zones(); return z.stTop + z.stH - 13 * 3 - scrollY; });
     await page.mouse.move(cx * 3, y);
-    await page.waitForFunction(c => { const t = window.depths.train(); return t.blocked && t.v === 0 && t.x < c; }, cx, { timeout: 30000 });
+    // send a train in now, rather than waiting a whole cycle (CI renders few frames, so trains run slow there)
+    await page.evaluate(() => Object.assign(window.depths.train(), { phase: 'in', x: -4, v: 1.4, t: 0 }));
+    await page.waitForFunction(c => { const t = window.depths.train(); return t.blocked && t.v === 0 && t.x < c; }, cx, { timeout: 20000 });
     await expect(page.locator('#toast')).toContainText('horn');
   });
 
