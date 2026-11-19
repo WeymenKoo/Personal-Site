@@ -51,7 +51,7 @@ The crossed-out blocks are what the design started with: a second battery with i
 | Setting | Value |
 |---|---|
 | Undervoltage | on at `5.97 V`, off at `5.48 V` |
-| Overvoltage | off at `24.86 V`, back on at `22.79 V` |
+| Overvoltage | off at `24.86 V`, back on at `.79 V` |
 | Current limit | `17.81 A` |
 | Transient overcurrent blanking | `2021 µs` |
 | Inrush | `0.46 A`, no dV/dt start-up required |
@@ -77,7 +77,7 @@ The design targets, as written on the sheet:
 | Loop crossover | `50 kHz` |
 
 - **Controller:** TI LM5146 (U3), synchronous, driving two AON7534 N-channel MOSFETs (Q2 high side, Q3 low side).
-- **Inductor:** Codaca CSBX1275-3R3M, 3.3 µH, rated 22 A, saturating at 37 A. The sheet records the rule it was picked by: saturation current above the eFuse current limit (17.81 A).
+- **Inductor:** Codaca CSBX1275-3R3M, 3.3 µH, rated  A, saturating at 37 A. The sheet records the rule it was picked by: saturation current above the eFuse current limit (17.81 A).
 - **Output voltage:** 24.9 kΩ over 4.75 kΩ on the 0.8 V feedback pin, which sets `4.994 V`.
 - **Capacitors:** 4 × 4.7 µF ceramic on the input, 5 × 4.7 µF ceramic on the output; a 2.2 Ω + 100 nF RC across the input.
 - **Compensation:** a type III network (R15, C44, C46 on `COMP`; R16, R17, C47 on `FB`) for the 50 kHz crossover.
@@ -155,10 +155,10 @@ Flight Controller v2 was designed by another member of the avionics team. It is 
 
 ## SAE Aero Design 2025
 
-The power board and Flight Controller v2 flew in UBC AeroDesign's aircraft, number 22, in the Advanced Class of SAE Aero Design 2025.
+The power board and Flight Controller v2 flew in UBC AeroDesign's aircraft, number 221, in the Advanced Class of SAE Aero Design 2025.
 
-![Team members holding aircraft 22 up before a flight](comp-2025-launch.jpg#wide "Aircraft 22 at SAE Aero Design 2025.")
+![Team members holding aircraft 221 up before a flight](comp-2025-launch.jpg#wide "Aircraft 221 at SAE Aero Design 2025.")
 
-![Aircraft 22 in flight against a clear sky, a flag on the right](comp-2025-flight.jpg#bleed "In flight.")
+![Aircraft 221 in flight against a clear sky, a flag on the right](comp-2025-flight.jpg#bleed "In flight.")
 
 Results: [SAE Aero Design Advanced Class results (PDF)](https://www.saeaerodesign.com/content/Advanced-Class-Results.pdf).
