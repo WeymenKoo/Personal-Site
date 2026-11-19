@@ -263,6 +263,62 @@ test.describe('as shipped', () => {
     expect(errors).toEqual([]);
   });
 
+  test('click anything flying and it explodes', async ({ page }) => {
+    const errors = await open(page, server.url);
+    await page.goto(server.url + 'index.html?scene=station');
+    await page.waitForFunction(() => window.fx.game.craft().station.x > 200, null, { timeout: 20000 });
+    const p = await page.evaluate(() => {
+      const q = window.fx.game.craft().station, r = document.getElementById('sky').getBoundingClientRect();
+      return { x: q.x + r.left + 40, y: q.y + r.top + 12 };
+    });
+    await page.mouse.click(p.x, p.y);
+    await expect(page.locator('#toast')).toContainText('deorbited');
+    expect(await page.evaluate(() => window.fx.game.craft().station.wait)).toBeGreaterThan(0);
+    // the aliens too: invade, then shoot one by hand
+    await page.keyboard.press('Escape');
+    const hits = await page.evaluate(() => { window.fx.game.invade(); return window.fx.game.hits; });
+    const a = await page.evaluate(() => {
+      const r = document.getElementById('sky').getBoundingClientRect(), al = window.fx.game.craft().aliens;
+      const t = al[al.length - 1];                         // the far one: the ship won't get there first
+      return { x: r.left + t.x + 13, y: r.top + t.y + 10 };
+    });
+    await page.mouse.click(a.x, a.y);
+    await page.waitForFunction(h => window.fx.game.hits > h, hits, { timeout: 3000 });
+    expect(errors).toEqual([]);
+  });
+
+  test('the jazz club in the skyline plays a tune, and stops', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const errors = await open(page, server.url);
+    const club = page.locator('#jazz');
+    await expect(club).toBeVisible();
+    const box = await club.boundingBox(), city = await page.locator('.city').boundingBox();
+    expect(box.y).toBeGreaterThan(city.y);
+    expect(box.x).toBeGreaterThan(720);                  // right of the title, with the towers
+    await page.evaluate(() => document.querySelectorAll('.drink').forEach(d => d.remove()));
+    await club.click();
+    await expect(page.locator('#toast')).toContainText('Low Pass');
+    expect(await page.evaluate(() => window.fx.jazz.playing())).toBe(true);
+    await expect(page.locator('.note').first()).toBeAttached({ timeout: 4000 });
+    await club.click();
+    expect(await page.evaluate(() => window.fx.jazz.playing())).toBe(false);
+    expect(errors).toEqual([]);
+  });
+
+  test('the city sits to the right, and its aviation lights blink', async ({ page }) => {
+    await open(page, server.url);
+    const s = await page.locator('.city').evaluate(e => ({
+      pos: getComputedStyle(e).backgroundPositionX,
+      a: getComputedStyle(e, '::before').animationName, b: getComputedStyle(e, '::after').animationName,
+      ai: getComputedStyle(e, '::before').backgroundImage, bi: getComputedStyle(e, '::after').backgroundImage,
+    }));
+    expect(s.pos).toBe('100%');
+    expect([s.a, s.b]).toEqual(['av', 'av']);
+    expect(s.ai).toContain('city-lights-a.png');
+    expect(s.bi).toContain('city-lights-b.png');
+    for (const f of ['city-lights-a.png', 'city-lights-b.png']) expect(fs.existsSync(`${SITE}/assets/img/${f}`), f).toBe(true);
+  });
+
   test('scrolling holds 60 fps (p95 frame under 20 ms)', async ({ browser }) => {
     test.skip(!!process.env.CI, 'shared CI runners are too noisy to time frames');
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 });
