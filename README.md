@@ -19,7 +19,7 @@ The short version. Each title links to the full write-up on the site. Printable:
 
 ### [Flight controller SoM](https://weymenkoo.github.io/Personal-Site/content/projects/fc-som/index.html)
 
-<img src="dusk/content/projects/fc-som/card.jpg" alt="Render of the flight controller SoM, top side: the STM32H757 in the centre, USB-C on the right edge, UBC AeroDesign logo top left" width="720">
+<img src="dusk/content/projects/fc-som/tldr.jpg" alt="Render of the flight controller SoM at an angle on a dark background: the STM32H757 in the centre, USB-C on the right, UBC AeroDesign logo and Square Lemon mark" width="720">
 
 **Design complete** · 2026 · STM32H757 · 55 × 40 mm · 8 layers · ArduPilot
 
@@ -35,7 +35,7 @@ A single-axis, sensored field-oriented-control motor controller for one joint of
 
 ### [AeroDesign power board](https://weymenkoo.github.io/Personal-Site/content/projects/power-board/index.html)
 
-<img src="dusk/content/projects/power-board/tldr.jpg" alt="The assembled power board held in a hand, top side, with the FORWARD arrow and the Codaca inductor" width="720">
+<img src="dusk/content/projects/power-board/tldr.jpg" alt="The assembled power board from above on the bench, FORWARD arrow pointing left, the Codaca inductor and the servo headers" width="720">
 
 **Flown 2025** · 2025 · 2S–4S in · 5 V 15 A · LM5146 · 2 × TPS25983 · 6 layers
 
@@ -59,7 +59,7 @@ Two seasons as mechanical lead for lifting surfaces and aerodynamics on UBC Aero
 
 ### [DC electronic load](https://weymenkoo.github.io/Personal-Site/content/projects/dc-load/index.html)
 
-<img src="dusk/content/projects/dc-load/tldr.jpg" alt="The Rev B boards wired up on a desk, the power board on a CPU tower cooler, with a bench supply behind" width="720">
+<img src="dusk/content/projects/dc-load/tldr.jpg" alt="The Rev B power board and control board side by side on a wooden desk" width="720">
 
 **Rev E in layout** · 2024–26 · 150 W · 0.6–58 V · 0–10 A · 4 × IRFP250N · isolated USB-C
 
