@@ -246,6 +246,18 @@ load is logged there with `[entries]` and the file path.
 - **Theme.** `site.css` has the dark colours in `:root` and the light ones
   in the `prefers-color-scheme: light` block under it. The city has a
   picture for each: `assets/img/city-dark.png`, `city-light.png`.
+- **The city.** Drawn by `tools/city/build_city.py` (run it to redraw):
+  the Transamerica Pyramid, Petronas Towers, Bitexco Tower and Pacific
+  Central Station over a neon district, anchored to the right edge so the
+  towers stay clear of the title. `city-lights-a.png` / `-b.png` hold just
+  the aviation lights; `site.css` blinks them (`@keyframes av`). The SOS
+  window and the jazz club's button are placed by `TILE` in `fx.js`
+  (`build_city.py --sos` prints the numbers if the picture changes).
+- **The Low Pass.** The jazz club in the skyline: click it for an original
+  swing tune synthesised in the browser (`jazz` in `fx.js`); click again
+  to stop.
+- **Shooting things down.** Click anything flying in the sky and it
+  explodes (`boom`, `targets` in `fx.js`); it comes back a little later.
 - **Quotes.** `LINES` near the top of `fx.js`. The title screen cycles
   through them; the footer and the end of each article show one at random.
 - **The sky.** One scene per visit, picked at random: the patrol (the ship

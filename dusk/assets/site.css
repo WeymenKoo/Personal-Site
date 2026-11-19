@@ -16,7 +16,7 @@
   --accent:#7ff3ff; --pink:#ff8fd0; --ok:#5ef0a6; --wip:#ffd36e; --stop:#ff7a8c;
   --card:rgba(255,255,255,.035); --glow:rgba(255,62,165,.25);
   --sky:linear-gradient(180deg,#0d0820 0%,#1e0f3f 34%,#4a1a5c 60%,#b8436e 80%,#ff9a6b 93%,#2a1236 100%);
-  --city:url(img/city-dark.png?v=2526299d);
+  --city:url(img/city-dark.png?v=18d534c7);
   --bar:linear-gradient(180deg,#3a1d2e 0%,#1a0d1c 18%,#0d0820 100%);
   --barEdge:rgba(255,190,140,.55);
   --glassLine:rgba(13,8,32,.55);
@@ -29,7 +29,7 @@
     --accent:#0a6f83; --pink:#b42a6f; --ok:#1d7a4c; --wip:#946000; --stop:#b3343f;
     --card:rgba(255,255,255,.6); --glow:rgba(180,42,111,.18);
     --sky:linear-gradient(180deg,#c7bdee 0%,#d9c4ea 40%,#f3c7cf 68%,#ffd2b0 90%,#3a2f66 100%);
-    --city:url(img/city-light.png?v=2526299d);
+    --city:url(img/city-light.png?v=18d534c7);
     --bar:linear-gradient(180deg,#5b4a86 0%,#3d3168 20%,#2a2150 100%);
     --barEdge:rgba(255,236,210,.8);
     --glassLine:rgba(60,48,110,.12);
@@ -42,7 +42,7 @@
     --accent:#0a6f83; --pink:#b42a6f; --ok:#1d7a4c; --wip:#946000; --stop:#b3343f;
     --card:rgba(255,255,255,.6); --glow:rgba(180,42,111,.18);
     --sky:linear-gradient(180deg,#c7bdee 0%,#d9c4ea 40%,#f3c7cf 68%,#ffd2b0 90%,#3a2f66 100%);
-    --city:url(img/city-light.png?v=2526299d);
+    --city:url(img/city-light.png?v=18d534c7);
     --bar:linear-gradient(180deg,#5b4a86 0%,#3d3168 20%,#2a2150 100%);
     --barEdge:rgba(255,236,210,.8);
     --glassLine:rgba(60,48,110,.12);
@@ -53,8 +53,8 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:16px;line-height:1.6;
-  cursor:url(img/cursor.svg?v=2526299d) 16 2,auto;overflow-x:hidden}
-a,button,label,summary,[data-full]{cursor:url(img/cursor-fire.svg?v=2526299d) 16 4,pointer}
+  cursor:url(img/cursor.svg?v=18d534c7) 16 2,auto;overflow-x:hidden}
+a,button,label,summary,[data-full]{cursor:url(img/cursor-fire.svg?v=18d534c7) 16 4,pointer}
 a{color:var(--accent)}
 a:hover{color:var(--fg)}
 img{max-width:100%}
@@ -79,7 +79,25 @@ img{max-width:100%}
 .hero{position:relative;min-height:max(100svh,680px);overflow:hidden;background:var(--sky);isolation:isolate}
 .sky{position:absolute;inset:0;width:100%;height:100%;z-index:0;image-rendering:pixelated}
 .city{position:absolute;left:0;right:0;bottom:calc(var(--counterH) - 4px);height:var(--cityH);z-index:1;
-  background:var(--city) repeat-x left bottom/auto 100%;image-rendering:pixelated}
+  background:var(--city) repeat-x right bottom/auto 100%;image-rendering:pixelated}
+/* aviation obstruction lights: two layers of red lenses, each flashing ~30 times a minute
+   (visibility, not opacity: on/off needs no compositor layer of its own, which keeps scrolling cheap)
+   like the real ones, at slightly different rates so the city drifts in and out of step */
+.city::before,.city::after{content:"";position:absolute;inset:0;pointer-events:none;image-rendering:pixelated;visibility:hidden;
+  background:url(img/city-lights-a.png?v=18d534c7) repeat-x right bottom/auto 100%;animation:av 2s linear infinite}
+.city::after{background-image:url(img/city-lights-b.png?v=18d534c7);animation-duration:2.3s;animation-delay:-.9s}
+@keyframes av{0%,34%{visibility:visible}35%,100%{visibility:hidden}}
+/* off screen, nothing to watch: drop the animated layers so scrolling the rest stays cheap */
+.hero.away .city::before,.hero.away .city::after{animation:none;display:none}
+/* the jazz club in the skyline (fx.js puts this button over it) */
+.jazz{position:absolute;z-index:3;padding:0;border:0;background:none;border-radius:2px}
+.jazz:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.jazz.on{box-shadow:0 0 18px rgba(255,211,110,.45)}
+.note{position:absolute;z-index:3;pointer-events:none;font-size:14px;color:#ffd36e;text-shadow:0 0 6px #ff3ea5;
+  animation:note 2.6s ease-out forwards}
+@keyframes note{from{opacity:0;transform:translate(0,0)}15%{opacity:1}to{opacity:0;transform:translate(var(--dx),-70px) rotate(var(--r))}}
+/* over something in the sky that can be shot down */
+body.aim,body.aim .hero{cursor:url(img/cursor-fire.svg?v=18d534c7) 16 4,crosshair}
 .glass{position:absolute;inset:0 0 var(--counterH) 0;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);pointer-events:none}
 .glass i{border-right:2px solid var(--glassLine)}
 .glass i:last-child{grid-column:3}
@@ -199,7 +217,8 @@ img{max-width:100%}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .shine,.blink,.sos{animation:none}
+  .shine,.blink,.sos,.note{animation:none}
+  .city::before,.city::after{animation:none;visibility:visible}
   .proj,.proj .pic img{transition:none}
   .proj:hover{transform:none}
   .proj:hover .pic::after{animation:none}

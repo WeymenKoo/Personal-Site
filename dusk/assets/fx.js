@@ -129,7 +129,24 @@
     mug: { pal: { m: "#efe4ff", c: "#5a3a2a", s: "rgba(239,228,255,.5)" }, rows: [
       "..s..s....", ".s..s.....", "..s..s....", "mmmmmmm...", "mccccmmmm.", "mmmmmmm..m", "mmmmmmm..m", "mmmmmmmmm.", "mmmmmmm...", ".mmmmm...."] },
     tokkuri: { pal: { b: "#e8e3d6", k: "#3a5ba8", c: "#e8e3d6" }, rows: [
-      "..bb..", "..bb..", ".bbbb.", "bbbbbb", "bkkkkb", "bbbbbb", "bbbbbb", "bbbbbb", ".bbbb.", "......", ".c..c."] }
+      "..bb..", "..bb..", ".bbbb.", "bbbbbb", "bkkkkb", "bbbbbb", "bbbbbb", "bbbbbb", ".bbbb.", "......", ".c..c."] },
+    /* the tropical shelf */
+    coconut: { pal: { b: "#7a4a2a", B: "#5a331c", w: "#f4efe6", s: "#ff8fd0", u: "#7ff3ff", k: "#efe4ff" }, rows: [
+      "......uuu.", ".....uuuuu", "....s..k..", "...s...k..", "..wwswwk..", ".bwwwwwwb.", "bbbbbbbbbb", "bBbbbBbbbb", "bbbBbbbBbb", ".bbbbbbbb.", "..bbbbbb.."] },
+    hurricane: { pal: { g: "rgba(239,228,255,.72)", o: "#ffb347", r: "#ff5a6e", u: "#ff3ea5", U: "#7ff3ff", k: "#efe4ff", y: "#ffe06b" }, rows: [
+      "..uuuuu..", ".uUuUuUu.", "....k....", "g...k..yg", "gooookoyg", "goooookog", ".gooooog.", ".grrrrrg.", "..grrrg..", "...grg...", "....g....", "....g....", "..ggggg.."] },
+    tiki: { pal: { t: "#2fa39a", T: "#1f7a72", k: "#0d0820", m: "#5ef0a6", s: "#ff8fd0" }, rows: [
+      "..m...s..", ".mm..s...", "ttttsttt.", "tTTtTTtt.", "tkTtkTtt.", "tttttttt.", "tTkkkkTt.", "tTtTtTtt.", "tttttttt.", ".tttttt.."] },
+    margarita: { pal: { w: "#ffffff", g: "rgba(239,228,255,.72)", l: "#c8f27a", G: "#5ef0a6" }, rows: [
+      "wwwwwwwwwG", ".gllllllgG", "..gllllg..", "...gllg...", "....gg....", "....g.....", "....g.....", "....g.....", "..ggggg..."] },
+    oj: { pal: { g: "rgba(239,228,255,.72)", y: "#ffa62b", o: "#ff8a1e", O: "#ffd36e" }, rows: [
+      "......oo", ".....oOo", "g....oog", "gyyyyyyg", "gyyyyyyg", "gyyyyyyg", "gyyyyyyg", "gyyyyyyg", "gggggggg"] },
+    watermelon: { pal: { g: "rgba(239,228,255,.72)", p: "#ff5a7a", P: "#2a1236", r: "#ff3e5a", G: "#5ef0a6" }, rows: [
+      "....rG.", "...rrG.", "g..rG.g", "gppppPg", "gppppPg", "gpPpppg", "gpppppg", "gppPppg", "gpppppg", "ggggggg"] },
+    lassi: { pal: { g: "rgba(239,228,255,.72)", a: "#ffc23d", f: "#fff2c4", m: "#5ef0a6" }, rows: [
+      "...mm..", "g.mm..g", "gfffffg", "gaaaaag", "gaaaaag", "gaaaaag", "gaaaaag", "gaaaaag", "gaaaaag", ".ggggg."] },
+    boba: { pal: { l: "rgba(239,228,255,.85)", s: "#ff8fd0", t: "#d9b38c", k: "#2a1a14", g: "rgba(239,228,255,.72)" }, rows: [
+      "....ss.", "....ss.", "lllllll", "gtttttg", "gtttttg", "gtttttg", "gtktktg", "gkttkkg", "gkkktkg", ".ggggg."] }
   };
   function sprite(name, scale, flip) {
     var s = SPR[name], h = s.rows.length, w = s.rows[0].length;
@@ -156,7 +173,15 @@
     ["wine", "A 2023 Rev A. Notes of burnt FR-4."],
     ["pint", "Pint of Ohm's Lager. Resistance is futile."],
     ["mug", "Coffee, for the designated debugger."],
-    ["tokkuri", "Hot sake for the long reflow."]
+    ["tokkuri", "Hot sake for the long reflow."],
+    ["coconut", "Coconut water, straight from the shell. Electrolytes for the bring-up."],
+    ["hurricane", "Passionfruit Hurricane. Category 5, zero ohms."],
+    ["tiki", "Mai Tai in a tiki mug. The mug has seen things."],
+    ["margarita", "Margarita, salted rim. Fixes everything except ground loops."],
+    ["oj", "Fresh orange juice. 100% vitamin C, 0% capacitors."],
+    ["watermelon", "Watermelon juice. Mostly water, like the flux washer."],
+    ["lassi", "Mango lassi. Thick enough for thermal paste. Please don't."],
+    ["boba", "Brown sugar boba from Richmond. Mind the pearls in the straw."]
   ];
   /* The cursor can push them along the counter (sweep across a glass),
      or pick one up and slide it (drag and let go). They slow down on
@@ -286,6 +311,34 @@
   }
 
   /* ================================================================
+     SOUND: one AudioContext, made on the first click that needs it
+     ================================================================ */
+  var AC = null, NOISE = null;
+  function audio() {
+    if (!AC) { var C = window.AudioContext || window.webkitAudioContext; if (!C) return null; AC = new C(); }
+    if (AC.state === "suspended") AC.resume();
+    return AC;
+  }
+  function noiseBuf(ac) {
+    if (!NOISE) {
+      NOISE = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
+      var d = NOISE.getChannelData(0);
+      for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    return NOISE;
+  }
+  /* a muffled, far-off bang: filtered noise falling in pitch */
+  function bang(size) {
+    var ac = audio(); if (!ac) return;
+    var t = ac.currentTime, n = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    n.buffer = noiseBuf(ac); f.type = "lowpass";
+    f.frequency.setValueAtTime(1800, t); f.frequency.exponentialRampToValueAtTime(90, t + .7);
+    var v = Math.min(.35, .12 + size / 300);
+    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + .9);
+    n.connect(f); f.connect(g); g.connect(ac.destination); n.start(t); n.stop(t + 1);
+  }
+
+  /* ================================================================
      THE SKY over the title screen
      ================================================================ */
   var sky = $("#sky");
@@ -340,6 +393,111 @@
       if (game.hits === 10) toast("10 aliens down. The bar's quieter now.");
     }
 
+    /* ---- click anything flying and it blows up: shrapnel, a shock ring, smoke, a far-off bang */
+    var rings = [], FIRE = ["#ffffff", "#ffe9b0", "#ffd36e", "#ff8a3d", "#ff3e5a", "#ff8fd0"];
+    function boom(x, y, size) {
+      var n = Math.round(14 + size * .9);
+      for (var i = 0; i < n; i++) {
+        var a = rnd(0, 6.283), v = rnd(.3, 1) * (1.4 + size / 22);
+        bits.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - .6, life: rnd(28, 70), c: FIRE[i % FIRE.length], g: .05 });
+      }
+      for (i = 0; i < n / 2; i++) {
+        bits.push({ x: x + rnd(-size / 3, size / 3), y: y + rnd(-size / 3, size / 3), vx: rnd(-.4, .4), vy: rnd(-.8, -.2),
+          life: rnd(50, 110), c: "rgba(205,195,225,.55)", g: -.004, big: true });
+      }
+      rings.push({ x: x, y: y, r: 2, max: Math.max(24, size), life: 1 });
+      bang(size);
+    }
+    function drawBits(dt) {
+      bits = bits.filter(function (b) {
+        b.x += b.vx * dt; b.y += b.vy * dt; b.vy += (b.g == null ? .05 : b.g) * dt; b.vx *= Math.pow(.985, dt); b.life -= dt;
+        var sz = b.big ? P * 2 : P;
+        ctx.globalAlpha = b.big ? Math.min(1, b.life / 60) : 1;
+        ctx.fillStyle = b.c; ctx.fillRect(Math.round(b.x / P) * P, Math.round(b.y / P) * P, sz, sz);
+        ctx.globalAlpha = 1;
+        return b.life > 0;
+      });
+      rings = rings.filter(function (g) {
+        g.r += (g.max - g.r) * .12 * dt + .4 * dt; g.life -= .025 * dt;
+        if (g.r < g.max * .35) {                                     /* the flash */
+          ctx.fillStyle = "#fff6d8"; ctx.globalAlpha = g.life;
+          ctx.fillRect(Math.round((g.x - g.r * .6) / P) * P, Math.round((g.y - g.r * .6) / P) * P, Math.round(g.r * 1.2 / P) * P, Math.round(g.r * 1.2 / P) * P);
+        }
+        ctx.globalAlpha = Math.max(0, g.life); ctx.fillStyle = g.r < g.max * .6 ? "#ffd36e" : "#ff8fd0";
+        var k = Math.max(8, Math.round(g.r / 2));
+        for (var i = 0; i < k; i++) {
+          var a = i / k * 6.283;
+          ctx.fillRect(Math.round((g.x + Math.cos(a) * g.r) / P) * P, Math.round((g.y + Math.sin(a) * g.r) / P) * P, P, P);
+        }
+        ctx.globalAlpha = 1;
+        return g.life > 0;
+      });
+    }
+    var said = {};
+    function line(kind, msg) { if (!said[kind]) { said[kind] = 1; toast(msg); } }
+    /* what's in the sky right now, as boxes: x, y, w, h, and what happens when it's hit */
+    function targets() {
+      var out = [];
+      function add(x, y, w, h, kill) { out.push({ x: x, y: y, w: w, h: h, kill: kill }); }
+      if (scene === "patrol") {
+        aliens.forEach(function (a) {
+          add(a.x, a.y - 4, 27, 29, function () { explode(a); aliens.splice(aliens.indexOf(a), 1); boom(a.x + 13, a.y + 10, 20); });
+        });
+        if (shipImg && ship.x > -60) add(ship.x, ship.y, shipImg.width, shipImg.height, function () {
+          boom(ship.x + shipImg.width / 2, ship.y + shipImg.height / 2, 34);
+          ship.x = -rnd(500, 900); ship.y = Math.round(rnd(H * .18, H * .42));
+          line("ship", "You shot down your own escort. Bold.");
+        });
+      }
+      var RUD = "Rapid unscheduled disassembly.";
+      if (scene === "launch" && L.t >= 0) {
+        var top = L.sep ? SS.height - BO.height : SS.height;
+        add(L.x - SS.width / 2, L.y, SS.width, top, function () {
+          boom(L.x, L.y + top / 2, 60); if (L.sep && !L.gone) boom(L.bx, L.by + BO.height / 2, 40);
+          L.t = -rnd(400, 900); smoke = []; line("rud", RUD);
+        });
+        if (L.sep && !L.gone) add(L.bx - BO.width / 2, L.by, BO.width, BO.height, function () {
+          boom(L.bx, L.by + BO.height / 2, 40); L.gone = true; line("booster", "Booster recovery: not today.");
+        });
+      }
+      if ((scene === "shuttle-launch" || scene === "falcon-heavy") && R.t >= 0) {
+        var img = R.sep ? (scene === "falcon-heavy" ? FHC : STC) : (scene === "falcon-heavy" ? FH : STK);
+        add(R.x - img.width / 2, R.y, img.width, img.height, function () {
+          boom(R.x, R.y + img.height / 2, 70); R.parts.forEach(function (q) { boom(q.x, q.y + q.img.height / 2, 30); });
+          R.parts = []; R.y = -9999; R.t = -rnd(400, 900); smoke = []; line("rud", RUD);
+        });
+        R.parts.forEach(function (q) {
+          add(q.x - q.img.width / 2, q.y, q.img.width, q.img.height, function () {
+            boom(q.x, q.y + q.img.height / 2, 30); R.parts.splice(R.parts.indexOf(q), 1); line("booster", "Booster recovery: not today.");
+          });
+        });
+      }
+      if (scene === "landing" && D.t >= 0) add(D.x, D.y, SH.width, SH.height, function () {
+        boom(D.x + SH.width / 2, D.y + SH.height / 2, 50); D.t = -rnd(300, 700); line("landing", "Wheel stop cancelled.");
+      });
+      if (scene === "station" && !(Q.wait > 0)) add(Q.x, Q.y, ST.width, ST.height, function () {
+        boom(Q.x + ST.width / 2, Q.y + ST.height / 2, 60); Q.x = -149; Q.wait = rnd(300, 600); line("station", "Station deorbited, ahead of schedule.");
+      });
+      if (scene === "capsule" && C.t >= 0) add(C.x - 50, C.y - 50, 100, 50 + CA.height, function () {
+        boom(C.x, C.y, 40); C.t = -rnd(300, 600); line("capsule", "Splashdown cancelled.");
+      });
+      if (scene === "hubble" && !(U.wait > 0)) add(U.x, U.y, HU.width, HU.height, function () {
+        boom(U.x + HU.width / 2, U.y + HU.height / 2, 50); U.x = -199; U.wait = rnd(300, 600); line("hubble", "There go thirty years of deep fields.");
+      });
+      if (scene === "roadster" && !(Z.wait > 0)) add(Z.x, Z.y, RD.width, RD.height, function () {
+        boom(Z.x + RD.width / 2, Z.y + RD.height / 2, 36); Z.x = -199; Z.wait = rnd(300, 600); line("roadster", "Starman, no!");
+      });
+      return out;
+    }
+    function hitAt(x, y) {
+      var t = targets(), pad = 10;
+      for (var i = t.length - 1; i >= 0; i--) {
+        var o = t[i];
+        if (x > o.x - pad && x < o.x + o.w + pad && y > o.y - pad && y < o.y + o.h + pad) return o;
+      }
+      return null;
+    }
+
     /* ---- one scene per visit: the patrol (ship vs aliens), a launch,
        a shuttle landing, the station going over, or a capsule coming home */
     var SCENE_LIST = ["patrol", "launch", "landing", "station", "capsule", "shuttle-launch", "falcon-heavy", "hubble", "roadster"];
@@ -375,7 +533,7 @@
     var L = { t: -60, x: 0, sep: false, bx: 0, by: 0, bvy: 0 };
     var D = { t: -40 }, Q = { x: -200, y: 0 }, C = { t: -30 };
     wind.blow = blow;
-    game.craft = function () { return { ship: ship, launch: L, shuttle: D, station: Q, capsule: C, rocket: R, hubble: U, roadster: Z }; };
+    game.craft = function () { return { ship: ship, launch: L, shuttle: D, station: Q, capsule: C, rocket: R, hubble: U, roadster: Z, aliens: aliens }; };
     /* a rocket that climbs, drops what it doesn't need, and keeps going */
     var R = { t: -60 };
     function climb(dt, full, rest, drops, sepAt) {
@@ -416,6 +574,7 @@
         ], .42);
       },
       hubble: function (dt, t) {
+        if (U.wait > 0) { U.wait -= dt; return; }
         if (U.x < -200 || U.x > W + 200) { U.x = U.first ? rnd(W * .5, W * .75) : -180; U.y = rnd(H * .1, H * .3); U.first = false; }
         U.x += .3 * dt;
         blow(U, U.x + HU.width / 2, U.y + HU.height / 2, dt);
@@ -423,6 +582,7 @@
         if (Math.floor(t / 900) % 2) { ctx.fillStyle = "#7ff3ff"; ctx.fillRect(U.x + 21 * big, U.y + 4 * big, big, big); }
       },
       roadster: function (dt) {
+        if (Z.wait > 0) { Z.wait -= dt; return; }
         if (Z.x < -200 || Z.x > W + 200) { Z.x = Z.first ? rnd(W * .5, W * .75) : -160; Z.y = rnd(H * .1, H * .35); Z.rot = rnd(-.3, .3); Z.first = false; }
         Z.x += .4 * dt; Z.y += .05 * dt; Z.rot += .0025 * dt;   /* tumbling, very slowly */
         blow(Z, Z.x + RD.width / 2, Z.y + RD.height / 2, dt);
@@ -430,15 +590,14 @@
         ctx.drawImage(RD, -RD.width / 2, -RD.height / 2); ctx.restore();
       },
       launch: function (dt) {
-        if (L.t < 0) { L.t += dt; if (L.t >= 0) { L.x = Math.round(rnd(W * .2, W * .8) / P) * P; L.y = horizon(); L.v = 0; L.sep = false; } drawSmoke(dt); return; }
+        if (L.t < 0) { L.t += dt; if (L.t >= 0) { L.x = Math.round(rnd(W * .2, W * .8) / P) * P; L.y = horizon(); L.v = 0; L.sep = false; L.gone = false; } drawSmoke(dt); return; }
         L.t += dt; L.v = Math.min(6, L.v + .012 * dt); L.y -= L.v * dt;
         blow(L, L.x, L.y + SS.height / 2, dt);
         if (L.sep) blow(L, L.bx, L.by + BO.height / 2, dt, "bx", "by");
         if (!L.sep && L.y < H * .32) { L.sep = true; L.bx = L.x; L.by = L.y + SS.height - BO.height; L.bvy = -L.v * .6; 0; }
         if (L.sep) {
           L.bvy += .03 * dt; L.by += L.bvy * dt;
-          ctx.drawImage(BO, L.bx - BO.width / 2, L.by);
-          if (L.bvy > .5) flame(L.bx, L.by + BO.height, 4);
+          if (!L.gone) { ctx.drawImage(BO, L.bx - BO.width / 2, L.by); if (L.bvy > .5) flame(L.bx, L.by + BO.height, 4); }
           ctx.drawImage(SS, 0, 0, SS.width, SS.height - BO.height, L.x - SS.width / 2, L.y, SS.width, SS.height - BO.height);
           flame(L.x, L.y + SS.height - BO.height, 6);
           if (L.by > H) { L.t = -rnd(400, 900); }
@@ -459,6 +618,7 @@
         if (D.y > horizon() + 20 || D.x < -120) D.t = -rnd(300, 700);
       },
       station: function (dt, t) {
+        if (Q.wait > 0) { Q.wait -= dt; return; }
         if (Q.x < -150 || Q.x > W + 150) { Q.x = -140; Q.y = rnd(H * .08, H * .25); }
         Q.x += .45 * dt;
         blow(Q, Q.x + ST.width / 2, Q.y + ST.height / 2, dt);
@@ -506,11 +666,6 @@
         return a.x > -40;
       });
 
-      bits = bits.filter(function (b) {
-        b.x += b.vx * dt; b.y += b.vy * dt; b.vy += .05 * dt; b.life -= dt;
-        ctx.fillStyle = b.c; ctx.fillRect(Math.round(b.x), Math.round(b.y), P, P);
-        return b.life > 0;
-      });
       pops = pops.filter(function (p) {
         p.life -= dt; p.y -= .4 * dt;
         ctx.globalAlpha = Math.min(1, p.life / 25);
@@ -556,6 +711,7 @@
       });
 
       if (scene === "patrol") patrol(dt, t); else SCENES[scene](dt, t);
+      drawBits(dt);
 
       if (!document.hidden && running) requestAnimationFrame(frame);
     }
@@ -572,13 +728,23 @@
     } else start();
     document.addEventListener("visibilitychange", function () { if (!document.hidden) { running = false; start(); } });
 
-    document.addEventListener("click", function (e) {
+    /* click something flying and it explodes; the cursor turns to the firing ship over a target */
+    function skyPoint(e) {
+      if (e.target.closest && e.target.closest("a,button,input,textarea,.dock,.lb,.counter")) return null;
       var r = sky.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-      if (x > ship.x - 10 && x < ship.x + 50 && y > ship.y - 10 && y < ship.y + 50) {
-        ship.roll = 40;
-        if (!game.rolled) { game.rolled = 1; toast("Do a barrel roll!"); }
-      }
+      return x >= 0 && y >= 0 && x <= r.width && y <= r.height ? { x: x, y: y } : null;
+    }
+    document.addEventListener("click", function (e) {
+      if (REDUCED) return;
+      var p = skyPoint(e), o = p && hitAt(p.x, p.y);
+      if (o) { o.kill(); game.kills = (game.kills || 0) + 1; document.body.classList.remove("aim"); }
     });
+    document.addEventListener("pointermove", function (e) {
+      if (REDUCED || e.pointerType === "touch") return;
+      var p = skyPoint(e);
+      document.body.classList.toggle("aim", !!(p && hitAt(p.x, p.y)));
+    }, { passive: true });
+    game.hitAt = function (x, y) { return !!hitAt(x, y); };
 
     game.invade = function () {
       scene = "patrol";
@@ -588,17 +754,207 @@
     };
   })();
 
-  /* the SOS window: on the tallest tower, wherever the city image is scaled to */
-  function placeSOS() {
-    var city = $(".city"), sos = $(".sos");
-    if (!city || !sos) return;
-    var s = city.getBoundingClientRect().height / 570;
-    sos.style.left = (531 * s) + "px";
-    sos.style.top = (city.offsetTop + 117 * s) + "px";
-    sos.style.width = Math.max(3, 6 * s) + "px";
-    sos.style.height = Math.max(2, 3 * s) + "px";
+  /* ================================================================
+     THE CITY: the picture is anchored to the right edge (so the towers
+     stand clear of the title). These place things on it, in image pixels
+     of the 2400x570 tile (see tools/city/build_city.py --sos).
+     ================================================================ */
+  var TILE = { w: 2400, h: 570, sos: [1998, 208], jazz: [2128, 440, 2212, 524] };
+  function cityPoint(ix, iy) {
+    var city = $(".city"); if (!city) return null;
+    var s = city.getBoundingClientRect().height / TILE.h;
+    return { x: city.offsetLeft + city.offsetWidth - (TILE.w - ix) * s, y: city.offsetTop + iy * s, s: s };
   }
+  var jazzBtn = null;
+  /* the SOS window on the first Petronas tower, and the jazz club's door */
+  function placeSOS() {
+    if (!TILE) return;                       /* the sky calls this before this part of the file has run */
+    var sos = $(".sos"), p = cityPoint(TILE.sos[0], TILE.sos[1]);
+    if (sos && p) {
+      sos.style.left = p.x + "px"; sos.style.top = p.y + "px";
+      sos.style.width = Math.max(3, 4 * p.s) + "px"; sos.style.height = Math.max(2, 2 * p.s) + "px";
+    }
+    var hero = $("#hero"), j = TILE.jazz, a = cityPoint(j[0], j[1]);
+    if (!hero || !a || !$(".city", hero)) return;
+    if (!jazzBtn) {
+      jazzBtn = el("button", "jazz"); jazzBtn.type = "button"; jazzBtn.id = "jazz";
+      jazzBtn.title = "The Low Pass: jazz, live tonight";
+      jazzBtn.setAttribute("aria-label", "The Low Pass jazz club: play a tune");
+      jazzBtn.addEventListener("click", function () { jazz.toggle(); });
+      hero.appendChild(jazzBtn);
+    }
+    jazzBtn.style.left = a.x + "px"; jazzBtn.style.top = a.y + "px";
+    jazzBtn.style.width = (j[2] - j[0]) * a.s + "px"; jazzBtn.style.height = (j[3] - j[1]) * a.s + "px";
+    jazzBtn.hidden = a.x < 0;
+  }
+
+  /* ================================================================
+     THE LOW PASS: an original 16-bar swing in F, "Ground Loop Swing",
+     played twice through with a tag ending. Vibes on the tune, piano
+     comping, a walking upright bass, ride and hi-hat. All synthesised
+     here, nothing downloaded.
+     ================================================================ */
+  var jazz = (function () {
+    var B = 60 / 132, SW = 2 / 3;                                   /* a beat; the swung "and" */
+    var PC = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+    function pc(n) { return PC[n[0]] + (n[1] === "#" ? 1 : n[1] === "b" ? -1 : 0); }
+    function midi(n) { return 12 * (+n[n.length - 1] + 1) + pc(n); }
+    function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+    /* the piano's rootless voicings: 3rd, 7th (or 6th), 9th (or b9) */
+    var VOICE = { maj7: [4, 11, 14], "7": [4, 10, 14], m7: [3, 10, 14], "6": [4, 9, 14], "7b9": [4, 10, 13] };
+    var CHANGES = ["F maj7", "D 7b9", "G m7", "C 7", "A m7|D 7", "G m7|C 7", "F maj7", "C m7|F 7",
+                   "Bb maj7", "Bb m7|Eb 7", "A m7", "D 7", "G m7", "C 7", "F 6|D 7", "G m7|C 7"];
+    /* eight swung eighths a bar: a note, "-" holds it, "." rests */
+    var TUNE = [". A4 C5 E5 - - D5 C5", "A4 - F#4 A4 C5 Eb5 - D5", "Bb4 - - - . G4 Bb4 D5", "F5 E5 D5 C5 Bb4 G4 E4 G4",
+                "C5 - . A4 . F#4 A4 C5", "Bb4 A4 G4 F4 E4 - G4 Bb4", "A4 - - - . . . .", ". G4 Bb4 D5 Eb5 - C5 A4",
+                "D5 - - F5 . D5 C5 Bb4", "Db5 - C5 Bb4 G4 - Db5 C5", "C5 - - . E5 - D5 C5", "A4 C5 F#5 - E5 D5 C5 A4",
+                "Bb4 - D5 F5 - E5 D5 Bb4", "G4 E4 G4 Bb4 Db5 C5 Bb4 G4", "A4 - - F4 . F#4 A4 C5", "Eb5 D5 Bb4 G4 E4 - . ."];
+    var MEL = TUNE.map(function (bar) {
+      var ev = [];
+      bar.split(" ").forEach(function (x, i) {
+        var b = Math.floor(i / 2) + (i % 2 ? SW : 0), open = ev[ev.length - 1];
+        if (x === "-") return;
+        if (open && open.d == null) open.d = b - open.b;
+        if (x !== ".") ev.push({ b: b, m: midi(x) });
+      });
+      ev.forEach(function (e) { if (e.d == null) e.d = 4 - e.b; });
+      return ev;
+    });
+    var COMP = [[[0, .6], [1 + SW, 1.2]], [[SW, .5], [2 + SW, 1.2]], [[1 + SW, .6], [3, .8]], [[0, 1.6], [2 + SW, .9]]];
+
+    var ac, out, timer = null, endT = null, nextT = 0, barN = 0, playing = false;
+    function bassNote(name) { return 29 + (pc(name) - 5 + 12) % 12; }      /* F1 .. E2 */
+    function osc(type, f, t, end, dest) {
+      var o = ac.createOscillator(); o.type = type; o.frequency.value = f; o.connect(dest); o.start(t); o.stop(end + .05); return o;
+    }
+    function vibe(t, d, m) {
+      var end = t + Math.max(.6, d) + 1, g = ac.createGain(), trem = ac.createGain(), lfo = ac.createOscillator(), depth = ac.createGain();
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.15, t + .004); g.gain.exponentialRampToValueAtTime(.0008, end);
+      lfo.frequency.value = 5.5; depth.gain.value = .25; lfo.connect(depth); depth.connect(trem.gain); lfo.start(t); lfo.stop(end);
+      g.connect(trem); trem.connect(out);
+      osc("sine", hz(m), t, end, g);
+      var strike = ac.createGain(); strike.gain.setValueAtTime(.35, t); strike.gain.exponentialRampToValueAtTime(.001, t + .25); strike.connect(g);
+      osc("sine", hz(m) * 4, t, t + .3, strike);                        /* the bright 4th partial of a struck bar */
+    }
+    function bass(t, d, m) {
+      var g = ac.createGain(), f = ac.createBiquadFilter(), k = Math.min(.12, d * .3);
+      f.type = "lowpass"; f.frequency.value = 650;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.5, t + .008); g.gain.exponentialRampToValueAtTime(.2, t + k);
+      g.gain.setValueAtTime(.2, t + d * .8); g.gain.exponentialRampToValueAtTime(.001, t + d + .08);
+      g.connect(f); f.connect(out);
+      osc("triangle", hz(m), t, t + d + .1, g); osc("sine", hz(m), t, t + d + .1, g);
+    }
+    function keys(t, d, m) {
+      var g = ac.createGain(), f = ac.createBiquadFilter(), k = Math.min(.25, d * .7);
+      f.type = "lowpass"; f.frequency.value = 1900;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.05, t + .006); g.gain.exponentialRampToValueAtTime(.02, t + k);
+      g.gain.setValueAtTime(.02, t + d); g.gain.exponentialRampToValueAtTime(.0005, t + d + .15);
+      g.connect(f); f.connect(out);
+      osc("triangle", hz(m), t, t + d + .2, g); osc("sine", hz(m) * 2.002, t, t + d + .2, g);
+    }
+    function hiss(t, v, hp, len) {
+      var n = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+      n.buffer = noiseBuf(ac); f.type = "highpass"; f.frequency.value = hp;
+      g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.0008, t + len);
+      n.connect(f); f.connect(g); g.connect(out); n.start(t, Math.random() * .5); n.stop(t + len + .05);
+    }
+    function ride(t, v) {
+      hiss(t, v, 7000, .45);
+      var b = ac.createGain(); b.gain.setValueAtTime(v * .18, t); b.gain.exponentialRampToValueAtTime(.0005, t + .35); b.connect(out);
+      osc("sine", 3150, t, t + .35, b); osc("sine", 4710, t, t + .35, b);
+    }
+    function kick(t) {
+      var o = ac.createOscillator(), g = ac.createGain();
+      o.frequency.setValueAtTime(75, t); o.frequency.exponentialRampToValueAtTime(42, t + .15);
+      g.gain.setValueAtTime(.12, t); g.gain.exponentialRampToValueAtTime(.001, t + .2);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + .22);
+    }
+    function bar(i, t0) {
+      var segs = CHANGES[i].split("|"), each = 4 / segs.length;
+      segs.forEach(function (c, k) {
+        var p = c.split(" "), t = t0 + k * each * B, br = bassNote(p[0]);
+        var next = (k + 1 < segs.length ? segs[k + 1] : CHANGES[(i + 1) % 16].split("|")[0]).split(" ")[0], nr = bassNote(next);
+        var walk = each === 4
+          ? [br, Math.random() < .5 ? br + (p[1] === "m7" ? 3 : 4) : br + 2, br + 7, nr + (Math.random() < .5 ? -1 : 1)]
+          : [br, nr + (nr > br ? -1 : 1)];
+        walk.forEach(function (m, j) { bass(t + j * B, B * .92, m); });
+        var vo = VOICE[p[1]].map(function (iv) { var m = 48 + (pc(p[0]) + iv) % 12; while (m < 52) m += 12; return m; });
+        var hits = each === 4 ? COMP[Math.floor(Math.random() * COMP.length)] : [[Math.random() < .5 ? 0 : SW, .9]];
+        hits.forEach(function (h) { vo.forEach(function (m) { keys(t + h[0] * B, h[1] * B, m); }); });
+      });
+      [0, 1, 1 + SW, 2, 3, 3 + SW].forEach(function (b) { ride(t0 + b * B, b === 1 || b === 3 ? .06 : .04); });
+      [1, 3].forEach(function (b) { hiss(t0 + b * B, .05, 9000, .05); });
+      [0, 1, 2, 3].forEach(function (b) { kick(t0 + b * B); });
+      MEL[i].forEach(function (e) { vibe(t0 + e.b * B, e.d * B, e.m); });
+    }
+    function ending(t) {
+      bass(t, 3 * B, 29);
+      [57, 62, 65, 69].forEach(function (m) { keys(t, 3 * B, m); });       /* F6: A D F A */
+      vibe(t, 3 * B, 77); vibe(t + .04, 3 * B, 81);
+      for (var i = 0; i < 8; i++) ride(t - 2 * B + i * B / 4, .02 + i * .006);
+      ride(t, .09); kick(t);
+    }
+    function float(at) {                                             /* a note drifts up from the club */
+      setTimeout(function () {
+        if (!playing || !jazzBtn) return;
+        var n = el("span", "note"); n.textContent = Math.random() < .5 ? "\u266A" : "\u266B"; n.setAttribute("aria-hidden", "true");
+        n.style.left = (parseFloat(jazzBtn.style.left) + parseFloat(jazzBtn.style.width) * rnd(.3, .7)) + "px";
+        n.style.top = (parseFloat(jazzBtn.style.top) - 6) + "px";
+        n.style.setProperty("--dx", rnd(-24, 24) + "px"); n.style.setProperty("--r", rnd(-30, 30) + "deg");
+        jazzBtn.parentNode.appendChild(n);
+        setTimeout(function () { n.remove(); }, 2700);
+      }, Math.max(0, (at - ac.currentTime) * 1000));
+    }
+    function pump() {
+      while (playing && nextT < ac.currentTime + .6) {
+        if (barN < 32) { bar(barN % 16, nextT); float(nextT); float(nextT + 2 * B); nextT += 4 * B; barN++; }
+        else {
+          ending(nextT); clearInterval(timer); timer = null;
+          endT = setTimeout(function () { stop(true); }, (nextT - ac.currentTime + 4 * B + 1.2) * 1000);
+          break;
+        }
+      }
+    }
+    function start() {
+      ac = audio(); if (!ac) return false;
+      out = ac.createGain(); out.gain.value = .9;
+      var comp = ac.createDynamicsCompressor(), d = ac.createDelay(), fb = ac.createGain(), lp = ac.createBiquadFilter(), wet = ac.createGain();
+      out.connect(comp); comp.connect(ac.destination);
+      d.delayTime.value = .11; fb.gain.value = .3; lp.type = "lowpass"; lp.frequency.value = 2200; wet.gain.value = .2;   /* a small room */
+      out.connect(d); d.connect(lp); lp.connect(fb); fb.connect(d); lp.connect(wet); wet.connect(comp);
+      barN = 0; nextT = ac.currentTime + .12; playing = true;
+      timer = setInterval(pump, 80); pump();
+      if (jazzBtn) jazzBtn.classList.add("on");
+      return true;
+    }
+    function stop(natural) {
+      if (!playing) return;
+      playing = false; clearInterval(timer); clearTimeout(endT); timer = endT = null;
+      var g = out, t = ac.currentTime;
+      g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + (natural ? .05 : .5));
+      setTimeout(function () { g.disconnect(); }, 700);
+      if (jazzBtn) jazzBtn.classList.remove("on");
+      if (!natural) toast("You step back out into the rain.");
+    }
+    document.addEventListener("visibilitychange", function () { if (document.hidden) stop(); });
+    return {
+      toggle: function () {
+        if (playing) return stop();
+        if (start()) toast("\u266A Live at The Low Pass: \u201cGround Loop Swing\u201d. Click the club again to leave.");
+        else toast("The Low Pass is closed tonight (no audio in this browser).");
+      },
+      playing: function () { return playing; }
+    };
+  })();
   placeSOS();
+  window.addEventListener("resize", placeSOS);
+  /* the city's blinking lights only run while the title screen is in view */
+  (function () {
+    var hero = $("#hero");
+    if (hero && "IntersectionObserver" in window) {
+      new IntersectionObserver(function (e) { hero.classList.toggle("away", !e[0].isIntersecting); }).observe(hero);
+    }
+  })();
 
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
   /* pets are gone; forget what earlier visits saved for them */
@@ -627,7 +983,7 @@
   dock.appendChild(themeBtn);
   document.body.appendChild(dock);
   setTheme(theme());
-  window.fx = { game: game, toast: toast, drinks: drinks, wind: wind, setTheme: function (t) { setTheme(t); } };
+  window.fx = { game: game, toast: toast, drinks: drinks, wind: wind, jazz: jazz, setTheme: function (t) { setTheme(t); } };
 
   /* ================================================================
      LIGHTBOX — every article picture opens here, not in a new tab.
