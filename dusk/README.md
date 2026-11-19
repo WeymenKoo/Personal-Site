@@ -256,6 +256,13 @@ load is logged there with `[entries]` and the file path.
 - **The Low Pass.** The jazz club in the skyline: click it for an original
   swing tune synthesised in the browser (`jazz` in `fx.js`); click again
   to stop.
+- **Below the city** (`assets/depths.js`, index and résumé). As you scroll
+  past the title, a faint underground (piles, pipes, a data cable) gives way
+  to the sea: three real research subs (click them) and a hunter-killer that
+  fires torpedoes at the cursor in the margins; over the project boxes
+  you're in cover. At the bottom, a tube platform with ads and trains; put
+  the cursor on the track and the train stops. Nothing fixed sits in the
+  middle column, and anything crossing it fades nearly out.
 - **Shooting things down.** Click anything flying in the sky and it
   explodes (`boom`, `targets` in `fx.js`); it comes back a little later.
 - **Quotes.** `LINES` near the top of `fx.js`. The title screen cycles

@@ -305,6 +305,63 @@ test.describe('as shipped', () => {
     expect(errors).toEqual([]);
   });
 
+  test('below the city: underground, sea, station, on the index and the résumé', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    for (const url of ['index.html', 'resume.html']) {
+      const errors = [];
+      page.on('pageerror', e => errors.push(e.message));
+      await offline(page);
+      await page.goto(server.url + url);
+      await expect(page.locator('canvas.depths')).toHaveCount(1);
+      await expect(page.locator('.station')).toHaveCount(1);
+      const z = await page.evaluate(() => window.depths.zones());
+      expect(z.start).toBeLessThan(z.sea);
+      expect(z.sea).toBeLessThan(z.stTop);
+      // nothing fixed grows into the project column
+      expect(z.colL).toBeGreaterThan(0);
+      await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+      await page.waitForTimeout(600);
+      expect(errors).toEqual([]);
+    }
+  });
+
+  test('the cursor on the track stops the train', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await open(page, server.url);
+    await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+    // wait for a train coming in from the left
+    await page.waitForFunction(() => { const t = window.depths.train(); return t.phase === 'in' && t.x > 10 && t.x < 200; }, null, { timeout: 20000 });
+    const p = await page.evaluate(() => {
+      const z = window.depths.zones(), t = window.depths.train(), P = 3;
+      return { x: (t.x + 40) * P, y: z.stTop + z.stH - 13 * P - scrollY };
+    });
+    await page.mouse.move(p.x, p.y);
+    await page.waitForTimeout(2500);
+    const t = await page.evaluate(() => window.depths.train());
+    expect(t.blocked).toBe(true);
+    expect(t.x).toBeLessThan(p.x / 3);
+    await expect(page.locator('#toast')).toContainText('horn');
+  });
+
+  test('torpedoes hunt the cursor in the margins; over the project boxes it is safe', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await open(page, server.url);
+    const z = await page.evaluate(() => window.depths.zones());
+    await page.evaluate(y => scrollTo(0, y), (z.sea + z.stTop) / 2 - 450);
+    await page.mouse.move(60, 450);                       // in the left margin
+    const y = await page.evaluate(() => scrollY + 450);
+    await page.evaluate(([x, y]) => window.depths.fire(x, y), [60, y]);
+    await page.waitForFunction(() => window.depths.score.hits > 0 || window.depths.score.dodged > 0, null, { timeout: 15000 });
+    await page.waitForFunction(() => window.depths.torps().length === 0, null, { timeout: 15000 });
+    const h1 = await page.evaluate(() => window.depths.score.hits);
+    expect(h1).toBeGreaterThan(0);
+    // now take cover over the column: a torpedo fired at it can't hit
+    await page.mouse.move(720, 450);
+    await page.evaluate(([x, y]) => window.depths.fire(x, y), [720, y]);
+    await page.waitForFunction(() => window.depths.torps().length === 0, null, { timeout: 15000 });
+    expect(await page.evaluate(() => window.depths.score.hits)).toBe(h1);
+  });
+
   test('the city sits to the right, and its aviation lights blink', async ({ page }) => {
     await open(page, server.url);
     const s = await page.locator('.city').evaluate(e => ({
