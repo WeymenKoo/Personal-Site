@@ -329,17 +329,12 @@ test.describe('as shipped', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await open(page, server.url);
     await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
-    // wait for a train coming in from the left
-    await page.waitForFunction(() => { const t = window.depths.train(); return t.phase === 'in' && t.x > 10 && t.x < 200; }, null, { timeout: 20000 });
-    const p = await page.evaluate(() => {
-      const z = window.depths.zones(), t = window.depths.train(), P = 3;
-      return { x: (t.x + 40) * P, y: z.stTop + z.stH - 13 * P - scrollY };
-    });
-    await page.mouse.move(p.x, p.y);
-    await page.waitForTimeout(2500);
-    const t = await page.evaluate(() => window.depths.train());
-    expect(t.blocked).toBe(true);
-    expect(t.x).toBeLessThan(p.x / 3);
+    await page.waitForTimeout(300);
+    // park the cursor on the track, short of where trains stop; the next one in must stop for it
+    const cx = 120;                                       // canvas px (3 page px each at this width); the stop is near 300
+    const y = await page.evaluate(() => { const z = window.depths.zones(); return z.stTop + z.stH - 13 * 3 - scrollY; });
+    await page.mouse.move(cx * 3, y);
+    await page.waitForFunction(c => { const t = window.depths.train(); return t.blocked && t.v === 0 && t.x < c; }, cx, { timeout: 30000 });
     await expect(page.locator('#toast')).toContainText('horn');
   });
 
