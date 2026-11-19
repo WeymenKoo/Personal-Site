@@ -25,6 +25,14 @@ The power board sits between the flight battery and everything else in the aircr
 | Tools | Altium Designer |
 | Designers | W. Koo, B. Liu |
 
+## Planning | From the chalkboard
+
+The avionics for the 2024–25 aircraft were planned on a chalkboard first: the flight controller, the receiver, the radios, the camera and the power budget. The stack itself was sketched on paper: the flight controller sitting on 2 × 17, 2.54 mm headers above the power board.
+
+![The 2024–25 avionics system drawn out on a chalkboard: flight controller, receiver, radios, camera, ESC and a power budget](plan-chalkboard.jpg#wide "Planning the avionics on a chalkboard, 5 October 2024.")
+![A pen sketch of the flight controller stacked above the power board on 2.54 mm headers](plan-sketch.jpg "The stack, sketched on paper, 20 October 2024.")
+![The assembled power board on the bench next to a roll of solder and a pair of tweezers](bench-solder.jpg "The power board on the bench, 22 March 2025.")
+
 ## Power flow
 
 ![Block diagram from the top schematic sheet, with the dropped blocks crossed out in red](plan-vs-built.jpg#wide "The block diagram on the top schematic sheet. The blocks crossed out in red were dropped from the design.")
@@ -152,6 +160,17 @@ Flight Controller v2 was designed by another member of the avionics team. It is 
 
 ![Flight Controller v2 seated on the power board](fc-on-power-board.jpg "Flight Controller v2 on the power board, 4 May 2025.")
 ![The power board and flight controller installed in the fuselage, with the GNSS board on top and a telemetry radio in front](installed-2025.jpg "Installed in the fuselage, 1 May 2025, with the ZED-F9P GNSS board and a Holybro 915 MHz telemetry radio.")
+
+## Rework | The flight controller didn't fit
+
+The connector spacing didn't match. Flight Controller v2's header rows came out narrower than the power board's J12 and J13, so the two boards couldn't plug together. Checking that the two designs mated was my job as avionics lead, and I missed it.
+
+The fix was rework, done on 22 March 2025: a strip of 2.54 mm perfboard with a header on it, soldered along one edge of the flight controller, and fine jumper wires.
+
+![The flight controller from below, with a strip of yellow-green perfboard and a header soldered along one edge, and fine red jumper wires](rework-fc-bottom.jpg "The flight controller from below: the perfboard strip along the top, and the jumper wires.")
+![The flight controller from above, with red jumper wires along the header and pins sticking out of the side](rework-fc-top.jpg "From above.")
+![The reworked flight controller seated on the power board](rework-fitted.jpg "Seated on the power board.")
+![The stack held up from the side, the flight controller above the power board](rework-stack-side.jpg "The stack from the side.")
 
 ## SAE Aero Design 2025
 

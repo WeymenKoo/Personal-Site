@@ -190,13 +190,22 @@ test.describe('as shipped', () => {
     await open(page, server.url);
     const glass = page.locator('.counter .drink').first();
     await glass.scrollIntoViewIfNeeded();
+    // the round is random: set it out so the first glass has the bar to itself
+    await page.evaluate(() => {
+      const w = document.getElementById('counter').clientWidth;
+      window.fx.drinks.forEach((g, i) => {
+        g.vx = 0; g.x = i === 0 ? 200 : w - (i * (g.w + 20));
+        g.node.style.transform = 'translateX(' + g.x + 'px)';
+      });
+    });
     const x0 = await page.evaluate(() => window.fx.drinks[0].x);
     const b = await glass.boundingBox();
     // sweep left to right through the glass, just above the bar top
     const y = b.y + b.height * .6;
     await page.mouse.move(b.x - 60, y);
     for (let i = 1; i <= 8; i++) await page.mouse.move(b.x - 60 + i * 25, y);
-    await page.waitForTimeout(700);
+    await page.mouse.move(b.x - 60 + 9 * 25, y - 300);          // lift the cursor off the bar
+    await page.waitForFunction(() => window.fx.drinks.every(g => g.vx === 0 && !g.drag), null, { timeout: 8000 });
     const x1 = await page.evaluate(() => window.fx.drinks[0].x);
     expect(x1).toBeGreaterThan(x0 + 10);
     // drag it back to the left and let go
@@ -205,7 +214,8 @@ test.describe('as shipped', () => {
     await page.mouse.down();
     for (let i = 1; i <= 6; i++) await page.mouse.move(c.x + c.width / 2 - i * 20, c.y + c.height / 2);
     await page.mouse.up();
-    await page.waitForTimeout(700);
+    await page.mouse.move(10, 10);
+    await page.waitForFunction(() => window.fx.drinks.every(g => g.vx === 0 && !g.drag), null, { timeout: 8000 });
     const x2 = await page.evaluate(() => window.fx.drinks[0].x);
     expect(x2).toBeLessThan(x1 - 60);
     await expect(page.locator('#toast')).not.toHaveClass(/on/);          // a drag isn't a tap
