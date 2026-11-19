@@ -5,11 +5,31 @@
   "year": "2026",
   "spec": "STM32H757 · 55 × 40 mm · 8 layers · ArduPilot",
   "summary": "A flight-controller system-on-module for UBC AeroDesign. The STM32H757, two IMUs, two barometers, a magnetometer, FRAM and microSD sit on one module that plugs into a carrier board through two Hirose DF17 connectors. Rev A is design-complete and not yet fabricated.",
-  "cover": { "src": "card.jpg", "alt": "Render of the flight controller SoM, top side: the STM32H757 in the centre, USB-C on the right edge, UBC AeroDesign logo top left", "fit": "cover" },
+  "cover": {
+    "src": "card.jpg",
+    "alt": "Render of the flight controller SoM at an angle on a dark background: the STM32H757 in the centre, USB-C on the right, UBC AeroDesign logo and Square Lemon mark",
+    "fit": "cover"
+  },
+  "tldr": {
+    "src": "tldr.jpg",
+    "alt": "Render of the flight controller SoM at an angle on a dark background: the STM32H757 in the centre, USB-C on the right, UBC AeroDesign logo and Square Lemon mark"
+  },
   "strip": [
-    { "src": "thumb-top.jpg", "alt": "Top side of the module, straight on", "caption": "Top" },
-    { "src": "thumb-bottom.jpg", "alt": "Bottom side of the module, straight on", "caption": "Bottom" },
-    { "src": "thumb-layers.jpg", "alt": "Exploded view of the module's copper layers", "caption": "8 layers" }
+    {
+      "src": "thumb-top.jpg",
+      "alt": "Top side of the module, straight on",
+      "caption": "Top"
+    },
+    {
+      "src": "thumb-bottom.jpg",
+      "alt": "Bottom side of the module, straight on",
+      "caption": "Bottom"
+    },
+    {
+      "src": "thumb-layers.jpg",
+      "alt": "Exploded view of the module's copper layers",
+      "caption": "8 layers"
+    }
   ],
   "link": "content/projects/fc-som/index.html"
 }
