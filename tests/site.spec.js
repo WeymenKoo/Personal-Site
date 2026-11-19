@@ -305,6 +305,64 @@ test.describe('as shipped', () => {
     expect(errors).toEqual([]);
   });
 
+  test('below the city: underground, sea, station, on the index and the résumé', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    for (const url of ['index.html', 'resume.html']) {
+      const errors = [];
+      page.on('pageerror', e => errors.push(e.message));
+      await offline(page);
+      await page.goto(server.url + url);
+      await expect(page.locator('canvas.depths')).toHaveCount(1);
+      await expect(page.locator('.station')).toHaveCount(1);
+      const z = await page.evaluate(() => { window.depths.layout(); return window.depths.zones(); });   // measure now: cards load late
+      expect(z.start).toBeLessThan(z.sea);
+      expect(z.sea).toBeLessThan(z.stTop);
+      // nothing fixed grows into the project column
+      expect(z.colL).toBeGreaterThan(0);
+      await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));   // the site scrolls smoothly; tests jump
+      await page.waitForTimeout(600);
+      expect(errors).toEqual([]);
+    }
+  });
+
+  test('the cursor on the track stops the train', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await open(page, server.url);
+    await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));   // the site scrolls smoothly; tests jump
+    await page.waitForTimeout(300);
+    // park the cursor on the track, short of where trains stop; the next one in must stop for it
+    const cx = 120;                                       // canvas px (3 page px each at this width); the stop is near 300
+    const y = await page.evaluate(() => { window.depths.layout(); const z = window.depths.zones(); return z.stTop + z.stH - 13 * 3 - scrollY; });
+    await page.mouse.move(cx * 3, y);
+    // send a train in now, rather than waiting a whole cycle (CI renders few frames, so trains run slow there)
+    await page.evaluate(() => Object.assign(window.depths.train(), { phase: 'in', x: -4, v: 1.4, t: 0 }));
+    try {
+      await page.waitForFunction(c => { const t = window.depths.train(); return t.blocked && t.v === 0 && t.x < c; }, cx, { timeout: 20000 });
+    } catch (e) {
+      throw new Error('train never stopped: ' + JSON.stringify(await page.evaluate(() => ({ train: window.depths.train(), cursor: window.depths.cursor(), zones: window.depths.zones() }))));
+    }
+    await expect(page.locator('#toast')).toContainText('horn');
+  });
+
+  test('torpedoes hunt the cursor in the margins; over the project boxes it is safe', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await open(page, server.url);
+    const z = await page.evaluate(() => { window.depths.layout(); return window.depths.zones(); });   // measure now: cards load late
+    await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), (z.sea + z.stTop) / 2 - 450);
+    await page.mouse.move(60, 450);                       // in the left margin
+    const y = await page.evaluate(() => scrollY + 450);
+    await page.evaluate(([x, y]) => window.depths.fire(x, y), [60, y]);
+    await page.waitForFunction(() => window.depths.score.hits > 0 || window.depths.score.dodged > 0, null, { timeout: 15000 });
+    await page.waitForFunction(() => window.depths.torps().length === 0, null, { timeout: 15000 });
+    const h1 = await page.evaluate(() => window.depths.score.hits);
+    expect(h1, JSON.stringify(await page.evaluate(() => ({ score: window.depths.score, cursor: window.depths.cursor(), zones: window.depths.zones(), sub: window.depths.sub() })))).toBeGreaterThan(0);
+    // now take cover over the column: a torpedo fired at it can't hit
+    await page.mouse.move(720, 450);
+    await page.evaluate(([x, y]) => window.depths.fire(x, y), [720, y]);
+    await page.waitForFunction(() => window.depths.torps().length === 0, null, { timeout: 15000 });
+    expect(await page.evaluate(() => window.depths.score.hits)).toBe(h1);
+  });
+
   test('the city sits to the right, and its aviation lights blink', async ({ page }) => {
     await open(page, server.url);
     const s = await page.locator('.city').evaluate(e => ({
