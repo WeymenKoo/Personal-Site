@@ -255,7 +255,7 @@ test.describe('as shipped', () => {
   test('every sky scene runs without errors', async ({ page }) => {
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
-    for (const sc of ['patrol', 'launch', 'landing', 'station', 'capsule']) {
+    for (const sc of ['patrol', 'launch', 'landing', 'station', 'capsule', 'shuttle-launch', 'falcon-heavy', 'hubble', 'roadster']) {
       await page.goto(server.url + 'index.html?scene=' + sc);
       await expect(page.locator('#sky')).toHaveAttribute('data-scene', sc);
       await page.waitForTimeout(1500);
