@@ -1,0 +1,63 @@
+<!-- tldr:start (generated in WeymenKoo/Personal-Site by npm run tldr, do not edit by hand) -->
+
+## Projects
+
+The short version. Each title links to the full write-up on [my site](https://weymenkoo.github.io/Personal-Site/). Printable: **[portfolio.pdf](portfolio.pdf)**.
+
+### [Flight controller SoM](https://weymenkoo.github.io/Personal-Site/content/projects/fc-som/index.html)
+
+<img src="https://weymenkoo.github.io/Personal-Site/content/projects/fc-som/tldr.jpg" alt="Render of the flight controller SoM at an angle on a dark background: the STM32H757 in the centre, USB-C on the right, UBC AeroDesign logo and Square Lemon mark" width="720">
+
+**Design complete** · 2026 · STM32H757 · 55 × 40 mm · 8 layers · ArduPilot
+
+A flight-controller system-on-module for UBC AeroDesign. The STM32H757, two IMUs, two barometers, a magnetometer, FRAM and microSD sit on one module that plugs into a carrier board through two Hirose DF17 connectors. Rev A is design-complete and not yet fabricated.
+
+### [FOC motor controller](https://weymenkoo.github.io/Personal-Site/content/projects/foc-controller/index.html)
+
+<img src="https://weymenkoo.github.io/Personal-Site/content/projects/foc-controller/tldr.jpg" alt="The assembled Rev 1 board, top side: the three-phase bridge, bulk capacitors, STM32G431 and JST-GH connectors" width="720">
+
+**Bring-up** · 2026 · 12S bus · 10 A RMS · STM32G431 + DRV8323S · CAN-FD
+
+A single-axis, sensored field-oriented-control motor controller for one joint of a cat-scale bipedal robot: 70 × 70 mm, 6 layers. Rev 1 is fabricated and partly bench-validated on a 12 V supply, with a motor identified and spun open-loop up to 1000 rpm.
+
+### [AeroDesign power board](https://weymenkoo.github.io/Personal-Site/content/projects/power-board/index.html)
+
+<img src="https://weymenkoo.github.io/Personal-Site/content/projects/power-board/tldr.jpg" alt="The power board on the bench next to a roll of solder, tweezers and a soldering iron, with an inset of the reworked flight controller" width="720">
+
+**Flown 2025** · 2025 · 2S–4S in · 5 V 15 A · LM5146 · 2 × TPS25983 · 6 layers
+
+The power board for UBC AeroDesign's 2025 Advanced Class aircraft. It takes the flight battery and gives every servo, radio and sensor a protected 5 V rail, with eFuses on the input and the servo output, servo current sensing, and the flight controller plugged in on top.
+
+### [Shadow: power distribution](https://weymenkoo.github.io/Personal-Site/content/projects/avionics-2024/index.html)
+
+<img src="https://weymenkoo.github.io/Personal-Site/content/projects/avionics-2024/tldr.jpg" alt="The wiring hub installed in Shadow, with the orange Cube Orange flight controller, the red GNSS board and the wiring around them" width="720">
+
+**Flown 2024** · 2024 · Wiring hub · 2 power modules · 5 V 15 A · ISL8117A · dual battery
+
+The power distribution system for Shadow, UBC AeroDesign's 2023–24 Advanced Class aircraft: a wiring hub that carries the Cube Orange flight controller, and two custom 5 V, 15 A power modules with hot-swappable dual batteries and voltage and current sensing. Flown at SAE Aero Design West 2024 in Van Nuys, California.
+
+### [Kyogre and Spirit](https://weymenkoo.github.io/Personal-Site/content/projects/kyogre-spirit/index.html)
+
+<img src="https://weymenkoo.github.io/Personal-Site/content/projects/kyogre-spirit/tldr.jpg" alt="Three aircraft: Kyogre in blue on a turf field, the first Spirit in purple and white on a gravel field, and the second Spirit in transparent red on a concrete apron" width="720">
+
+**Flown once** · 2023 · 2 airframes · 120 in span · S1223 wing · NACA 0012 tail · balsa, ply and carbon fibre
+
+Two seasons as mechanical lead for lifting surfaces and aerodynamics on UBC AeroDesign's Advanced Class team: Kyogre in 2021–22, then Spirit, a blended wing body built twice in 2022–23. The analysis behind Kyogre, then mostly photos: a crash, Spirit's one flight and two shipments lost by UPS.
+
+### [DC electronic load](https://weymenkoo.github.io/Personal-Site/content/projects/dc-load/index.html)
+
+<img src="https://weymenkoo.github.io/Personal-Site/content/projects/dc-load/tldr.jpg" alt="The Rev B power board and control board side by side on a wooden desk" width="720">
+
+**Rev E in layout** · 2024–26 · 150 W · 0.6–58 V · 0–10 A · 4 × IRFP250N · isolated USB-C
+
+A programmable DC load for testing power supplies and batteries. Rev B was built in late 2024 as a control board and a power board; a schematic review found errors in the power board. Rev E, the current design, uses four MOSFETs with one current loop each, isolation from USB, and is placed but not yet routed.
+
+### [Micromouse](https://weymenkoo.github.io/Personal-Site/content/projects/micromouse/index.html)
+
+<img src="https://weymenkoo.github.io/Personal-Site/content/projects/micromouse/tldr.jpg" alt="Micromouse V2 assembled on a wooden desk" width="720">
+
+**V2 built** · 2023–24 · STM32F411 · DRV8833 · 4 IR pairs · LSM6DS3 · encoders · USB-C
+
+A maze-solving robot on a single board. V1 failed because the motor driver inputs were put on STM32 pins with no timer behind them, so the motors couldn't be driven with PWM. V2 fixed the pinout, swapped to one DRV8833, and added IR wall sensors, an IMU and wheel encoders.
+
+<!-- tldr:end -->
