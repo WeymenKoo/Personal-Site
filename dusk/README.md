@@ -9,7 +9,7 @@ contact.html            the telegraph (+ assets/contact.css, contact.js)
 resume.html             work history and the transcript (+ assets/resume.css, resume.js,
                         content/transcript.json)
 assets/site.css         the look (dark and light themes at the top)
-assets/fx.js            the moving parts: quotes, the sky, the bar, pets,
+assets/fx.js            the moving parts: quotes, the sky, the bar, the wind,
                         the article lightbox and the hidden things
 assets/entries.js       builds the project cards from content/
 assets/article-md.js    builds a project's write-up page from its article.md
@@ -336,7 +336,7 @@ It copies the site, adds projects and a Markdown article **by following
 the steps in this README**, and checks that they render. It also opens the
 published articles (every image loads and has alt text, nothing over 1 MB,
 no leftover `PLACEHOLDER`), and covers both themes, the cursor, the bar,
-the pets, the hidden codes, the lightbox, reduced motion, the phone layout,
+the drinks, the wind, the hidden codes, the lightbox, reduced motion, the phone layout,
 broken-entry handling and scroll performance. One-time setup, from the
 repo root:
 
