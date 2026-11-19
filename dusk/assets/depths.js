@@ -268,20 +268,24 @@
     sayOnce("torp", "Sonar ping. Torpedo in the water: move, or take cover over the project boxes!");
   }
   function torpedoes(dt) {
+    var n = Math.max(1, Math.ceil(dt)), h = dt / n;                  /* small steps: a slow frame can't skip past the cursor */
     torps = torps.filter(function (p) {
-      var exposed = cur.in && !inColumn(cur.x);                     /* over the project column, the boxes are cover */
-      if (exposed) {                                                 /* homes in, but turns slowly */
-        var want = Math.atan2(cur.y - p.y, cur.x - p.x), d = want - p.a;
-        while (d > Math.PI) d -= 6.283; while (d < -Math.PI) d += 6.283;
-        p.a += Math.max(-.014, Math.min(.014, d)) * dt;
+      var exposed = cur.in && !inColumn(cur.x), hit = false;         /* over the project column, the boxes are cover */
+      for (var k = 0; k < n && !hit; k++) {
+        if (exposed) {                                               /* homes in, but turns slowly */
+          var want = Math.atan2(cur.y - p.y, cur.x - p.x), d = want - p.a;
+          while (d > Math.PI) d -= 6.283; while (d < -Math.PI) d += 6.283;
+          p.a += Math.max(-.014, Math.min(.014, d)) * h;
+        }
+        p.x += Math.cos(p.a) * 3.4 * h; p.y += Math.sin(p.a) * 3.4 * h; p.life -= h;
+        hit = exposed && near(p.x, p.y, 13);
       }
-      p.x += Math.cos(p.a) * 3.4 * dt; p.y += Math.sin(p.a) * 3.4 * dt; p.life -= dt;
       if (Math.random() < .5) bubbles.push({ x: p.x - Math.cos(p.a) * 10, y: p.y, v: rnd(.2, .5), ph: rnd(0, 6), life: 60 });
       var x = ax(p.x), y = ay(p.y);
       ctx.globalAlpha = inColumn(p.x) ? .3 : 1;
       for (var i = 0; i < 6; i++) rect(Math.round(x - Math.cos(p.a) * i), Math.round(y - Math.sin(p.a) * i), 1, 1, i === 0 ? "#ff3e5a" : "#5a6070");
       ctx.globalAlpha = 1;
-      if (exposed && near(p.x, p.y, 13)) {
+      if (hit) {
         blast(p.x, p.y); score.hits++;
         say(score.hits === 1 ? "Direct hit. Glub. (Keep moving, or take cover behind the project boxes.)" : "Hit " + score.hits + ". Dodged " + score.dodged + ".");
         return false;
@@ -384,10 +388,12 @@
     } else {
       var target = Math.min(T.phase === "in" ? stopX : W + TL + 40, block);
       if (block < Infinity && visible) { T.blocked = true; sayOnce("horn", "The driver leans on the horn. Off the tracks!"); } else T.blocked = false;
-      var dist = target - T.x, want = dist <= 0 ? 0 : Math.min(1.8, Math.sqrt(2 * .02 * dist));
-      T.v += Math.max(-.06, Math.min(.025, want - T.v)) * dt;
-      if (dist <= 0) T.v = 0;
-      T.x += Math.max(0, T.v) * dt;
+      for (var n = Math.max(1, Math.ceil(dt)), k = 0; k < n; k++) {     /* small steps, the same at any frame rate */
+        var dist = target - T.x, want = dist <= 0 ? 0 : Math.min(1.8, Math.sqrt(2 * .02 * dist));
+        T.v += Math.max(-.06, Math.min(.025, want - T.v)) * dt / n;
+        if (dist <= .05) T.v = 0;
+        T.x += Math.max(0, T.v) * dt / n;
+      }
       if (T.phase === "in" && !T.blocked && Math.abs(stopX - T.x) < .6 && T.v < .05) { T.phase = "dwell"; T.t = 220; T.x = stopX; T.v = 0; }
       if (T.phase === "out" && T.x - TL > W + 10) { T.phase = "gap"; T.t = rnd(140, 320); }
     }
@@ -411,10 +417,10 @@
   }
 
   /* ---------- the loop: only while something below the city is on screen ---------- */
-  var running = false, lastT = 0, clock = 0;
+  var running = false, lastT = 0, clock = 0, frames = 0;
   function visible() { return Z && scrollY + innerHeight > Z.start; }
   function frame(now) {
-    var dt = REDUCED ? 0 : Math.min(50, now - (lastT || now)) / 16.67; lastT = now; clock += dt;
+    var dt = REDUCED ? 0 : Math.min(50, now - (lastT || now)) / 16.67; lastT = now; clock += dt; frames++;
     if (++themeAge > 60) { themeAge = 0; readTheme(); }
     var off = scrollY % P; base = scrollY - off;
     cv.style.transform = "translate3d(0," + (-off) + "px,0)";
@@ -473,6 +479,7 @@
   /* for the tests */
   window.depths = {
     zones: function () { return Z; }, train: function () { return T; }, torps: function () { return torps; },
-    score: score, sub: function () { return sub; }, fire: fire, layout: layout, things: things
+    score: score, sub: function () { return sub; }, fire: fire, layout: layout, things: things,
+    cursor: function () { return { x: cur.x, y: cur.y, in: cur.in, base: base, P: P, W: W, frames: frames }; }
   };
 })();
