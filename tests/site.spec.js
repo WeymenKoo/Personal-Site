@@ -119,23 +119,6 @@ test.describe('as shipped', () => {
     await expect(page.locator('#toast')).toHaveClass(/on/);
   });
 
-  test('pets: three to start, more on request, and they keep away from the cursor', async ({ page }) => {
-    await page.setViewportSize({ width: 1200, height: 800 });
-    await open(page, server.url);
-    await expect(page.locator('.pets .pet')).toHaveCount(3);
-    await page.locator('#petAdd').click();
-    await expect(page.locator('.pets .pet')).toHaveCount(4);
-    // park the whale, put the cursor right on it, and watch it leave
-    const moved = await page.evaluate(async () => {
-      const p = window.fx.pets.find(p => p.kind === 'whale');
-      p.x = 600; p.y = 400; p.vx = 0; p.vy = 0;
-      document.dispatchEvent(new PointerEvent('pointermove', { clientX: 600 + p.w / 2 + 10, clientY: 400 + p.h / 2 }));
-      await new Promise(r => setTimeout(r, 600));
-      return Math.hypot(p.x - 600, p.y - 400);
-    });
-    expect(moved).toBeGreaterThan(30);
-  });
-
   test('the SOS window sits on the city and blinks', async ({ page }) => {
     await open(page, server.url);
     const box = await page.locator('.sos').boundingBox();
@@ -152,13 +135,11 @@ test.describe('as shipped', () => {
     await expect(page.locator('#toast')).toContainText('Nice try');
   });
 
-  test('with reduced motion: no pets, the sky holds still, no errors', async ({ browser }) => {
+  test('with reduced motion: the sky holds still, no errors', async ({ browser }) => {
     const ctx = await browser.newContext({ reducedMotion: 'reduce' });
     const page = await ctx.newPage();
     const errors = await open(page, server.url);
     await page.waitForTimeout(300);
-    await expect(page.locator('.pets .pet')).toHaveCount(0);
-    await expect(page.locator('#petAdd')).toBeDisabled();
     expect(await page.locator('.hero h1').evaluate(e => getComputedStyle(e).animationName)).toBe('none');
     expect(errors).toEqual([]);
     await ctx.close();
@@ -195,64 +176,70 @@ test.describe('as shipped', () => {
     expect((await request.get(server.url + href)).ok()).toBe(true);
   });
 
-  test('the dock is on every page: theme, pets on/off, + Pet', async ({ page }) => {
+  test('the theme button is on every page, and the pets are gone', async ({ page }) => {
     for (const url of ['index.html', 'contact.html', 'resume.html', 'content/projects/dc-load/index.html']) {
       await page.goto(server.url + url);
       await expect(page.locator('.dock #themeBtn')).toBeVisible();
-      await expect(page.locator('.dock #petToggle')).toBeVisible();
-      await expect(page.locator('.dock #petAdd')).toBeVisible();
+      await expect(page.locator('.dock button')).toHaveCount(1);
+      await expect(page.locator('.pets, .pet, #petToggle, #petAdd')).toHaveCount(0);
     }
   });
 
-  test('the theme button cycles auto, light, dark, overrides the device, and is remembered', async ({ browser }) => {
-    const ctx = await browser.newContext({ colorScheme: 'dark' });
-    const page = await ctx.newPage();
+  test('the cursor sweeps a drink along the bar; a drag slides it; a tap still talks', async ({ page }) => {
+    await page.setViewportSize({ width: 1200, height: 800 });
     await open(page, server.url);
-    const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-    await expect(page.locator('#themeBtn')).toHaveText('◐ Auto');
-    expect(await bg()).toBe('rgb(13, 8, 32)');
-    await page.locator('#themeBtn').click();
-    await expect(page.locator('#themeBtn')).toHaveText('☀ Light');
-    expect(await bg()).toBe('rgb(244, 238, 251)');
-    expect(await page.locator('.city').evaluate(e => getComputedStyle(e).backgroundImage)).toContain('city-light.png');
-    // remembered on the next page, before anything paints
-    await page.goto(server.url + 'contact.html');
-    expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe('light');
-    await page.locator('#themeBtn').click();
-    await expect(page.locator('#themeBtn')).toHaveText('☾ Dark');
-    await page.locator('#themeBtn').click();
-    await expect(page.locator('#themeBtn')).toHaveText('◐ Auto');
-    expect(await page.evaluate(() => document.documentElement.hasAttribute('data-theme'))).toBe(false);
-    await ctx.close();
-    // forced dark on a light device
-    const ctx2 = await browser.newContext({ colorScheme: 'light' });
-    const p2 = await ctx2.newPage();
-    await open(p2, server.url);
-    await p2.evaluate(() => window.fx.setTheme('dark'));
-    expect(await p2.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(13, 8, 32)');
-    expect(await p2.locator('.hero h1').evaluate(e => getComputedStyle(e).color)).toBe('rgb(246, 234, 255)');
-    await ctx2.close();
+    const glass = page.locator('.counter .drink').first();
+    await glass.scrollIntoViewIfNeeded();
+    const x0 = await page.evaluate(() => window.fx.drinks[0].x);
+    const b = await glass.boundingBox();
+    // sweep left to right through the glass, just above the bar top
+    const y = b.y + b.height * .6;
+    await page.mouse.move(b.x - 60, y);
+    for (let i = 1; i <= 8; i++) await page.mouse.move(b.x - 60 + i * 25, y);
+    await page.waitForTimeout(700);
+    const x1 = await page.evaluate(() => window.fx.drinks[0].x);
+    expect(x1).toBeGreaterThan(x0 + 10);
+    // drag it back to the left and let go
+    const c = await glass.boundingBox();
+    await page.mouse.move(c.x + c.width / 2, c.y + c.height / 2);
+    await page.mouse.down();
+    for (let i = 1; i <= 6; i++) await page.mouse.move(c.x + c.width / 2 - i * 20, c.y + c.height / 2);
+    await page.mouse.up();
+    await page.waitForTimeout(700);
+    const x2 = await page.evaluate(() => window.fx.drinks[0].x);
+    expect(x2).toBeLessThan(x1 - 60);
+    await expect(page.locator('#toast')).not.toHaveClass(/on/);          // a drag isn't a tap
+    // every glass stays on the bar
+    const inside = await page.evaluate(() => {
+      const w = document.getElementById('counter').clientWidth;
+      return window.fx.drinks.every(g => g.x >= 0 && g.x + g.w <= w + 1);
+    });
+    expect(inside).toBe(true);
+    await glass.click();
+    await expect(page.locator('#toast')).toHaveClass(/on/);
   });
 
-  test('pets can be turned off, stay off, and follow you between pages when on', async ({ browser }) => {
-    const ctx = await browser.newContext();
-    const page = await ctx.newPage();
-    await open(page, server.url);
-    await expect(page.locator('.pets .pet')).toHaveCount(3);
-    await page.locator('#petAdd').click();
-    await page.goto(server.url + 'content/projects/micromouse/index.html');
-    await expect(page.locator('.pets .pet')).toHaveCount(4);                 // the same four came along
-    await page.locator('#petToggle').click();
-    await expect(page.locator('#petToggle')).toHaveText('Pets: off');
-    await expect(page.locator('.pets .pet')).toHaveCount(0);
-    await expect(page.locator('#petAdd')).toBeDisabled();
-    await page.keyboard.type('pet');
-    await expect(page.locator('.pets .pet')).toHaveCount(0);
-    await open(page, server.url);
-    await expect(page.locator('.pets .pet')).toHaveCount(0);                 // still off after a reload
-    await page.locator('#petToggle').click();
-    await expect(page.locator('.pets .pet')).toHaveCount(4);
-    await ctx.close();
+  test('the cursor nudges the spacecraft aside, gently', async ({ page }) => {
+    await page.setViewportSize({ width: 1200, height: 800 });
+    await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
+    await page.goto(server.url + 'index.html?scene=station');
+    // the push: away from the cursor, small, and nothing beyond the radius
+    const r = await page.evaluate(() => {
+      const w = window.fx.wind, near = { x: 0, y: 0 }, far = { x: 0, y: 0 };
+      w.x = 100; w.y = 100;
+      for (let i = 0; i < 10; i++) { w.blow(near, 130, 100, 1); w.blow(far, 100 + w.R + 5, 100, 1); }
+      return { near, far, R: w.R };
+    });
+    expect(r.near.x).toBeGreaterThan(0);                 // pushed away (to the right)
+    expect(r.near.x).toBeLessThan(15);                   // a breeze over ten frames, not a shove
+    expect(r.far).toEqual({ x: 0, y: 0 });
+    // live: park the cursor just under the station and it rises out of the way
+    await page.waitForFunction(() => window.fx.game.craft().station.x > 40);
+    const s0 = await page.evaluate(() => { const q = window.fx.game.craft().station; return { x: q.x, y: q.y }; });
+    await page.mouse.move(s0.x + 120, s0.y + 70);
+    await page.waitForTimeout(800);
+    const s1 = await page.evaluate(() => window.fx.game.craft().station.y);
+    expect(s1).toBeLessThan(s0.y - 1);
   });
 
   test('every sky scene runs without errors', async ({ page }) => {
