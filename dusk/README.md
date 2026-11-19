@@ -98,10 +98,10 @@ them by name in step 3.
 | `spec` | the one-line spec in accent colour; separate items with ` · ` |
 | `cover.fit` | `cover` crops to fill the frame; `contain` shows the whole image (use for renders on white) |
 | `strip` | optional row of thumbnails under the spec; `[]` hides it |
-| `tldr` | optional: `{ "src", "alt" }`, a 4:3 photo of the real board for the README and `portfolio.pdf` (`npm run tldr`); without it they use `cover` |
+| `tldr` | optional: `{ "src", "alt" }`, a 4:3 photo of the real board for the GitHub profile README and `portfolio.pdf` (`npm run tldr`, then commit `dusk/tldr.md` and `dusk/portfolio.pdf`); without it they use `cover` |
 | `link` | where "Read →" goes: `"content/projects/<slug>/index.html"` for the write-up in this folder (see "Writing an article"), or any URL; `""` hides the link |
 
-The card shows the `tldr` picture (the one in the repo README and the PDF)
+The card shows the `tldr` picture (the one on the GitHub profile and in the PDF)
 when there is one, otherwise the `cover`, at 4:3, about 600 px wide. Give it
 its own 1200 × 900 copy, centred on the subject, and keep the full-size
 images for the article: big images in the cards make scrolling stutter.
