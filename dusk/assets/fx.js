@@ -106,6 +106,14 @@
       "....w....", "...www...", "..wwwww..", "..wwdww..", ".wwwwwww.", ".wwwwwww.", "wwwwwwwww", "kkkkkkkkk"] },
     chute: { pal: { o: "#ff8a3d", w: "#f2f2f2", l: "#9aa0b0" }, rows: [
       "...ooowww...", ".oowwwoooww.", "oowwwoooowwo", "l..........l", ".l........l.", "..l......l..", "...l....l...", "....l..l...."] },
+    shuttlestack: { pal: { o: "#d9792b", O: "#a85a1e", s: "#eef0f4", S: "#c9ccd6", d: "#5a5f6e", k: "#22232b", w: "#f2f2f2", g: "#c9ccd6", e: "#8a8f9e" }, rows: ["...........", "......oo...", ".....oooO..", ".....oooO..", "s....oooOs.", "sS...oooOsS", "sS...oooOsS", "sS...oooOsS", "sS...oooOsS", "sS...oooOsS", "sS.kwoooOsS", "sS.kwoooOsS", "ddkwwoooOdd", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "ddkwwoooOdd", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sgkwwoooOsS", "sgkwwoooOsS", "sgkww....sS", "sSeee....sS", "kk.......kk", "kk.......kk"] },
+    shuttlecore: { pal: { o: "#d9792b", O: "#a85a1e", k: "#22232b", w: "#f2f2f2", e: "#8a8f9e" }, rows: ["...........", "......oo...", ".....oooO..", ".....oooO..", ".....oooO..", ".....oooO..", ".....oooO..", ".....oooO..", ".....oooO..", ".....oooO..", "...kwoooO..", "...kwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kww......", "..eee......", "...........", "..........."] },
+    srb: { pal: { s: "#eef0f4", S: "#c9ccd6", d: "#5a5f6e", g: "#c9ccd6", k: "#22232b" }, rows: ["..", "..", "..", "..", "s.", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "dd", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "dd", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "sg", "sg", "sg", "sS", "kk", "kk"] },
+    falconheavy: { pal: { w: "#f2f2f2", W: "#c9ccd6", k: "#22232b" }, rows: ["......w......", "......w......", ".....wwW.....", ".....wwW.....", ".....wwW.....", ".....wwW.....", ".....wwW.....", ".....wwW.....", ".....wwW.....", ".....kkk.....", ".....wwW.....", ".....wwW.....", ".....wwW.....", ".w...wwW...w.", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..kkk..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "kkk..wwW..kkk", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "kkk..kkk..kkk", "kkk..kkk..kkk"] },
+    fhcenter: { pal: { w: "#f2f2f2", W: "#c9ccd6", k: "#22232b" }, rows: ["...w...", "...w...", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..kkk..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..kkk..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..kkk..", "..kkk.."] },
+    fhside: { pal: { w: "#f2f2f2", W: "#c9ccd6", k: "#22232b" }, rows: [".w.", "wwW", "wwW", "kkk", "wwW", "wwW", "wwW", "kkk", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "kkk", "kkk"] },
+    hubble: { pal: { w: "#e3e6ee", d: "#8a8f9e", k: "#22232b", b: "#3a5ba8", B: "#d9a43a" }, rows: ["k........bBbBbB...........", ".k.......BbBbBb...........", "..k......bBbBbB...........", "...d.......dd.............", "...dwwwwwwwwwwwwwwwwwwkd..", "...dwwwwwwwwwwwwwwwwwwkd..", "...dwwwwwwwwwwwwwwwwwwkd..", "...dddddddddddddddddddkd..", "...dddddddddddddddddddkd..", "...d.......dd.............", ".........bBbBbB...........", ".........BbBbBb...........", ".........bBbBbB..........."] },
+    roadster: { pal: { r: "#d61f2c", k: "#1b1b22", w: "#f2f2f2", W: "#c9ccd6" }, rows: ["........ww.......", ".......wWw.......", "....rrrrwwrrr....", "..rrrrrrrrrrrrrr.", ".rrrrrrrrrrrrrrrr", ".rkkrrrrrrrrrkkr.", "..kk.........kk.."] },
     /* the round on the bar */
     martini: { pal: { g: "rgba(239,228,255,.72)", h: "rgba(239,228,255,.45)", l: "#ff8fd0", c: "#ff3e5a" }, rows: [
       "gggggggggcg", ".hhhhhhhhh.", "..lllllll..", "...lllll...", "....hhh....", ".....g.....", ".....g.....", ".....g.....",
@@ -334,14 +342,18 @@
 
     /* ---- one scene per visit: the patrol (ship vs aliens), a launch,
        a shuttle landing, the station going over, or a capsule coming home */
-    var SCENE_LIST = ["patrol", "launch", "landing", "station", "capsule"];
-    var asked = (location.search.match(/[?&]scene=(\w+)/) || [])[1];     /* ?scene=launch picks one */
+    var SCENE_LIST = ["patrol", "launch", "landing", "station", "capsule", "shuttle-launch", "falcon-heavy", "hubble", "roadster"];
+    var asked = (location.search.match(/[?&]scene=([\w-]+)/) || [])[1];     /* ?scene=launch picks one */
     var scene = SCENE_LIST.indexOf(asked) >= 0 ? asked : SCENE_LIST[Math.floor(Math.random() * SCENE_LIST.length)];
     sky.dataset.scene = scene;
     var horizon = function () { return H - (parseFloat(css("--counterH")) || 92) - 40; };
     var big = 3;
     var SS = sprite("starship", big), BO = sprite("booster", big), SH = sprite("shuttle", big), ST = sprite("station", big),
-        CA = sprite("capsule", big), CH = sprite("chute", big);
+        CA = sprite("capsule", big), CH = sprite("chute", big),
+        SHL = sprite("shuttle", big, true),                      /* the orbiter drawn nose-left, for gliding in from the right */
+        STK = sprite("shuttlestack", big), STC = sprite("shuttlecore", big), SRB = sprite("srb", big),
+        FH = sprite("falconheavy", big), FHC = sprite("fhcenter", big), FHS = sprite("fhside", big),
+        HU = sprite("hubble", big), RD = sprite("roadster", big);
     var smoke = [];
     function puff(x, y, n, col) { for (var i = 0; i < n; i++) smoke.push({ x: x + rnd(-6, 6), y: y, vx: rnd(-.6, .6), vy: rnd(.2, 1.2), life: rnd(30, 70), c: col }); }
     function drawSmoke(dt) {
@@ -363,8 +375,60 @@
     var L = { t: -60, x: 0, sep: false, bx: 0, by: 0, bvy: 0 };
     var D = { t: -40 }, Q = { x: -200, y: 0 }, C = { t: -30 };
     wind.blow = blow;
-    game.craft = function () { return { ship: ship, launch: L, shuttle: D, station: Q, capsule: C }; };
+    game.craft = function () { return { ship: ship, launch: L, shuttle: D, station: Q, capsule: C, rocket: R, hubble: U, roadster: Z }; };
+    /* a rocket that climbs, drops what it doesn't need, and keeps going */
+    var R = { t: -60 };
+    function climb(dt, full, rest, drops, sepAt) {
+      if (R.t < 0) { R.t += dt; if (R.t >= 0) { R.x = Math.round(rnd(W * .2, W * .8) / P) * P; R.y = horizon(); R.v = 0; R.sep = false; R.parts = []; } drawSmoke(dt); return; }
+      R.t += dt; R.v = Math.min(4.5, R.v + .008 * dt); R.y -= R.v * dt;     /* slower than the Starship: these are heavier */
+      var img = R.sep ? rest : full;
+      blow(R, R.x, R.y + img.height / 2, dt);
+      if (!R.sep && R.y < H * sepAt) {
+        R.sep = true;
+        R.parts = drops.map(function (d) { return { img: d.img, x: R.x + d.dx, y: R.y + d.dy, vx: d.vx, vy: -R.v * .5, rot: 0, vr: d.vr, burn: d.burn }; });
+      }
+      R.parts.forEach(function (q) {
+        q.vy += .03 * dt; q.x += q.vx * dt; q.y += q.vy * dt; q.rot += q.vr * dt;
+        blow(q, q.x, q.y + q.img.height / 2, dt);
+        ctx.save(); ctx.translate(q.x, q.y + q.img.height / 2); ctx.rotate(q.rot);
+        ctx.drawImage(q.img, -q.img.width / 2, -q.img.height / 2);
+        if (q.burn && q.vy > .6) flame(0, q.img.height / 2, 4);       /* side boosters fire to come home */
+        ctx.restore();
+      });
+      ctx.drawImage(img, R.x - img.width / 2, R.y);
+      flame(R.x, R.y + img.height, (R.sep ? 7 : 11) + Math.floor(Math.random() * 3));
+      if (!R.sep && Math.random() < .9) puff(R.x, R.y + img.height + 30, 3, "rgba(230,225,240,.9)");
+      drawSmoke(dt);
+      if (R.y < -img.height - 40 && R.parts.every(function (q) { return q.y > H; })) R.t = -rnd(400, 900);
+    }
+    var U = { x: -300, y: 0, first: true }, Z = { x: -300, y: 0, rot: 0, first: true };
     var SCENES = {
+      "shuttle-launch": function (dt) {
+        climb(dt, STK, STC, [
+          { img: SRB, dx: -STK.width / 2 + SRB.width / 2, dy: 0, vx: -.6, vr: -.004 },
+          { img: SRB, dx: STK.width / 2 - SRB.width / 2, dy: 0, vx: .6, vr: .004 }
+        ], .38);
+      },
+      "falcon-heavy": function (dt) {
+        climb(dt, FH, FHC, [
+          { img: FHS, dx: -FH.width / 2 + FHS.width / 2, dy: FH.height - FHS.height, vx: -.5, vr: 0, burn: true },
+          { img: FHS, dx: FH.width / 2 - FHS.width / 2, dy: FH.height - FHS.height, vx: .5, vr: 0, burn: true }
+        ], .42);
+      },
+      hubble: function (dt, t) {
+        if (U.x < -200 || U.x > W + 200) { U.x = U.first ? rnd(W * .5, W * .75) : -180; U.y = rnd(H * .1, H * .3); U.first = false; }
+        U.x += .3 * dt;
+        blow(U, U.x + HU.width / 2, U.y + HU.height / 2, dt);
+        ctx.drawImage(HU, U.x, U.y);
+        if (Math.floor(t / 900) % 2) { ctx.fillStyle = "#7ff3ff"; ctx.fillRect(U.x + 21 * big, U.y + 4 * big, big, big); }
+      },
+      roadster: function (dt) {
+        if (Z.x < -200 || Z.x > W + 200) { Z.x = Z.first ? rnd(W * .5, W * .75) : -160; Z.y = rnd(H * .1, H * .35); Z.rot = rnd(-.3, .3); Z.first = false; }
+        Z.x += .4 * dt; Z.y += .05 * dt; Z.rot += .0025 * dt;   /* tumbling, very slowly */
+        blow(Z, Z.x + RD.width / 2, Z.y + RD.height / 2, dt);
+        ctx.save(); ctx.translate(Z.x + RD.width / 2, Z.y + RD.height / 2); ctx.rotate(Z.rot);
+        ctx.drawImage(RD, -RD.width / 2, -RD.height / 2); ctx.restore();
+      },
       launch: function (dt) {
         if (L.t < 0) { L.t += dt; if (L.t >= 0) { L.x = Math.round(rnd(W * .2, W * .8) / P) * P; L.y = horizon(); L.v = 0; L.sep = false; } drawSmoke(dt); return; }
         L.t += dt; L.v = Math.min(6, L.v + .012 * dt); L.y -= L.v * dt;
@@ -389,8 +453,8 @@
         if (D.t < 0) { D.t += dt; if (D.t >= 0) { D.x = W + 40; D.y = H * .08; D.vx = -2.2; D.vy = .55; } return; }
         D.t += dt; D.x += D.vx * dt; D.y += D.vy * dt;
         blow(D, D.x + SH.width / 2, D.y + SH.height / 2, dt);
-        if (D.t < 140) { ctx.globalAlpha = .5; ctx.fillStyle = "#ff8a3d"; ctx.fillRect(D.x + SH.width, D.y + SH.height / 2, 40, P); ctx.globalAlpha = 1; }
-        ctx.drawImage(SH, D.x, D.y);
+        if (D.t < 140) { ctx.globalAlpha = .5; ctx.fillStyle = "#ff8a3d"; ctx.fillRect(D.x - 40, D.y + SH.height / 2, 40, P); ctx.globalAlpha = 1; }
+        ctx.drawImage(SHL, D.x, D.y);                              /* nose first, the way it's going */
         if (D.y > horizon() - 60) { ctx.fillStyle = "#2a2a33"; ctx.fillRect(D.x + 12, D.y + SH.height, P, P * 2); ctx.fillRect(D.x + SH.width - 24, D.y + SH.height, P, P * 2); }
         if (D.y > horizon() + 20 || D.x < -120) D.t = -rnd(300, 700);
       },
