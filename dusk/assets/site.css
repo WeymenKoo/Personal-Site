@@ -16,7 +16,7 @@
   --accent:#7ff3ff; --pink:#ff8fd0; --ok:#5ef0a6; --wip:#ffd36e; --stop:#ff7a8c;
   --card:rgba(255,255,255,.035); --glow:rgba(255,62,165,.25);
   --sky:linear-gradient(180deg,#0d0820 0%,#1e0f3f 34%,#4a1a5c 60%,#b8436e 80%,#ff9a6b 93%,#2a1236 100%);
-  --city:url(img/city-dark.png?v=b8dfe511);
+  --city:url(img/city-dark.png?v=2526299d);
   --bar:linear-gradient(180deg,#3a1d2e 0%,#1a0d1c 18%,#0d0820 100%);
   --barEdge:rgba(255,190,140,.55);
   --glassLine:rgba(13,8,32,.55);
@@ -29,7 +29,7 @@
     --accent:#0a6f83; --pink:#b42a6f; --ok:#1d7a4c; --wip:#946000; --stop:#b3343f;
     --card:rgba(255,255,255,.6); --glow:rgba(180,42,111,.18);
     --sky:linear-gradient(180deg,#c7bdee 0%,#d9c4ea 40%,#f3c7cf 68%,#ffd2b0 90%,#3a2f66 100%);
-    --city:url(img/city-light.png?v=b8dfe511);
+    --city:url(img/city-light.png?v=2526299d);
     --bar:linear-gradient(180deg,#5b4a86 0%,#3d3168 20%,#2a2150 100%);
     --barEdge:rgba(255,236,210,.8);
     --glassLine:rgba(60,48,110,.12);
@@ -42,7 +42,7 @@
     --accent:#0a6f83; --pink:#b42a6f; --ok:#1d7a4c; --wip:#946000; --stop:#b3343f;
     --card:rgba(255,255,255,.6); --glow:rgba(180,42,111,.18);
     --sky:linear-gradient(180deg,#c7bdee 0%,#d9c4ea 40%,#f3c7cf 68%,#ffd2b0 90%,#3a2f66 100%);
-    --city:url(img/city-light.png?v=b8dfe511);
+    --city:url(img/city-light.png?v=2526299d);
     --bar:linear-gradient(180deg,#5b4a86 0%,#3d3168 20%,#2a2150 100%);
     --barEdge:rgba(255,236,210,.8);
     --glassLine:rgba(60,48,110,.12);
@@ -53,8 +53,8 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:16px;line-height:1.6;
-  cursor:url(img/cursor.svg?v=b8dfe511) 16 2,auto;overflow-x:hidden}
-a,button,label,summary,[data-full]{cursor:url(img/cursor-fire.svg?v=b8dfe511) 16 4,pointer}
+  cursor:url(img/cursor.svg?v=2526299d) 16 2,auto;overflow-x:hidden}
+a,button,label,summary,[data-full]{cursor:url(img/cursor-fire.svg?v=2526299d) 16 4,pointer}
 a{color:var(--accent)}
 a:hover{color:var(--fg)}
 img{max-width:100%}
