@@ -2,12 +2,13 @@
    fx.js — the moving parts, on every page:
      · quotes (hero, footer, end of each article)
      · the sky over the title screen: stars, shooting stars, the ship
-       and the aliens it shoots down
-     · pets that float around and keep away from your cursor
+       and the aliens it shoots down, or a launch, a landing, the station
+       or a capsule, all nudged gently aside by the cursor, like wind
+     · the drinks on the bar, which the cursor can push and slide
      · the lightbox for article pictures
      · a few things hidden for whoever goes looking
    Nothing here is needed to read the site; with reduced motion the
-   sky holds still and no pets are let out.
+   sky holds still.
    ===================================================================== */
 (function () {
   "use strict";
@@ -86,15 +87,6 @@
       "..#########..", ".###########.", "##.#######.##", "#...##.##...#", ".....#.#.....", "....o...o...."] },
     alien: { pal: { x: "#7dff7a", e: "#1a0d2e", a: "#c6ffb0" }, rows: [
       "..a...a..", "...x.x...", ".xxxxxxx.", "xxexxxexx", "xxxxxxxxx", ".x.x.x.x.", "x.......x"] },
-    whale: { pal: { B: "#4f7fd6", D: "#3a63b3", W: "#d7e7ff", e: "#0d0820" }, rows: [
-      ".......BBBBB.......", ".....BBBBBBBBB...BB", "...BBBBBBBBBBBB.BB.", "..BBBBBBBBBBBBBBB..",
-      ".BBBBBBBBBBBBBBBB..", "BBBBBBBBBBBBBeBBB..", "BWWWWWBBBBBBBBBB...", ".WWWWWWWWBBBBBD....", "...WWWWWWWDD......."], face: 1 },
-    whaleling: { pal: { B: "#86c5f0", D: "#5fa8dc", W: "#f2f8ff", e: "#0d0820" }, rows: [
-      "....BBBB.....", "..BBBBBBBB.BB", ".BBBBBBBBBBB.", "BBBBBBBBeBB..", "BWWWWBBBBBB..", ".WWWWWWBD...."], face: 1 },
-    manta: { pal: { M: "#2b3d73", L: "#4a5f9e", W: "#e9eefc", e: "#ffd36e" }, rows: [
-      "......LL.......", "....MMMMMM.....", "MMMMMMMMMMMMMM.", ".MMMMMeMeMMMMM.", "...WWMMMMWW....", "......MM.......", "......M........", ".......M......."], face: 0 },
-    jelly: { pal: { P: "#ff8fd0", p: "#ffc2e6", e: "#3a1236" }, rows: [
-      ".PPPPP.", "PPPPPPP", "PePPePP", "PPPPPPP", ".p.p.p.", ".p.p.p.", "p..p..p"], face: 0 },
     /* spacecraft, side views */
     starship: { pal: { s: "#c7cbd6", d: "#9aa0b0", t: "#2a2a33", f: "#5a5f6e" }, rows: [
       "...s...", "..sst..", "..sst..", ".fsstf.", ".fsstf.", "..sst..", "..sst..", "..sst..", "..sst..", "..sst..",
@@ -129,9 +121,7 @@
     mug: { pal: { m: "#efe4ff", c: "#5a3a2a", s: "rgba(239,228,255,.5)" }, rows: [
       "..s..s....", ".s..s.....", "..s..s....", "mmmmmmm...", "mccccmmmm.", "mmmmmmm..m", "mmmmmmm..m", "mmmmmmmmm.", "mmmmmmm...", ".mmmmm...."] },
     tokkuri: { pal: { b: "#e8e3d6", k: "#3a5ba8", c: "#e8e3d6" }, rows: [
-      "..bb..", "..bb..", ".bbbb.", "bbbbbb", "bkkkkb", "bbbbbb", "bbbbbb", "bbbbbb", ".bbbb.", "......", ".c..c."] },
-    hedgehog: { pal: { S: "#8a5a3c", s: "#6e4630", F: "#e6c39a", e: "#1a0d2e", n: "#1a0d2e", f: "#6e4630" }, rows: [
-      "...s.s.s....", "..SSSSSSS...", ".SSSSSSSSS..", "SSSSSSSSFFF.", "SSSSSSSFFeF.", "SSSSSSFFFFFn", ".SSSSSFFFF..", "..f.f..f.f.."], face: 1, walks: 1 }
+      "..bb..", "..bb..", ".bbbb.", "bbbbbb", "bkkkkb", "bbbbbb", "bbbbbb", "bbbbbb", ".bbbb.", "......", ".c..c."] }
   };
   function sprite(name, scale, flip) {
     var s = SPR[name], h = s.rows.length, w = s.rows[0].length;
@@ -160,7 +150,11 @@
     ["mug", "Coffee, for the designated debugger."],
     ["tokkuri", "Hot sake for the long reflow."]
   ];
-  var counter = $("#counter");
+  /* The cursor can push them along the counter (sweep across a glass),
+     or pick one up and slide it (drag and let go). They slow down on
+     their own, knock into each other and stop at the ends of the bar.
+     A tap that doesn't move a glass says what's in it. */
+  var counter = $("#counter"), drinks = [];
   if (counter) {
     var pool = DRINKS.slice().sort(function () { return Math.random() - .5; }).slice(0, 2 + Math.floor(Math.random() * 2));
     var slots = [];
@@ -170,11 +164,117 @@
       slots.push(x);
       var b = el("button", "drink");
       b.type = "button"; b.title = d[1]; b.setAttribute("aria-label", d[1]);
-      b.style.left = x + "%";
       b.appendChild(sprite(d[0], 4, Math.random() < .5));
-      b.addEventListener("click", function () { toast(d[1]); });
       counter.appendChild(b);
+      drinks.push({ node: b, line: d[1], pct: x, x: 0, w: 0, h: 0, vx: 0, drag: null });
     });
+    var CW = 0, moving = false, lastClink = 0, pointer = null;
+    function measure() {
+      var old = CW;
+      CW = counter.clientWidth;
+      drinks.forEach(function (g) {
+        g.w = g.node.offsetWidth; g.h = g.node.offsetHeight;
+        g.x = old ? g.x * CW / old : g.pct / 100 * CW;
+        g.x = Math.max(0, Math.min(CW - g.w, g.x));
+        g.node.style.left = "0"; g.node.style.transform = "translateX(" + Math.round(g.x) + "px)";
+      });
+    }
+    function slide(dt) {
+      var any = false;
+      drinks.forEach(function (g) {
+        if (g.drag) { any = true; return; }
+        if (Math.abs(g.vx) < .05) { g.vx = 0; return; }
+        any = true;
+        g.x += g.vx * dt;
+        g.vx *= Math.pow(.94, dt);                              /* friction on the bar top */
+        if (g.x < 0) { g.x = 0; g.vx = Math.abs(g.vx) * .4; }
+        if (g.x > CW - g.w) { g.x = CW - g.w; g.vx = -Math.abs(g.vx) * .4; }
+      });
+      /* glasses knock into each other: equal masses, so they trade speeds */
+      var order = drinks.slice().sort(function (p, q) { return p.x - q.x; });
+      for (var i = 0; i + 1 < order.length; i++) {
+        var l = order[i], r = order[i + 1], gap = r.x - (l.x + l.w);
+        if (gap < 0) {
+          if (!l.drag && !r.drag) { var v = l.vx; l.vx = r.vx; r.vx = v; }
+          else if (l.drag) r.vx = Math.max(r.vx, 2); else l.vx = Math.min(l.vx, -2);
+          if (!r.drag) r.x -= gap / (l.drag ? 1 : 2);
+          if (!l.drag) l.x += gap / (r.drag ? 1 : 2);
+          var hit = Math.abs(l.vx - r.vx);
+          if (hit > 6 && performance.now() - lastClink > 4000) { lastClink = performance.now(); toast("Clink. Careful, those are full."); }
+          any = true;
+        }
+      }
+      drinks.forEach(function (g) {
+        g.x = Math.max(0, Math.min(CW - g.w, g.x));
+        g.node.style.transform = "translateX(" + Math.round(g.x) + "px)";
+      });
+      return any;
+    }
+    var dlast = 0;
+    function loop(t) {
+      var dt = Math.min(50, t - (dlast || t)) / 16.67; dlast = t;
+      if (slide(dt)) requestAnimationFrame(loop); else { moving = false; dlast = 0; }
+    }
+    function wake() { if (!moving) { moving = true; dlast = 0; requestAnimationFrame(loop); } }
+
+    /* sweep the cursor across a glass and it moves the way the cursor went */
+    document.addEventListener("pointermove", function (e) {
+      if (e.pointerType === "touch") return;
+      var r = counter.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      var prev = pointer; pointer = { x: x, y: y };
+      if (!prev) return;
+      var dx = x - prev.x;
+      if (Math.abs(dx) < .5) return;
+      drinks.forEach(function (g) {
+        if (g.drag) return;
+        var top = -g.h, left = g.x, right = g.x + g.w;
+        var crossed = (prev.x < left && x >= left) || (prev.x > right && x <= right) || (x >= left && x <= right);
+        if (crossed && y > top - 4 && y < 6) {
+          g.vx += dx * .45;
+          g.vx = Math.max(-28, Math.min(28, g.vx));
+          wake();
+        }
+      });
+    }, { passive: true });
+
+    /* or pick one up and slide it */
+    drinks.forEach(function (g) {
+      var b = g.node;
+      b.addEventListener("pointerdown", function (e) {
+        if (e.button) return;
+        try { b.setPointerCapture(e.pointerId); } catch (x) { /* fine */ }
+        g.drag = { start: e.clientX, from: g.x, lastX: e.clientX, lastT: performance.now(), v: 0, moved: false };
+        g.vx = 0; b.classList.add("held"); wake();
+      });
+      b.addEventListener("pointermove", function (e) {
+        var d = g.drag; if (!d) return;
+        var now = performance.now();
+        if (Math.abs(e.clientX - d.start) > 4) d.moved = true;
+        d.v = (e.clientX - d.lastX) / Math.max(1, now - d.lastT) * 16.67;
+        d.lastX = e.clientX; d.lastT = now;
+        g.x = Math.max(0, Math.min(CW - g.w, d.from + e.clientX - d.start));
+        g.node.style.transform = "translateX(" + Math.round(g.x) + "px)";
+      });
+      function letGo() {
+        var d = g.drag; if (!d) return;
+        g.drag = null; b.classList.remove("held");
+        g.vx = Math.max(-28, Math.min(28, d.v));
+        g.wasDragged = d.moved;
+        wake();
+      }
+      b.addEventListener("pointerup", letGo);
+      b.addEventListener("pointercancel", letGo);
+      b.addEventListener("click", function (e) {
+        if (g.wasDragged) { g.wasDragged = false; e.preventDefault(); return; }
+        toast(g.line);
+      });
+      /* keyboard: arrow keys nudge the focused glass */
+      b.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); e.stopPropagation(); g.vx += e.key === "ArrowLeft" ? -8 : 8; wake(); }
+      });
+    });
+    measure();
+    window.addEventListener("resize", function () { measure(); });
   }
 
   /* ================================================================
@@ -182,15 +282,32 @@
      ================================================================ */
   var sky = $("#sky");
   var game = { score: 0, hits: 0 };
+  /* the cursor as wind: anything in the sky near it drifts gently away */
+  var wind = { x: -9999, y: -9999, R: 170, K: .55 };
   if (sky) (function () {
     var ctx = sky.getContext("2d"), P = 3, W = 0, H = 0;
     var stars = [], shoots = [], aliens = [], bolts = [], bits = [], pops = [];
     var shipImg = null, alienImg = sprite("alien", P);
     var ship = { x: -60, y: 0, vx: 1.1, roll: 0, cool: 0 };
+    var skyRect = null;
+    document.addEventListener("pointermove", function (e) {
+      skyRect = skyRect || sky.getBoundingClientRect();
+      wind.x = e.clientX - skyRect.left; wind.y = e.clientY - skyRect.top;
+    }, { passive: true });
+    document.addEventListener("pointerleave", function () { wind.x = wind.y = -9999; });
+    window.addEventListener("scroll", function () { skyRect = null; }, { passive: true });
+    /* push o.x / o.y away from the cursor, softly, by how close (cx, cy) is to it */
+    function blow(o, cx, cy, dt, keyX, keyY) {
+      var dx = cx - wind.x, dy = cy - wind.y, d = Math.sqrt(dx * dx + dy * dy);
+      if (d >= wind.R || d < .001) return;
+      var f = (1 - d / wind.R); f = f * f * wind.K * dt;           /* eases in: barely anything at the edge */
+      o[keyX || "x"] += dx / d * f * 2.2;
+      o[keyY || "y"] += dy / d * f * 1.6;
+    }
 
     function size() {
       var r = sky.getBoundingClientRect();
-      W = sky.width = Math.round(r.width); H = sky.height = Math.round(r.height);
+      W = sky.width = Math.round(r.width); H = sky.height = Math.round(r.height); skyRect = null;
       ctx.imageSmoothingEnabled = false;
       stars = [];
       for (var i = 0; i < Math.round(W * H / 9000); i++) {
@@ -230,6 +347,7 @@
     function drawSmoke(dt) {
       smoke = smoke.filter(function (p) {
         p.x += p.vx * dt; p.y += p.vy * dt; p.vy *= .98; p.life -= dt;
+        blow(p, p.x, p.y, dt);
         ctx.globalAlpha = Math.max(0, Math.min(.8, p.life / 60)); ctx.fillStyle = p.c;
         ctx.fillRect(Math.round(p.x / P) * P, Math.round(p.y / P) * P, P * 2, P * 2);
         ctx.globalAlpha = 1; return p.life > 0;
@@ -244,10 +362,14 @@
     }
     var L = { t: -60, x: 0, sep: false, bx: 0, by: 0, bvy: 0 };
     var D = { t: -40 }, Q = { x: -200, y: 0 }, C = { t: -30 };
+    wind.blow = blow;
+    game.craft = function () { return { ship: ship, launch: L, shuttle: D, station: Q, capsule: C }; };
     var SCENES = {
       launch: function (dt) {
         if (L.t < 0) { L.t += dt; if (L.t >= 0) { L.x = Math.round(rnd(W * .2, W * .8) / P) * P; L.y = horizon(); L.v = 0; L.sep = false; } drawSmoke(dt); return; }
         L.t += dt; L.v = Math.min(6, L.v + .012 * dt); L.y -= L.v * dt;
+        blow(L, L.x, L.y + SS.height / 2, dt);
+        if (L.sep) blow(L, L.bx, L.by + BO.height / 2, dt, "bx", "by");
         if (!L.sep && L.y < H * .32) { L.sep = true; L.bx = L.x; L.by = L.y + SS.height - BO.height; L.bvy = -L.v * .6; 0; }
         if (L.sep) {
           L.bvy += .03 * dt; L.by += L.bvy * dt;
@@ -266,6 +388,7 @@
       landing: function (dt) {
         if (D.t < 0) { D.t += dt; if (D.t >= 0) { D.x = W + 40; D.y = H * .08; D.vx = -2.2; D.vy = .55; } return; }
         D.t += dt; D.x += D.vx * dt; D.y += D.vy * dt;
+        blow(D, D.x + SH.width / 2, D.y + SH.height / 2, dt);
         if (D.t < 140) { ctx.globalAlpha = .5; ctx.fillStyle = "#ff8a3d"; ctx.fillRect(D.x + SH.width, D.y + SH.height / 2, 40, P); ctx.globalAlpha = 1; }
         ctx.drawImage(SH, D.x, D.y);
         if (D.y > horizon() - 60) { ctx.fillStyle = "#2a2a33"; ctx.fillRect(D.x + 12, D.y + SH.height, P, P * 2); ctx.fillRect(D.x + SH.width - 24, D.y + SH.height, P, P * 2); }
@@ -274,12 +397,14 @@
       station: function (dt, t) {
         if (Q.x < -150 || Q.x > W + 150) { Q.x = -140; Q.y = rnd(H * .08, H * .25); }
         Q.x += .45 * dt;
+        blow(Q, Q.x + ST.width / 2, Q.y + ST.height / 2, dt);
         ctx.drawImage(ST, Q.x, Q.y);
         if (Math.floor(t / 700) % 2) { ctx.fillStyle = "#ff4f6d"; ctx.fillRect(Q.x + 13 * big, Q.y + 7 * big, big, big); }
       },
       capsule: function (dt, t) {
         if (C.t < 0) { C.t += dt; if (C.t >= 0) { C.x = rnd(W * .2, W * .8); C.y = -80; } return; }
         C.t += dt; C.y += .55 * dt;
+        blow(C, C.x, C.y - 20, dt);
         var sway = Math.sin(t / 900) * 6;
         [-30, 0, 30].forEach(function (o, i) { ctx.drawImage(CH, C.x + o - CH.width / 2 + sway, C.y - 40 - (i === 1 ? 8 : 0)); });
         ctx.strokeStyle = "rgba(200,200,215,.6)"; ctx.lineWidth = 1;
@@ -293,6 +418,7 @@
       spawnT -= dt / 60;
       if (spawnT <= 0) { spawnAlien(); spawnT = rnd(5, 11); }
       ship.x += ship.vx * dt;
+      blow(ship, ship.x + 18, ship.y + 18, dt);
       if (ship.x > W + 80) { ship.x = -80; ship.y = Math.round(rnd(H * .18, H * .42)); }
       ship.cool -= dt;
       var target = aliens.filter(function (a) { return a.x > ship.x && Math.abs(a.y - ship.y) < 30; })[0];
@@ -311,6 +437,7 @@
 
       aliens = aliens.filter(function (a) {
         a.bob += .05 * dt; a.x += a.vx * dt;
+        blow(a, a.x + 13, a.y + 10, dt);
         ctx.drawImage(alienImg, Math.round(a.x / P) * P, Math.round((a.y + Math.sin(a.bob) * 4) / P) * P);
         return a.x > -40;
       });
@@ -409,102 +536,12 @@
   }
   placeSOS();
 
-  /* ================================================================
-     PETS — they float around the whole window and keep away from
-     the cursor. The hedgehog stays on the ground.
-     ================================================================ */
-  var KINDS = ["whale", "manta", "hedgehog", "jelly", "whaleling"];
-  var pets = [], layer = null, mouse = { x: -999, y: -999 }, nextKind = 0;
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
-  var petsOn = store("wk-pets") !== "off";
-  function saveKinds() { store("wk-pet-kinds", JSON.stringify(pets.map(function (p) { return p.kind; }))); }
-  function petLayer() {
-    if (!layer) { layer = el("div", "pets"); layer.setAttribute("aria-hidden", "true"); document.body.appendChild(layer); }
-    return layer;
-  }
-  function spawnPet(kind) {
-    if (!petsOn) return null;
-    if (pets.length >= 14) { toast("The bar's at capacity. No more pets."); return null; }
-    kind = kind || KINDS[nextKind++ % KINDS.length];
-    var scale = kind === "whale" ? 4 : 3;
-    var right = sprite(kind, scale, false), left = sprite(kind, scale, true);
-    var node = el("div", "pet"); node.appendChild(right);
-    node.dataset.kind = kind;
-    petLayer().appendChild(node);
-    var w = right.width, h = right.height, vw = innerWidth, vh = innerHeight;
-    var p = { kind: kind, node: node, right: right, left: left, w: w, h: h, facing: 1,
-      x: rnd(0, vw - w), y: SPR[kind].walks ? vh - h - 4 : rnd(vh * .1, vh * .8),
-      vx: rnd(-.6, .6) || .3, vy: SPR[kind].walks ? 0 : rnd(-.3, .3), bob: rnd(0, 6.28), spin: 0 };
-    pets.push(p);
-    place(p);
-    saveKinds();
-    return p;
-  }
-  function place(p) {
-    var rot = p.spin ? " rotate(" + p.spin + "deg)" : "";
-    p.node.style.transform = "translate(" + Math.round(p.x) + "px," + Math.round(p.y + (SPR[p.kind].walks ? 0 : Math.sin(p.bob) * 4)) + "px)" + rot;
-  }
-  function stepPets(dt) {
-    var vw = innerWidth, vh = innerHeight;
-    pets.forEach(function (p) {
-      var walks = SPR[p.kind].walks;
-      var cx = p.x + p.w / 2, cy = p.y + p.h / 2, dx = cx - mouse.x, dy = cy - mouse.y, d = Math.sqrt(dx * dx + dy * dy);
-      if (d < 150) {                                 /* too close: get away */
-        var f = (150 - d) / 150;
-        p.vx += (dx / (d || 1)) * f * .9 * dt;
-        if (!walks) p.vy += (dy / (d || 1)) * f * .9 * dt;
-        if (walks) p.spin += 25 * dt * Math.sign(p.vx || 1);   /* curls up and rolls */
-      } else {
-        p.vx += rnd(-.03, .03) * dt;
-        if (!walks) p.vy += rnd(-.03, .03) * dt;
-        if (walks && p.spin) p.spin = 0;
-      }
-      var max = d < 150 ? 5 : (walks ? .8 : .6);
-      p.vx = Math.max(-max, Math.min(max, p.vx * .985));
-      p.vy = Math.max(-max, Math.min(max, p.vy * .985));
-      if (walks && Math.abs(p.vx) < .25) p.vx = .25 * (p.vx < 0 ? -1 : 1);
-      p.x += p.vx * dt; p.y += p.vy * dt; p.bob += .04 * dt;
-      if (p.x < 0) { p.x = 0; p.vx = Math.abs(p.vx); }
-      if (p.x > vw - p.w) { p.x = vw - p.w; p.vx = -Math.abs(p.vx); }
-      if (walks) p.y = vh - p.h - 4;
-      else {
-        if (p.y < 0) { p.y = 0; p.vy = Math.abs(p.vy); }
-        if (p.y > vh - p.h) { p.y = vh - p.h; p.vy = -Math.abs(p.vy); }
-      }
-      var face = p.vx >= 0 ? 1 : -1;
-      if (face !== p.facing) {
-        p.facing = face;
-        p.node.replaceChildren(face > 0 ? (SPR[p.kind].face ? p.right : p.left) : (SPR[p.kind].face ? p.left : p.right));
-      }
-      place(p);
-    });
-  }
-  var petLast = 0;
-  function petLoop(t) {
-    var dt = Math.min(50, t - (petLast || t)) / 16.67; petLast = t;
-    if (pets.length && !document.hidden) stepPets(dt);
-    requestAnimationFrame(petLoop);
-  }
-  document.addEventListener("pointermove", function (e) { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
-  document.addEventListener("pointerleave", function () { mouse.x = mouse.y = -999; });
-  function clearPets() {
-    pets.splice(0).forEach(function (p) { p.node.remove(); });
-  }
-  if (!REDUCED) {
-    requestAnimationFrame(petLoop);
-    /* the same pets follow you from page to page; a first visit gets three */
-    var kept = null;
-    try { kept = JSON.parse(store("wk-pet-kinds") || "null"); } catch (e) { kept = null; }
-    if (petsOn) {
-      if (Array.isArray(kept)) kept.filter(function (k) { return SPR[k]; }).slice(0, 14).forEach(function (k) { spawnPet(k); });
-      else { spawnPet("whale"); spawnPet("manta"); spawnPet("hedgehog"); }
-      nextKind = pets.length;
-    }
-  }
+  /* pets are gone; forget what earlier visits saved for them */
+  store("wk-pets", null); store("wk-pet-kinds", null);
 
   /* ================================================================
-     THE DOCK — always in the corner, on every page: light / dark /
-     auto, pets on / off, and another pet.
+     THE DOCK — always in the corner, on every page: light / dark / auto
      ================================================================ */
   var THEMES = ["auto", "light", "dark"];
   var LABEL = { auto: "◐ Auto", light: "☀ Light", dark: "☾ Dark" };
@@ -523,38 +560,10 @@
     setTheme(next);
     toast(next === "auto" ? "Theme follows your device." : next === "light" ? "Golden hour." : "Night shift.");
   });
-  var petToggle = el("button", "dock-btn"); petToggle.type = "button"; petToggle.id = "petToggle";
-  var petAdd = el("button", "dock-btn"); petAdd.type = "button"; petAdd.id = "petAdd"; petAdd.textContent = "+ Pet";
-  petAdd.title = "Let another pet out";
-  function showPets() {
-    petToggle.textContent = petsOn ? "Pets: on" : "Pets: off";
-    petToggle.setAttribute("aria-pressed", String(petsOn));
-    petToggle.title = petsOn ? "Put the pets away" : "Let the pets out";
-    petAdd.disabled = !petsOn || REDUCED;
-    if (REDUCED) { petToggle.disabled = true; petToggle.title = petAdd.title = "Pets stay in when reduced motion is on"; }
-  }
-  petToggle.addEventListener("click", function () {
-    petsOn = !petsOn;
-    store("wk-pets", petsOn ? null : "off");
-    if (!petsOn) { clearPets(); toast("Pets put away."); }
-    else {
-      var kinds = [];
-      try { kinds = JSON.parse(store("wk-pet-kinds") || "[]"); } catch (e) { kinds = []; }
-      if (!kinds.length) kinds = ["whale", "manta", "hedgehog"];
-      kinds.forEach(function (k) { if (SPR[k]) spawnPet(k); });
-      toast("The pets are back.");
-    }
-    showPets();
-  });
-  petAdd.addEventListener("click", function () {
-    var p = spawnPet();
-    if (p) toast("A " + (p.kind === "whaleling" ? "little whale" : p.kind) + " wandered in.");
-  });
-  dock.appendChild(themeBtn); dock.appendChild(petToggle); dock.appendChild(petAdd);
+  dock.appendChild(themeBtn);
   document.body.appendChild(dock);
   setTheme(theme());
-  showPets();
-  window.fx = { spawnPet: spawnPet, pets: pets, game: game, toast: toast, setTheme: function (t) { setTheme(t); } };
+  window.fx = { game: game, toast: toast, drinks: drinks, wind: wind, setTheme: function (t) { setTheme(t); } };
 
   /* ================================================================
      LIGHTBOX — every article picture opens here, not in a new tab.
@@ -623,7 +632,6 @@
     if (e.key.length === 1) {
       typed = (typed + k).slice(-12);
       if (/sudo$/.test(typed)) toast("Nice try. This incident will be reported.");
-      if (/pet$/.test(typed) && petsOn && !REDUCED) spawnPet();
       if (/smoke$/.test(typed)) toast("Don't let it out. The red car lights told you.");
       if (/42$/.test(typed)) toast("The answer. Now what was the question?");
     }

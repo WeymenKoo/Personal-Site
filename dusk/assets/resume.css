@@ -6,24 +6,34 @@ body.resume{background:radial-gradient(60rem 40rem at 0% 0%,color-mix(in srgb,va
   radial-gradient(50rem 40rem at 100% 30rem,color-mix(in srgb,var(--accent) 10%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
 .resume .topbar a[aria-current]{color:var(--accent)}
 .cv{padding-top:clamp(5rem,12vh,7rem);padding-bottom:5rem;max-width:58rem}
-.cv-head h1{margin:.4rem 0 0;font-size:clamp(2.4rem,7vw,4.4rem);line-height:1;font-weight:800;font-style:italic;letter-spacing:-.02em}
+.cv-head h1{margin:.4rem 0 0;font-size:clamp(2.8rem,9vw,5.6rem);line-height:1;font-weight:800;font-style:italic;letter-spacing:-.02em}
 .cv-contact{margin:.9rem 0 0;font-size:.9rem;color:var(--dim)}
 .cv-jump{margin:.6rem 0 0;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase}
 .cv-jump a{text-decoration:none}
-.cv-sec{margin-top:3.2rem}
-.cv-sec h2{margin:0 0 1.2rem;padding-bottom:.5rem;border-bottom:1px solid var(--line);font-size:.8rem;font-weight:700;
-  letter-spacing:.3em;text-transform:uppercase;color:var(--pink)}
-.job{margin:0 0 1.8rem}
-.job-top{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:baseline}
-.job h3{margin:0;font-size:1.15rem;font-style:italic;font-weight:700}
-.when{font-size:.74rem;color:var(--accent);white-space:nowrap}
-.org{margin:.15rem 0 .5rem;font-size:.8rem;color:var(--dim)}
-.job ul{margin:0;padding-left:1.1rem}
-.job li{margin:0 0 .35rem;font-size:.86rem;line-height:1.6}
+.cv-sec{margin-top:4rem}
+.cv-sec h2{margin:0 0 1.6rem;padding-bottom:.6rem;border-bottom:2px solid var(--pink);font-size:1.5rem;font-weight:800;
+  font-style:italic;letter-spacing:-.01em;color:var(--fg)}
+.cv-sec h2::before{content:"// ";color:var(--pink);font-style:normal}
+
+/* one role: company big and in colour, the title under it, the dates on
+   a chip, the bullets quieter, and a rule down the side to hold it together */
+.job{position:relative;margin:0 0 2.6rem;padding-left:1.2rem;border-left:2px solid var(--line)}
+.job:hover{border-left-color:var(--accent)}
+.job-top{display:flex;justify-content:space-between;gap:.4rem 1rem;flex-wrap:wrap;align-items:center}
+.job .org{order:-1;flex:1 1 100%;margin:0;font-size:clamp(1.3rem,1rem + 1.2vw,1.75rem);line-height:1.2;font-weight:800;
+  letter-spacing:-.01em;color:var(--accent)}
+.job .org .where{display:inline-block;margin-left:.6rem;font-size:.72rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.job h3{margin:.25rem 0 0;font-size:1.08rem;font-style:italic;font-weight:700;color:var(--fg)}
+.when{margin-top:.25rem;padding:.2rem .55rem;border:1px solid var(--pink);border-radius:3px;font-size:.7rem;font-weight:600;
+  letter-spacing:.06em;color:var(--pink);white-space:nowrap}
+.job ul{margin:.8rem 0 0;padding-left:1.1rem;color:var(--dim)}
+.job li{margin:0 0 .45rem;font-size:.86rem;line-height:1.65}
+.job li::marker{color:var(--pink)}
+.job li b{color:var(--fg);font-weight:700}
 .skills{margin:0}
 .skills div{display:grid;grid-template-columns:11rem 1fr;gap:1rem;padding:.55rem 0;border-bottom:1px solid var(--line)}
-.skills dt{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-.skills dd{margin:0;font-size:.84rem;line-height:1.6}
+.skills dt{font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.skills dd{margin:0;font-size:.86rem;line-height:1.7;color:var(--dim)}
 @media(max-width:640px){.skills div{grid-template-columns:1fr;gap:.2rem}}
 
 /* ---------- transcript: the paper ---------- */
