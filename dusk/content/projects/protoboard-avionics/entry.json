@@ -1,0 +1,16 @@
+{
+  "title": "Protoboard flight computers",
+  "status": "idle",
+  "statusLabel": "Gen 4 untested",
+  "year": "2019–21",
+  "spec": "Arduino Nano → Teensy 3.5 · BME280 · MPU6050 · SD logging · hand-wired",
+  "summary": "Four flight computers for a water rocket, all soldered on protoboard: a servo timer, then altitude logging and apogee detection, then an IMU, then a Teensy 3.5. Each one was built to fix what broke on the last, and the last one ended with a note that I should learn to design PCBs.",
+  "cover": {
+    "src": "card.jpg",
+    "webp": "card.webp",
+    "alt": "Gen 3 flight computer: an Arduino Nano, a microSD adapter and a purple sensor board on blue protoboard",
+    "fit": "cover"
+  },
+  "strip": [],
+  "link": "content/projects/protoboard-avionics/index.html"
+}

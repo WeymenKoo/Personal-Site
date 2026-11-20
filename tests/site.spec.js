@@ -16,7 +16,7 @@ async function open(page, url) {
   return errors;
 }
 const TITLES = ['Flight controller SoM', 'FOC motor controller', 'AeroDesign power board', 'Shadow: power distribution',
-  'Kyogre and Spirit', 'DC electronic load', 'Micromouse'];
+  'Kyogre and Spirit', 'DC electronic load', 'Micromouse', 'Protoboard flight computers', 'Water rocket', 'Rovers'];
 
 /* ================================================================= */
 test.describe('as shipped', () => {
@@ -30,12 +30,12 @@ test.describe('as shipped', () => {
     expect(errors).toEqual([]);
   });
 
-  test('just a title screen and the projects: seven, in order, numbered A1..A7', async ({ page }) => {
+  test('just a title screen and the projects: ten, in order, numbered A1..A10', async ({ page }) => {
     await open(page, server.url);
     await expect(page.locator('.hero h1')).toHaveText('Weymen Koo');
     await expect(page.locator('.proj h3')).toHaveText(TITLES);
-    await expect(page.locator('.proj .no')).toHaveText(['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7']);
-    await expect(page.locator('#projectCount')).toHaveText('07');
+    await expect(page.locator('.proj .no')).toHaveText(TITLES.map((_, i) => 'A' + (i + 1)));
+    await expect(page.locator('#projectCount')).toHaveText('10');
     // the old tape / record / hour machinery is gone
     for (const gone of ['.tape', '.rec', '.deck', '#side-b', '#records', '.tl']) await expect(page.locator(gone)).toHaveCount(0);
   });
@@ -49,8 +49,8 @@ test.describe('as shipped', () => {
   test('every card is a link to its write-up, with a visible Read button', async ({ page }) => {
     await open(page, server.url);
     const cards = page.locator('a.proj');
-    await expect(cards).toHaveCount(7);
-    for (let i = 0; i < 7; i++) {
+    await expect(cards).toHaveCount(TITLES.length);
+    for (let i = 0; i < TITLES.length; i++) {
       await expect(cards.nth(i)).toHaveAttribute('href', /^content\/projects\/[a-z0-9-]+\/index\.html$/);
       await expect(cards.nth(i).locator('.more')).toBeVisible();
     }

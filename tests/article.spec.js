@@ -74,6 +74,51 @@ Read the [datasheet](https://example.com/ds.pdf).
 The end.
 `;
 
+/* README: "layout: gallery" in the front matter, for an article that is mostly pictures */
+test.describe('a gallery article', () => {
+  let server, site;
+  const wall = n => Array.from({ length: n }, (_, i) => `![Photo ${i + 1}](cover.jpg "Caption ${i + 1}")`).join('\n');
+  test.beforeAll(async () => {
+    site = copySite();
+    for (const [slug, layout] of [['gallery', 'layout: gallery\n'], ['plain', '']]) {
+      addEntry(site, slug, {
+        title: slug, status: 'idle', statusLabel: 'Idle', year: '2020', spec: 's', summary: 's',
+        cover: { src: 'cover.jpg', alt: 'Cover' }, link: `content/projects/${slug}/index.html`,
+      }, ['cover.jpg']);
+      fs.writeFileSync(`${site}/content/projects/${slug}/article.md`,
+        `---\ntitle: ${slug}\n${layout}---\n\nIntro.\n\n## Pictures\n\n${wall(5)}\n\n${wall(2)}\n`);
+    }
+    server = await startServer(site);
+  });
+  test.afterAll(async () => { await server.close(); fs.rmSync(site, { recursive: true, force: true }); });
+
+  test('four or more images in a row make a photo wall, each with its caption', async ({ page }) => {
+    const errors = await openArticle(page, server.url + 'content/projects/gallery/index.html');
+    await expect(page.locator('#article')).toHaveClass(/ar-gallery/);
+    await expect(page.locator('.ar-grid.many figure')).toHaveCount(5);
+    await expect(page.locator('.ar-grid.many figcaption').last()).toHaveText('Caption 5');
+    await expect(page.locator('.ar-grid.two figure')).toHaveCount(2);
+    expect(errors).toEqual([]);
+  });
+
+  test('without it, nothing changes: four or more stay a two-column grid', async ({ page }) => {
+    await openArticle(page, server.url + 'content/projects/plain/index.html');
+    await expect(page.locator('#article')).not.toHaveClass(/ar-gallery/);
+    await expect(page.locator('.ar-grid.many')).toHaveCount(0);
+    await expect(page.locator('.ar-grid.two figure')).toHaveCount(7);
+  });
+
+  test('phone width: the wall drops to one column, no sideways scroll', async ({ browser }) => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const page = await ctx.newPage();
+    await openArticle(page, server.url + 'content/projects/gallery/index.html');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+    const xs = await page.locator('.ar-grid.many figure').evaluateAll(fs => new Set(fs.map(f => Math.round(f.getBoundingClientRect().left))).size);
+    expect(xs).toBe(1);
+    await ctx.close();
+  });
+});
+
 test.describe('writing an article by following the README', () => {
   let server, site;
 
@@ -277,7 +322,7 @@ test.describe('writing an article by following the README', () => {
 /* ================================================================= */
 test.describe('the seven articles, as shipped', () => {
   let server;
-  const SLUGS = ['fc-som', 'foc-controller', 'power-board', 'avionics-2024', 'kyogre-spirit', 'dc-load', 'micromouse'];
+  const SLUGS = ['fc-som', 'foc-controller', 'power-board', 'avionics-2024', 'kyogre-spirit', 'dc-load', 'micromouse', 'protoboard-avionics', 'water-rocket', 'rover'];
   const url = slug => `content/projects/${slug}/index.html`;
   test.beforeAll(async () => { server = await startServer(SITE); });
   test.afterAll(async () => { await server.close(); });

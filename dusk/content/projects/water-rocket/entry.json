@@ -1,0 +1,16 @@
+{
+  "title": "Water rocket",
+  "status": "idle",
+  "statusLabel": "High school",
+  "year": "2019–21",
+  "spec": "PET bottle airframe · 3D-printed nose cone · servo parachute release",
+  "summary": "The rocket around the flight computers: a bottle rocket from a school science competition, then a clear bottle body, then a printed nose cone that splits open to let the parachute out. Mostly pictures.",
+  "cover": {
+    "src": "card.jpg",
+    "webp": "card.webp",
+    "alt": "Me on the school field holding the science competition water rocket, a green bottle with blue fins",
+    "fit": "cover"
+  },
+  "strip": [],
+  "link": "content/projects/water-rocket/index.html"
+}
