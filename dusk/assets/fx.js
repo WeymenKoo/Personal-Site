@@ -96,9 +96,6 @@
     booster: { pal: { s: "#c7cbd6", d: "#9aa0b0", f: "#5a5f6e" }, rows: [
       "fdddddf", ".dsssd.", "..sss..", "..sss..", "..sss..", "..sss..", "..sss..", "..sss..", "..sss..", "..sss..",
       "..sss..", "..sss..", "..sss..", "..sss..", "..sss..", "..sss..", "..sss..", "..sss..", ".sssss.", ".d.d.d."] },
-    shuttle: { pal: { w: "#f2f2f2", g: "#c9ccd6", k: "#22232b", e: "#8a8f9e" }, rows: [
-      "..k.......................", "..kk......................", "..kkk.....................", ".ekwwwwwwwwwwwwwwwwwww....",
-      "eekwwwwwwwwwwwwwwwwwwwwk..", ".ekggggwwwwwwwwwwwwwwwkkk.", "....ggggggggwwwwwwkkkkkkk.", ".......gggggggggkkkkkk....", "..........kkkkkkk........."], face: 1 },
     station: { pal: { p: "#3a5ba8", b: "#d9a43a", t: "#c9ccd6", w: "#f2f2f2", r: "#ff4f6d" }, rows: [
       "pppp.pppp.........pppp.pppp", "pppp.pppp.........pppp.pppp", "pppp.pppp....w....pppp.pppp", "..t...t.....www.....t...t..",
       "ttttttttttttwwwwwttttttttttt", "..t...t.....www.....t...t..", "pppp.pppp....w....pppp.pppp", "pppp.pppp....b....pppp.pppp", "pppp.pppp.........pppp.pppp"] },
@@ -106,9 +103,6 @@
       "....w....", "...www...", "..wwwww..", "..wwdww..", ".wwwwwww.", ".wwwwwww.", "wwwwwwwww", "kkkkkkkkk"] },
     chute: { pal: { o: "#ff8a3d", w: "#f2f2f2", l: "#9aa0b0" }, rows: [
       "...ooowww...", ".oowwwoooww.", "oowwwoooowwo", "l..........l", ".l........l.", "..l......l..", "...l....l...", "....l..l...."] },
-    shuttlestack: { pal: { o: "#d9792b", O: "#a85a1e", s: "#eef0f4", S: "#c9ccd6", d: "#5a5f6e", k: "#22232b", w: "#f2f2f2", g: "#c9ccd6", e: "#8a8f9e" }, rows: ["...........", "......oo...", ".....oooO..", ".....oooO..", "s....oooOs.", "sS...oooOsS", "sS...oooOsS", "sS...oooOsS", "sS...oooOsS", "sS...oooOsS", "sS.kwoooOsS", "sS.kwoooOsS", "ddkwwoooOdd", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "ddkwwoooOdd", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sSkwwoooOsS", "sgkwwoooOsS", "sgkwwoooOsS", "sgkww....sS", "sSeee....sS", "kk.......kk", "kk.......kk"] },
-    shuttlecore: { pal: { o: "#d9792b", O: "#a85a1e", k: "#22232b", w: "#f2f2f2", e: "#8a8f9e" }, rows: ["...........", "......oo...", ".....oooO..", ".....oooO..", ".....oooO..", ".....oooO..", ".....oooO..", ".....oooO..", ".....oooO..", ".....oooO..", "...kwoooO..", "...kwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kwwoooO..", "..kww......", "..eee......", "...........", "..........."] },
-    srb: { pal: { s: "#eef0f4", S: "#c9ccd6", d: "#5a5f6e", g: "#c9ccd6", k: "#22232b" }, rows: ["..", "..", "..", "..", "s.", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "dd", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "dd", "sS", "sS", "sS", "sS", "sS", "sS", "sS", "sg", "sg", "sg", "sS", "kk", "kk"] },
     falconheavy: { pal: { w: "#f2f2f2", W: "#c9ccd6", k: "#22232b" }, rows: ["......w......", "......w......", ".....wwW.....", ".....wwW.....", ".....wwW.....", ".....wwW.....", ".....wwW.....", ".....wwW.....", ".....wwW.....", ".....kkk.....", ".....wwW.....", ".....wwW.....", ".....wwW.....", ".w...wwW...w.", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..kkk..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "kkk..wwW..kkk", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "wwW..wwW..wwW", "kkk..kkk..kkk", "kkk..kkk..kkk"] },
     fhcenter: { pal: { w: "#f2f2f2", W: "#c9ccd6", k: "#22232b" }, rows: ["...w...", "...w...", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..kkk..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..kkk..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..wwW..", "..kkk..", "..kkk.."] },
     fhside: { pal: { w: "#f2f2f2", W: "#c9ccd6", k: "#22232b" }, rows: [".w.", "wwW", "wwW", "kkk", "wwW", "wwW", "wwW", "kkk", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "wwW", "kkk", "kkk"] },
@@ -367,6 +361,7 @@
     }
 
     function size() {
+      if (typeof rebuildShuttle === "function" && SH) rebuildShuttle();
       var r = sky.getBoundingClientRect();
       W = sky.width = Math.round(r.width); H = sky.height = Math.round(r.height); skyRect = null;
       ctx.imageSmoothingEnabled = false;
@@ -472,8 +467,8 @@
           });
         });
       }
-      if (scene === "landing" && D.t >= 0) add(D.x, D.y, SH.width, SH.height, function () {
-        boom(D.x + SH.width / 2, D.y + SH.height / 2, 50); D.t = -rnd(300, 700); line("landing", "Wheel stop cancelled.");
+      if (scene === "landing" && D.t >= 0) add(D.x - SH.width / 2, D.y - SH.height / 2, SH.width, SH.height, function () {
+        boom(D.x, D.y, 50); D.t = -rnd(300, 700); D.pl = []; line("landing", "Wheel stop cancelled.");
       });
       if (scene === "station" && !(Q.wait > 0)) add(Q.x, Q.y, ST.width, ST.height, function () {
         boom(Q.x + ST.width / 2, Q.y + ST.height / 2, 60); Q.x = -149; Q.wait = rnd(300, 600); line("station", "Station deorbited, ahead of schedule.");
@@ -498,6 +493,110 @@
       return null;
     }
 
+    /* ---- the Space Shuttle, painted at the city picture's own pixel size (not the chunky 3 px of
+       the rest of the sky): vector shapes in metres, snapped to whole pixels. Side views throughout:
+       the orbiter nose-left; the launch stack nose-up, orbiter belly against the tank, one booster
+       in front of the tank (the other hides behind it). */
+    var SH, STK, STC, SRB, SHUT = {}, fineP = 0;
+    function cityPx() { var c = document.querySelector(".city"); return c && c.offsetHeight ? 2 * c.offsetHeight / 570 : 1.3; }
+    function snap(c) {                                                /* every pixel fully on or off */
+      var x = c.getContext("2d"), d = x.getImageData(0, 0, c.width, c.height), a = d.data;
+      for (var i = 3; i < a.length; i += 4) a[i] = a[i] < 110 ? 0 : 255;
+      x.putImageData(d, 0, 0); return c;
+    }
+    function grow(c, k) {                                             /* up to page size, nearest-neighbour */
+      var o = el("canvas"); o.width = Math.round(c.width * k); o.height = Math.round(c.height * k);
+      var x = o.getContext("2d"); x.imageSmoothingEnabled = false; x.drawImage(c, 0, 0, o.width, o.height); return o;
+    }
+    function poly(x, k, ox, oy, pts, col) {                           /* pts in metres: x along, y up */
+      x.fillStyle = col; x.beginPath();
+      pts.forEach(function (p, i) { x[i ? "lineTo" : "moveTo"](ox + p[0] * k, oy - p[1] * k); });
+      x.closePath(); x.fill();
+    }
+    function orbiter(k) {                                             /* nose left, belly down; ~39 m with the engines */
+      var c = el("canvas"); c.width = Math.ceil(39 * k) + 4; c.height = Math.ceil(15.2 * k) + 4;
+      var x = c.getContext("2d"), ox = 2, oy = c.height - 2;
+      function P(pts, col) { poly(x, k, ox, oy, pts, col); }
+      function line(a, b, col, w) { x.strokeStyle = col; x.lineWidth = w || 1; x.beginPath(); x.moveTo(ox + a[0] * k, oy - a[1] * k); x.lineTo(ox + b[0] * k, oy - b[1] * k); x.stroke(); }
+      P([[26, 6.2], [33.4, 14.6], [35.8, 14.6], [35.6, 13.8], [35.2, 6.6]], "#eceef3");                 /* fin */
+      line([33.6, 14.4], [26.4, 6.4], "#c9ccd6", 1);
+      line([34.2, 7.2], [35.3, 13.8], "#a9adb8", 1);                                                   /* rudder hinge */
+      P([[35.4, 2.0], [38.4, 1.3], [38.4, 3.9], [35.4, 3.2]], "#6a6f80");                             /* engines: two low */
+      P([[35.3, 1.8], [38.2, 1.1], [38.2, 3.6], [35.3, 2.9]], "#8a8f9e");
+      P([[35.3, 4.4], [38.6, 3.8], [38.6, 6.2], [35.3, 5.6]], "#8a8f9e");                             /* and one high */
+      x.fillStyle = "#3a3c48"; x.fillRect(ox + 38.1 * k, oy - 6.1 * k, k * .5, 2.3 * k); x.fillRect(ox + 37.9 * k, oy - 3.7 * k, k * .5, 2.5 * k);
+      P([[0, 2], [.3, 2.9], [1, 3.7], [2.2, 4.4], [3.6, 4.9], [4.6, 5.6], [6, 6.3], [8, 6.6], [10, 6.4], [11.5, 6], [28.5, 6], [29.2, 6.6],
+         [31, 6.9], [33.6, 6.8], [34.6, 6], [35.4, 4.8], [35.6, 2.6], [35.4, 1], [34.6, .4], [20, 0], [4, 0], [2, .3], [.8, .9], [.2, 1.5]], "#f2f3f6");
+      P([[29.4, 5.3], [29.2, 6.6], [31, 6.9], [33.6, 6.8], [34.6, 6], [34.3, 5.3]], "#e0e2ea");         /* OMS pod */
+      line([29.4, 5.3], [34.3, 5.3], "#a9adb8", 1);
+      P([[0, 2], [.6, 2.7], [2, 2.7], [5, 2.3], [9, 1.9], [14, 1.6], [18, 1.6], [22, 1.8], [27, 2.1], [33, 2.3], [35.5, 2.5], [35.4, 1],
+         [34.6, .4], [20, 0], [4, 0], [2, .3], [.8, .9], [.2, 1.5]], "#23242c");                          /* black tiles below */
+      line([10, 2.4], [31, 2.9], "#9aa0b0", 1);                                                         /* the wing's edge */
+      line([11.8, 5.35], [28.4, 5.35], "#c9ccd6", 1);                                                   /* payload bay doors */
+      [15, 19, 23].forEach(function (u) { line([u, 5.4], [u, 6], "#d4d7e0", 1); });
+      P([[4.3, 5.25], [5.1, 5.95], [6.5, 6.3], [6.7, 5.7], [5.3, 5.05]], "#23242c");                   /* windscreen */
+      P([[7.3, 5.7], [8.6, 5.9], [8.6, 5.4], [7.3, 5.3]], "#23242c");
+      P([[0, 2], [.3, 2.6], [.7, 2], [.3, 1.4]], "#3a3c48");                                           /* nose cap */
+      P([[33.4, .55], [37.4, .85], [37.4, 1.45], [33.8, 1.45]], "#23242c");                           /* body flap */
+      return snap(c);
+    }
+    function rebuildShuttle() {
+      var f = cityPx();
+      if (Math.abs(f - fineP) < .01 && SH) return;
+      fineP = f;
+      var k = 2.4;                                                    /* pixels per metre, before scaling to the page */
+      var O = orbiter(k);
+      SH = grow(O, f);
+      /* the stack: tank up the middle, orbiter on its right, one booster in front */
+      var axisR = 4.6 * k + O.height + 2, cw = Math.ceil(axisR * 2) + 2, ch = Math.ceil(52 * k), ax = cw / 2;
+      function tank(x) {
+        var pts = [], i, y, r;
+        for (i = 0; i <= 12; i++) { y = i / 12 * 10; r = 4.2 * Math.sqrt(y / 10); pts.push([ax + r * k, y * k]); }
+        pts.push([ax + 4.2 * k, 47 * k], [ax - 4.2 * k, 47 * k]);
+        for (i = 12; i >= 0; i--) { y = i / 12 * 10; r = 4.2 * Math.sqrt(y / 10); pts.push([ax - r * k, y * k]); }
+        x.fillStyle = "#d9792b"; x.beginPath(); pts.forEach(function (p, j) { x[j ? "lineTo" : "moveTo"](p[0], p[1]); }); x.closePath(); x.fill();
+        x.fillStyle = "#a85a1e"; x.fillRect(ax + 1.8 * k, 10 * k, 2.4 * k, 37 * k);
+        x.fillStyle = "#e8914a"; x.fillRect(ax - 3.4 * k, 10 * k, 1.2 * k, 37 * k);
+        x.fillStyle = "#b8661f"; x.fillRect(ax - 4.2 * k, 13.5 * k, 8.4 * k, .5 * k); x.fillRect(ax - 4.2 * k, 19 * k, 8.4 * k, .5 * k);
+      }
+      function booster(x) {
+        var r = 1.85 * k;
+        x.fillStyle = "#eef0f4"; x.beginPath(); x.moveTo(ax, 4 * k); x.lineTo(ax + r, 9 * k); x.lineTo(ax + r, 46 * k); x.lineTo(ax + 2.4 * k, 49 * k);
+        x.lineTo(ax - 2.4 * k, 49 * k); x.lineTo(ax - r, 46 * k); x.lineTo(ax - r, 9 * k); x.closePath(); x.fill();
+        x.fillStyle = "#c9ccd6"; x.fillRect(ax + .6 * k, 9 * k, r - .6 * k, 37 * k);
+        x.fillStyle = "#8a8f9e"; [20, 28, 36].forEach(function (y) { x.fillRect(ax - r, y * k, 2 * r, .35 * k); });
+        x.fillStyle = "#6a6f80"; x.beginPath(); x.moveTo(ax - 1.1 * k, 49 * k); x.lineTo(ax + 1.1 * k, 49 * k); x.lineTo(ax + 1.6 * k, 51.5 * k); x.lineTo(ax - 1.6 * k, 51.5 * k); x.fill();
+      }
+      function attach(x) {                                            /* the orbiter, rotated nose-up, belly to the tank */
+        var bx = ax + 4.6 * k - 2, ny = 11 * k - 2;
+        x.save(); x.translate(bx + O.height, ny); x.rotate(Math.PI / 2); x.drawImage(O, 0, 0); x.restore();
+      }
+      function make(withBooster, onlyBooster) {
+        var c = el("canvas"); c.width = cw; c.height = ch; var x = c.getContext("2d");
+        if (onlyBooster) booster(x); else { tank(x); attach(x); if (withBooster) booster(x); }
+        return grow(snap(c), f);
+      }
+      STK = make(true); STC = make(false); SRB = make(false, true);
+      /* where the fires go, in page px from the image's centre and top */
+      SHUT = { srbY: 51.5 * k * f, ssmeDx: (4.6 + 3.7) * k * f,          /* belly at 4.6 m off the axis, engines ~3.7 m above the belly */
+                ssmeY: (11 * k + 38.6 * k) * f, fp: Math.max(2, Math.round(f * 2)) };
+    }
+    rebuildShuttle();
+    /* engine fire, in fine pixels: a white core, then yellow and orange; the main engines run blue-white */
+    function fineFlame(x, y, len, w0, blue) {
+      var b = SHUT.fp;
+      for (var i = 0; i < len; i++) {
+        var w = Math.max(1, Math.round(w0 * (1 - i / len * .6) + (Math.random() < .3 ? 1 : 0)));
+        ctx.fillStyle = blue ? (i < len * .35 ? "#ffffff" : i < len * .7 ? "#bfe6ff" : "rgba(170,200,255,.6)")
+          : (i < len * .2 ? "#ffffff" : i < len * .55 ? "#ffd36e" : "#ff8a3d");
+        ctx.fillRect(Math.round(x - w * b / 2), Math.round(y + i * b), w * b, b);
+      }
+    }
+    function shuttleFire(x, y, img, sep) {
+      if (!sep) fineFlame(x, y + SHUT.srbY, 16 + Math.floor(Math.random() * 5), 4);
+      fineFlame(x + SHUT.ssmeDx, y + SHUT.ssmeY, 8 + Math.floor(Math.random() * 3), 2, true);
+    }
+
     /* ---- one scene per visit: the patrol (ship vs aliens), a launch,
        a shuttle landing, the station going over, or a capsule coming home */
     var SCENE_LIST = ["patrol", "launch", "landing", "station", "capsule", "shuttle-launch", "falcon-heavy", "hubble", "roadster"];
@@ -506,10 +605,8 @@
     sky.dataset.scene = scene;
     var horizon = function () { return H - (parseFloat(css("--counterH")) || 92) - 40; };
     var big = 3;
-    var SS = sprite("starship", big), BO = sprite("booster", big), SH = sprite("shuttle", big), ST = sprite("station", big),
+    var SS = sprite("starship", big), BO = sprite("booster", big), ST = sprite("station", big),
         CA = sprite("capsule", big), CH = sprite("chute", big),
-        SHL = sprite("shuttle", big, true),                      /* the orbiter drawn nose-left, for gliding in from the right */
-        STK = sprite("shuttlestack", big), STC = sprite("shuttlecore", big), SRB = sprite("srb", big),
         FH = sprite("falconheavy", big), FHC = sprite("fhcenter", big), FHS = sprite("fhside", big),
         HU = sprite("hubble", big), RD = sprite("roadster", big);
     var smoke = [];
@@ -531,12 +628,28 @@
       }
     }
     var L = { t: -60, x: 0, sep: false, bx: 0, by: 0, bvy: 0 };
+    var PLASMA = ["#fff4e0", "#ffc06b", "#ff6fae", "#9a5cff"];
+    function drawPlasma(dt) {
+      if (!D.pl || !D.pl.length) return;
+      var b = SHUT.fp;
+      ctx.globalCompositeOperation = "lighter";
+      D.pl = D.pl.filter(function (p) {
+        p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= Math.pow(.985, dt); p.life += dt;
+        var age = p.life / p.max;
+        ctx.globalAlpha = Math.max(0, .85 * (1 - age));
+        ctx.fillStyle = PLASMA[Math.min(3, Math.floor(age * 4))];
+        ctx.fillRect(Math.round(p.x / b) * b, Math.round(p.y / b) * b, b * (age < .3 ? 2 : 1), b);
+        return age < 1;
+      });
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+      if (D.pl.length > 900) D.pl.splice(0, D.pl.length - 900);
+    }
     var D = { t: -40 }, Q = { x: -200, y: 0 }, C = { t: -30 };
     wind.blow = blow;
     game.craft = function () { return { ship: ship, launch: L, shuttle: D, station: Q, capsule: C, rocket: R, hubble: U, roadster: Z, aliens: aliens }; };
     /* a rocket that climbs, drops what it doesn't need, and keeps going */
     var R = { t: -60 };
-    function climb(dt, full, rest, drops, sepAt) {
+    function climb(dt, full, rest, drops, sepAt, fire) {
       if (R.t < 0) { R.t += dt; if (R.t >= 0) { R.x = Math.round(rnd(W * .2, W * .8) / P) * P; R.y = horizon(); R.v = 0; R.sep = false; R.parts = []; } drawSmoke(dt); return; }
       R.t += dt; R.v = Math.min(4.5, R.v + .008 * dt); R.y -= R.v * dt;     /* slower than the Starship: these are heavier */
       var img = R.sep ? rest : full;
@@ -554,7 +667,7 @@
         ctx.restore();
       });
       ctx.drawImage(img, R.x - img.width / 2, R.y);
-      flame(R.x, R.y + img.height, (R.sep ? 7 : 11) + Math.floor(Math.random() * 3));
+      if (fire) fire(R.x, R.y, img, R.sep); else flame(R.x, R.y + img.height, (R.sep ? 7 : 11) + Math.floor(Math.random() * 3));
       if (!R.sep && Math.random() < .9) puff(R.x, R.y + img.height + 30, 3, "rgba(230,225,240,.9)");
       drawSmoke(dt);
       if (R.y < -img.height - 40 && R.parts.every(function (q) { return q.y > H; })) R.t = -rnd(400, 900);
@@ -562,10 +675,10 @@
     var U = { x: -300, y: 0, first: true }, Z = { x: -300, y: 0, rot: 0, first: true };
     var SCENES = {
       "shuttle-launch": function (dt) {
-        climb(dt, STK, STC, [
-          { img: SRB, dx: -STK.width / 2 + SRB.width / 2, dy: 0, vx: -.6, vr: -.004 },
-          { img: SRB, dx: STK.width / 2 - SRB.width / 2, dy: 0, vx: .6, vr: .004 }
-        ], .38);
+        climb(dt, STK, STC, [                                         /* both boosters off the tank's middle: one was hidden behind */
+          { img: SRB, dx: 0, dy: 0, vx: -.6, vr: -.004 },
+          { img: SRB, dx: 0, dy: 0, vx: .6, vr: .004 }
+        ], .38, shuttleFire);
       },
       "falcon-heavy": function (dt) {
         climb(dt, FH, FHC, [
@@ -608,14 +721,52 @@
         }
         drawSmoke(dt);
       },
+      /* re-entry, side on: nose high, the belly in a sheath of plasma that streams off behind; lower down
+         the plasma fades, the nose comes down to a glide, gear drops, and it flares behind the city */
       landing: function (dt) {
-        if (D.t < 0) { D.t += dt; if (D.t >= 0) { D.x = W + 40; D.y = H * .08; D.vx = -2.2; D.vy = .55; } return; }
-        D.t += dt; D.x += D.vx * dt; D.y += D.vy * dt;
-        blow(D, D.x + SH.width / 2, D.y + SH.height / 2, dt);
-        if (D.t < 140) { ctx.globalAlpha = .5; ctx.fillStyle = "#ff8a3d"; ctx.fillRect(D.x - 40, D.y + SH.height / 2, 40, P); ctx.globalAlpha = 1; }
-        ctx.drawImage(SHL, D.x, D.y);                              /* nose first, the way it's going */
-        if (D.y > horizon() - 60) { ctx.fillStyle = "#2a2a33"; ctx.fillRect(D.x + 12, D.y + SH.height, P, P * 2); ctx.fillRect(D.x + SH.width - 24, D.y + SH.height, P, P * 2); }
-        if (D.y > horizon() + 20 || D.x < -120) D.t = -rnd(300, 700);
+        if (D.t < 0) {
+          D.t += dt; drawPlasma(dt);
+          if (D.t >= 0) { D.x = W + SH.width; D.y = H * .06; D.vx = -2.1; D.vy = .62; D.aoa = 40; D.pl = D.pl || []; }
+          return;
+        }
+        D.t += dt;
+        var f = Math.max(0, Math.min(1, D.y / horizon())), heat = Math.max(0, 1 - f / .42);
+        var want = f < .35 ? 40 : f < .65 ? 40 - (f - .35) / .3 * 28 : f < .85 ? 12 : 7;
+        D.aoa += (want - D.aoa) * .03 * dt;
+        D.vx += ((f < .5 ? -2.1 : -1.6) - D.vx) * .01 * dt;
+        D.x += D.vx * dt; D.y += D.vy * dt;
+        blow(D, D.x, D.y, dt);
+        var a = D.aoa * Math.PI / 180, ca = Math.cos(a), sa = Math.sin(a), hw = SH.width / 2, hh = SH.height / 2;
+        var belly = hh * .72;                                         /* the belly line, below the centre */
+        function at(u, v) { return { x: D.x + u * ca - v * sa, y: D.y + u * sa + v * ca }; }
+        if (heat > 0) {                                               /* new plasma off the nose and belly */
+          var n = Math.round(30 * heat), back = Math.atan2(-D.vy, -D.vx);
+          for (var i = 0; i < n; i++) {
+            var u = -hw + Math.pow(Math.random(), 2.2) * SH.width * .75, p = at(u, belly + rnd(0, 4)), sp = rnd(1.2, 3);
+            D.pl.push({ x: p.x, y: p.y, vx: Math.cos(back) * sp + rnd(-.25, .25), vy: Math.sin(back) * sp + rnd(0, .6), life: 0, max: rnd(18, 40) * heat + 10 });
+          }
+        }
+        drawPlasma(dt);
+        ctx.save(); ctx.translate(D.x, D.y); ctx.rotate(a);
+        if (heat > 0) {                                               /* the hot sheath hugging the belly */
+          ctx.globalCompositeOperation = "lighter";
+          var fp = SHUT.fp, fl = .8 + Math.random() * .2;
+          [[4, "#9a5cff", .25], [3, "#ff6fae", .35], [2, "#ffb36b", .5], [1, "#fff4e0", .7]].forEach(function (l) {   /* layered sheath, widest and coolest outside */
+            ctx.globalAlpha = l[2] * heat * fl; ctx.fillStyle = l[1];
+            ctx.fillRect(-hw - fp * l[0], belly - fp, SH.width * (.55 + l[0] * .06), fp * (1 + l[0]));
+            ctx.fillRect(-hw - fp * l[0], -hh * .2, fp * l[0], belly + hh * .2 + fp * l[0]);
+          });
+          ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+        }
+        ctx.drawImage(SH, -hw, -hh);
+        if (f > .78) {                                                /* gear down */
+          var g = SHUT.fp;
+          ctx.fillStyle = "#2a2a33";
+          ctx.fillRect(-hw + SH.width * .14, belly, g, g * 3); ctx.fillRect(-hw + SH.width * .62, belly, g, g * 3);
+          ctx.fillRect(-hw + SH.width * .62 - g, belly + g * 3, g * 3, g);
+        }
+        ctx.restore();
+        if (D.y > horizon() + 20 || D.x < -SH.width - 60) D.t = -rnd(300, 700);
       },
       station: function (dt, t) {
         if (Q.wait > 0) { Q.wait -= dt; return; }

@@ -330,10 +330,10 @@ test.describe('as shipped', () => {
     await open(page, server.url);
     await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));   // the site scrolls smoothly; tests jump
     await page.waitForTimeout(300);
-    // park the cursor on the track, short of where trains stop; the next one in must stop for it
-    const cx = 120;                                       // canvas px (3 page px each at this width); the stop is near 300
-    const y = await page.evaluate(() => { window.depths.layout(); const z = window.depths.zones(); return z.stTop + z.stH - 13 * 3 - scrollY; });
-    await page.mouse.move(cx * 3, y);
+    // park the cursor on the track, just out of the left tunnel; the next train in must stop short of it
+    const r = await page.evaluate(() => { window.depths.layout(); return window.depths.track(); });
+    const cx = r.tw + 40;                                 // canvas px
+    await page.mouse.move(cx * r.P, r.y - await page.evaluate(() => scrollY));
     // send a train in now, rather than waiting a whole cycle (CI renders few frames, so trains run slow there)
     await page.evaluate(() => Object.assign(window.depths.train(), { phase: 'in', x: -4, v: 1.4, t: 0 }));
     try {
