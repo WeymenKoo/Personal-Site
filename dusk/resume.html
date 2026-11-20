@@ -2,10 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<script src="assets/theme.js?v=07156954"></script>
+<script src="assets/theme.js?v=75a54da4"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Résumé — Weymen Koo</title>
 <meta name="description" content="Weymen Koo's work history: education, skills and experience.">
+<!-- the link preview (LinkedIn and friends): the site's own sprites, tools/og/build.py -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Weymen Koo">
+<meta property="og:title" content="Résumé — Weymen Koo">
+<meta property="og:description" content="Weymen Koo's work history: education, skills and experience.">
+<meta property="og:url" content="https://weymenkoo.github.io/Personal-Site/resume.html">
+<meta property="og:image" content="https://weymenkoo.github.io/Personal-Site/assets/img/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Pixel-art spacecraft, cocktails and deep-sea submersibles from the site">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#0d0820" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f4eefb" media="(prefers-color-scheme: light)">
@@ -13,8 +24,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300..800;1,300..800&family=Noto+Sans+SC:wght@400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=07156954">
-<link rel="stylesheet" href="assets/resume.css?v=07156954">
+<link rel="stylesheet" href="assets/site.css?v=75a54da4">
+<link rel="stylesheet" href="assets/resume.css?v=75a54da4">
 </head>
 <body class="resume">
 
@@ -51,7 +62,7 @@
     <h2>Experience</h2>
 
     <article class="job">
-      <div class="job-top"><p class="org">Tesla, Inc.<span class="where">Palo Alto, USA</span></p><h3>Test System Engineer, Electrical Co-op</h3><span class="when">05/2025 – 12/2025</span></div>
+      <div class="job-top"><p class="org"><span class="egg" data-egg="tesla" role="button" tabindex="0" title="Go on, click it">Tesla, Inc.</span><span class="where">Palo Alto, USA</span></p><h3>Test System Engineer, Electrical Co-op</h3><span class="when">05/2025 – 12/2025</span></div>
       <ul>
         <li>Designed and validated high-voltage PCBAs with power stages, e-fuse protection, isolated DC-DC converters and isolated CAN transceivers.</li>
         <li>Supported development of internal HV charging platforms: selected <b>1 kV-rated</b> components, verified safety architectures, and delivered <b>10+ field-ready units</b>.</li>
@@ -63,7 +74,7 @@
     </article>
 
     <article class="job">
-      <div class="job-top"><p class="org">Dometic Marine<span class="where">Vancouver, Canada</span></p><h3>Product Design Engineer, Electrical Co-op</h3><span class="when">09/2024 – 04/2025</span></div>
+      <div class="job-top"><p class="org"><span class="egg" data-egg="gyro" role="button" tabindex="0" title="Spin it up">Dometic Marine</span><span class="where">Vancouver, Canada</span></p><h3>Product Design Engineer, Electrical Co-op</h3><span class="when">09/2024 – 04/2025</span></div>
       <ul>
         <li>Designed a hot-swap protection circuit for a specified working condition: selected components and captured the schematic in Altium Designer for a box-build assembly.</li>
         <li>Wrote and ran electrostatic discharge (ESD) test plans to <b>IEC 61000-4-2</b>, found failures and their root causes to guide design changes.</li>
@@ -73,20 +84,20 @@
     </article>
 
     <article class="job">
-      <div class="job-top"><p class="org">UBC AeroDesign<span class="where">Vancouver, Canada</span></p><h3>Avionics Lead</h3><span class="when">05/2024 – 05/2025</span></div>
+      <div class="job-top"><p class="org"><a class="org-link" href="https://ubcaerodesign.com/" target="_blank" rel="noopener">UBC AeroDesign</a><span class="where">Vancouver, Canada</span></p><h3>Avionics Lead</h3><span class="when">05/2024 – 05/2025</span></div>
       <ul>
         <li>Led the avionics architecture for an autonomous SAE Aero Design aircraft, for payload delivery and capture missions.</li>
-        <li>Directed the design and bring-up of a <b>custom flight controller</b> with integrated sensors and a revised power distribution system.</li>
+        <li>Directed the design and bring-up of a <a href="content/projects/fc-som/index.html"><b>custom flight controller</b></a> with integrated sensors and a <a href="content/projects/power-board/index.html">revised power distribution system</a>.</li>
         <li>Managed three multidisciplinary subteams (<b>about 30 members</b>) across propulsion, data acquisition, controls and ground systems.</li>
         <li>Ran technical reviews and program coordination.</li>
       </ul>
     </article>
 
     <article class="job">
-      <div class="job-top"><p class="org">UBC AeroDesign<span class="where">Vancouver, Canada</span></p><h3>Power and Propulsion Team Lead</h3><span class="when">05/2023 – 05/2025</span></div>
+      <div class="job-top"><p class="org"><a class="org-link" href="https://ubcaerodesign.com/" target="_blank" rel="noopener">UBC AeroDesign</a><span class="where">Vancouver, Canada</span></p><h3>Power and Propulsion Team Lead</h3><span class="when">05/2023 – 05/2025</span></div>
       <ul>
         <li>Integrated, tested and debugged embedded hardware with PX4 on the CubePilot Cube Orange, hardware interfaces and firmware configuration, for two competition aircraft.</li>
-        <li>Led the design of a <b>power distribution module</b> in Altium Designer, a steady 5 V at <b>up to 10 A each</b>, for the added load of an optical system and servos.</li>
+        <li>Led the design of a <a href="content/projects/avionics-2024/index.html"><b>power distribution module</b></a> in Altium Designer, a steady 5 V at <b>up to 10 A each</b>, for the added load of an optical system and servos.</li>
         <li>Standardised the team's hardware design process: component selection, schematic capture, PCB layout, LTspice simulation and BOM management.</li>
         <li>Taught members to characterise propulsion configurations on a custom thrust stand.</li>
       </ul>
@@ -101,9 +112,9 @@
     </article>
 
     <article class="job">
-      <div class="job-top"><p class="org">UBC AeroDesign<span class="where">Vancouver, Canada</span></p><h3>Mechanical Team Lead</h3><span class="when">09/2021 – 05/2023</span></div>
+      <div class="job-top"><p class="org"><a class="org-link" href="https://ubcaerodesign.com/" target="_blank" rel="noopener">UBC AeroDesign</a><span class="where">Vancouver, Canada</span></p><h3>Mechanical Team Lead</h3><span class="when">09/2021 – 05/2023</span></div>
       <ul>
-        <li>Led a subteam through the full build of composite wings and control surfaces, from CAD through fabrication, assembly and flight testing.</li>
+        <li>Led a subteam through the full build of <a href="content/projects/kyogre-spirit/index.html">composite wings and control surfaces</a>, from CAD through fabrication, assembly and flight testing.</li>
         <li>Built wing structures from laser-cut ribs, drill-press-machined spars and fittings, and hand-laid fibreglass / carbon-fibre skins, vacuum-bagged.</li>
         <li>Optimised lifting and control surface geometry with MATLAB / Python, Excel and XFLR5, against real manufacturing limits.</li>
         <li>Trained new members each term on the laser cutter, drill press, band saw and composite layup.</li>
@@ -132,7 +143,7 @@
 
 <div class="toast" id="toast" role="status"></div>
 
-<script src="assets/fx.js?v=07156954"></script>
-<script src="assets/depths.js?v=07156954"></script>
+<script src="assets/fx.js?v=75a54da4"></script>
+<script src="assets/depths.js?v=75a54da4"></script>
 </body>
 </html>

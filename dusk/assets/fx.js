@@ -643,7 +643,7 @@
         ctx.fillRect(x - w * P / 2, y + i * P, w * P, P);
       }
     }
-    var L = { t: -60, x: 0, sep: false, bx: 0, by: 0, bvy: 0 };
+    var L = { t: -2, x: 0, sep: false, bx: 0, by: 0, bvy: 0 };          /* timers start near zero: something flies as the page opens */
     var PLASMA = ["#fff4e0", "#ffc06b", "#ff6fae", "#9a5cff"];
     function drawPlasma(dt) {
       if (!D.pl || !D.pl.length) return;
@@ -660,11 +660,11 @@
       ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
       if (D.pl.length > 900) D.pl.splice(0, D.pl.length - 900);
     }
-    var D = { t: -40 }, Q = { x: -200, y: 0 }, C = { t: -30 };
+    var D = { t: -2 }, Q = { x: -200, y: 0, first: true }, C = { t: -2 };
     wind.blow = blow;
     game.craft = function () { return { ship: ship, launch: L, shuttle: D, station: Q, capsule: C, rocket: R, hubble: U, roadster: Z, aliens: aliens }; };
     /* a rocket that climbs, drops what it doesn't need, and keeps going */
-    var R = { t: -60 };
+    var R = { t: -2 };
     function climb(dt, full, rest, drops, sepAt, fire) {
       if (R.t < 0) { R.t += dt; if (R.t >= 0) { R.x = Math.round(rnd(W * .2, W * .8) / P) * P; R.y = horizon(); R.v = 0; R.sep = false; R.parts = []; } drawSmoke(dt); return; }
       R.t += dt; R.v = Math.min(4.5, R.v + .008 * dt); R.y -= R.v * dt;     /* slower than the Starship: these are heavier */
@@ -789,7 +789,7 @@
       station: function (dt, t) {
         if (Q.wait > 0) { Q.wait -= dt; return; }
         if (Q.x > W + 150 && Q.x < 9000) { nextCraft(rnd(300, 700)); return; }
-        if (Q.x < -150 || Q.x > W + 150) { Q.x = -140; Q.y = rnd(H * .08, H * .25); }
+        if (Q.x < -150 || Q.x > W + 150) { Q.x = Q.first ? rnd(W * .15, W * .45) : -140; Q.y = rnd(H * .08, H * .25); Q.first = false; }
         Q.x += .45 * dt;
         blow(Q, Q.x + ST.width / 2, Q.y + ST.height / 2, dt);
         ctx.drawImage(ST, Q.x, Q.y);
@@ -855,7 +855,10 @@
     }
 
     var last = 0, spawnT = 4, starCol = "", starAge = 0;
+    var SLOW = window.matchMedia && matchMedia("(pointer: coarse)").matches, drawn = 0;   /* phones: 30 fps, half the battery */
     function frame(t) {
+      if (SLOW && t - drawn < 30) { if (!document.hidden && running) requestAnimationFrame(frame); return; }
+      drawn = t;
       var dt = Math.min(50, t - (last || t)) / 16.67; last = t;
       ctx.clearRect(0, 0, W, H);
       if (!starCol || ++starAge > 90) { starCol = css("--star") || "#fff"; starAge = 0; }   /* re-read now and then: the theme can change */
@@ -1153,6 +1156,64 @@
   dock.appendChild(themeBtn);
   document.body.appendChild(dock);
   setTheme(theme());
+  /* ================================================================
+     THE RÉSUMÉ: click "Tesla, Inc." and it goes Tesla red, with a car
+     sound (an error chime first, then whatever it feels like); click
+     "Dometic Marine" and it spins up like a boat gyro. The sounds are
+     made here, in the style of a car's, not recordings.
+     ================================================================ */
+  var carSounds = (function () {
+    function tone(ac, f, t, len, type, v, out) {
+      var o = ac.createOscillator(), g = ac.createGain();
+      o.type = type || "sine"; o.frequency.setValueAtTime(f, t);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v || .12, t + .01); g.gain.exponentialRampToValueAtTime(.0008, t + len);
+      o.connect(g); g.connect(out || ac.destination); o.start(t); o.stop(t + len + .05); return o;
+    }
+    var S = {
+      error: ["Error chime. Something needs attention.", function (ac, t) { tone(ac, 880, t, .45); tone(ac, 659, t + .22, .6); }],
+      seatbelt: ["Seatbelt reminder.", function (ac, t) { for (var i = 0; i < 4; i++) tone(ac, 1046, t + i * .32, .22, "sine", .09); }],
+      signal: ["Turn signal.", function (ac, t) {
+        for (var i = 0; i < 6; i++) { var n = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain(), at = t + i * .38;
+          n.buffer = noiseBuf(ac); f.type = "bandpass"; f.frequency.value = i % 2 ? 1800 : 2600; f.Q.value = 6;
+          g.gain.setValueAtTime(.5, at); g.gain.exponentialRampToValueAtTime(.001, at + .03);
+          n.connect(f); f.connect(g); g.connect(ac.destination); n.start(at); n.stop(at + .05); } }],
+      lock: ["Lock chirp.", function (ac, t) { tone(ac, 1568, t, .08, "square", .05); tone(ac, 2093, t + .1, .12, "square", .05); }],
+      autopilot: ["Driver assist engaged.", function (ac, t) { tone(ac, 784, t, .25); tone(ac, 1175, t + .14, .45); }],
+      emissions: ["Emissions Testing Mode.", function (ac, t) {           /* yes, the car can do this */
+        var o = ac.createOscillator(), f = ac.createBiquadFilter(), g = ac.createGain(), lfo = ac.createOscillator(), d = ac.createGain();
+        o.type = "sawtooth"; o.frequency.setValueAtTime(95, t); o.frequency.exponentialRampToValueAtTime(55, t + .8);
+        lfo.frequency.value = 23; d.gain.value = 18; lfo.connect(d); d.connect(o.frequency);
+        f.type = "lowpass"; f.frequency.value = 420;
+        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.3, t + .04); g.gain.exponentialRampToValueAtTime(.001, t + .85);
+        o.connect(f); f.connect(g); g.connect(ac.destination); o.start(t); lfo.start(t); o.stop(t + .9); lfo.stop(t + .9); }]
+    };
+    var keys = Object.keys(S), played = 0;
+    return function () {
+      var ac = audio(), k = played++ === 0 ? "error" : keys[Math.floor(Math.random() * keys.length)];
+      if (ac) S[k][1](ac, ac.currentTime + .02);
+      return S[k][0];
+    };
+  })();
+  function gyroWhine() {
+    var ac = audio(); if (!ac) return;
+    var t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
+    o.type = "triangle"; o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(880, t + 1.2); o.frequency.exponentialRampToValueAtTime(140, t + 2.6);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.06, t + .3); g.gain.setValueAtTime(.06, t + 1.6); g.gain.exponentialRampToValueAtTime(.001, t + 2.7);
+    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + 2.8);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-egg]"), function (n) {
+    function go() {
+      if (n.dataset.egg === "tesla") { n.classList.add("tesla-red"); toast(carSounds()); }
+      else if (n.dataset.egg === "gyro") {
+        gyroWhine();
+        if (!REDUCED) { n.classList.remove("gyro"); void n.offsetWidth; n.classList.add("gyro"); }
+        toast("Spinning up the gyro.");
+      }
+    }
+    n.addEventListener("click", go);
+    n.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+  });
+
   window.fx = { game: game, toast: toast, drinks: drinks, wind: wind, jazz: jazz, setTheme: function (t) { setTheme(t); } };
 
   /* ================================================================

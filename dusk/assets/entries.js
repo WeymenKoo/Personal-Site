@@ -38,7 +38,9 @@
   function project(p, dir, i) {
     var pic = p.tldr || p.cover || {};
     var kids = [
-      el("div", { class: "pic" }, [el("img", { src: dir + pic.src, alt: pic.alt || "", loading: i < 2 ? "eager" : "lazy" })]),
+      el("div", { class: "pic" }, [pic.webp                                   /* WebP where there is one: about half the bytes */
+        ? el("picture", {}, [el("source", { type: "image/webp", srcset: dir + pic.webp }), el("img", { src: dir + pic.src, alt: pic.alt || "", loading: i < 2 ? "eager" : "lazy", decoding: "async" })])
+        : el("img", { src: dir + pic.src, alt: pic.alt || "", loading: i < 2 ? "eager" : "lazy", decoding: "async" })]),
       el("div", { class: "body" }, [
         el("div", { class: "row" }, [
           el("span", {}, [el("span", { class: "no", text: "A" + (i + 1) }), document.createTextNode(p.year ? " · " + p.year : "")]),

@@ -12,6 +12,7 @@
   },
   "tldr": {
     "src": "tldr.jpg",
+    "webp": "tldr.webp",
     "alt": "Render of the flight controller SoM at an angle on a dark background: the STM32H757 in the centre, USB-C on the right, UBC AeroDesign logo and Square Lemon mark"
   },
   "strip": [
