@@ -197,6 +197,22 @@ body.article{background:radial-gradient(60rem 40rem at 0% 0%,color-mix(in srgb,v
   radial-gradient(50rem 40rem at 100% 30rem,color-mix(in srgb,var(--accent) 10%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
 .ar p,.ar li{font-size:.95rem}
 
+/* ---------- layout: gallery (front matter) — mostly pictures ----------
+   A wider column for the photos; text stays at reading width. Four or
+   more images on consecutive lines make a photo wall (.ar-grid.many). */
+#article.ar-gallery .ar{max-width:64rem}
+#article.ar-gallery .ar > :is(p,ul,ol,.ar-slide,.ar-scroll,h3),
+#article.ar-gallery .ar-head{max-width:44rem}
+.ar-grid.many{grid-template-columns:repeat(var(--cols,3),1fr);align-items:start}
+.ar-grid.many img{aspect-ratio:3/4;object-fit:cover}
+@media(max-width:900px){.ar-grid.many{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.ar-grid.many{grid-template-columns:1fr}.ar-grid.many img{aspect-ratio:auto}}
+#article.ar-gallery .ar-grid:not(.many) img{aspect-ratio:auto;object-fit:contain}
+#article.ar-gallery .ar-grid.two,#article.ar-gallery .ar-grid.three{align-items:start}
+#article.ar-gallery .ar-fig img{max-height:80vh;width:auto;margin-inline:auto}
+#article.ar-gallery .ar-fig figcaption{text-align:center}
+@media(min-width:64rem){#article.ar-gallery .ar-fig.wide,#article.ar-gallery .ar-grid.wide{margin-inline:0}}
+
 @media (prefers-reduced-motion:reduce){
   .ar-ecg .trace{animation:none;stroke-dashoffset:0}
   .ar-chat .msg,.ar-chat .seen{opacity:1;transform:none;transition:none}

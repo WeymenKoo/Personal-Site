@@ -25,8 +25,10 @@ content/
 design/                 logo sheet + toucan.svg (the favicon)
 ```
 
-There are seven projects: `fc-som`, `foc-controller`, `power-board`,
-`avionics-2024`, `kyogre-spirit`, `dc-load` and `micromouse`. The template to
+There are ten projects: `fc-som`, `foc-controller`, `power-board`,
+`avionics-2024`, `kyogre-spirit`, `dc-load`, `micromouse`, and the three
+pre-PCB ones, `protoboard-avionics`, `water-rocket` and `rover` (written with
+`layout: gallery`). The template to
 copy is `content/projects/example`.
 
 ## Running it locally
@@ -183,6 +185,7 @@ the way back to the projects.
 | `- [ ]` / `- [x]` list | a checklist, with the ticked one highlighted |
 | `~~word~~` | struck through |
 | `[text](https://…)` | a link (opens in a new tab if it leaves the site) |
+| `layout: gallery` in the block between the `---` lines | a page that's mostly pictures: a wider column for the photos, text kept at reading width, and four or more images on consecutive lines make a photo wall (one column on a phone) |
 
 Images are paths relative to the project folder: `cover.jpg`,
 `layers.gif`. Clicking any image opens the full-size file in a new tab, so a

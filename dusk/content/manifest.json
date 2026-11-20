@@ -6,6 +6,9 @@
     "avionics-2024",
     "kyogre-spirit",
     "dc-load",
-    "micromouse"
+    "micromouse",
+    "protoboard-avionics",
+    "water-rocket",
+    "rover"
   ]
 }

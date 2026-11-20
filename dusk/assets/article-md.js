@@ -77,7 +77,7 @@
     var full = el("a", { class: "ar-full", href: img.getAttribute("src"), title: "Enlarge" }, [img]);
     return el("figure", {}, [full, cap ? el("figcaption", { html: window.marked.parseInline(cap) }) : null]);
   }
-  function images(root) {
+  function images(root, gallery) {
     Array.prototype.slice.call(root.querySelectorAll("p")).forEach(function (p) {
       var imgs = [], other = false;
       Array.prototype.forEach.call(p.childNodes, function (n) {
@@ -93,6 +93,9 @@
         box = figure(imgs[0]);
         box.className = has("bleed") ? "ar-bleed" : "ar-fig" + (has("wide") ? " wide" : "");
         if (/\.gif$/i.test(imgs[0].getAttribute("src"))) box.classList.add("ar-gif");
+      } else if (gallery && imgs.length > 3) {
+        /* layout: gallery — four or more in a row become a photo wall */
+        box = el("div", { class: "ar-grid many", style: "--cols:" + (imgs.length % 4 === 0 ? 4 : 3) }, imgs.map(figure));
       } else {
         box = el("div", {
           class: "ar-grid " + (imgs.length === 3 ? "three" : "two") +
@@ -104,8 +107,8 @@
   }
 
   /* ---------- the rest of the Markdown -> the article's own components ---------- */
-  function dress(root) {
-    images(root);
+  function dress(root, gallery) {
+    images(root, gallery);
 
     /* > a quote            -> the slide-quote box; a last line starting with
        > — where it's from     an em dash becomes the source line */
@@ -183,7 +186,8 @@
   function build(entry, md) {
     var fm = frontMatter(md);
     var body = el("div", { html: window.marked.parse(fm.body, { gfm: true }) });
-    dress(body);
+    var gallery = fm.meta.layout === "gallery";
+    dress(body, gallery);
     var parts = chapters(body);
     var title = fm.meta.title || entry.title || "Untitled";
 
@@ -228,6 +232,7 @@
     }
 
     var main = document.getElementById("article");
+    main.classList.toggle("ar-gallery", gallery);
     main.replaceChildren.apply(main, [top].concat(sections));
     return main;
   }
@@ -246,7 +251,7 @@
   }
 
   window.articleReady = Promise.all([
-    script(ASSETS + "vendor/marked.umd.js?v=faaab639"),
+    script(ASSETS + "vendor/marked.umd.js?v=2215be1b"),
     get("entry.json", "json").catch(function (e) { console.error("[article]", e.message); return {}; }),
     get("article.md", "text")
   ]).then(function (r) {
@@ -254,9 +259,9 @@
   }).catch(sorry).then(function () {
     /* fx.js (quote, pets, lightbox) and article.js (text-message reveal)
        read the page when they start, so they load after it's built */
-    return script(ASSETS + "fx.js?v=faaab639");
+    return script(ASSETS + "fx.js?v=2215be1b");
   }).then(function () {
-    return script(ASSETS + "article.js?v=faaab639");
+    return script(ASSETS + "article.js?v=2215be1b");
   }).then(function () {
     if (location.hash.length > 1) {
       var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
