@@ -1207,7 +1207,7 @@
       else if (n.dataset.egg === "gyro") {
         gyroWhine();
         if (!REDUCED) { n.classList.remove("gyro"); void n.offsetWidth; n.classList.add("gyro"); }
-        toast("Spinning up the gyro: at Dometic I worked on a boat gyro project.");
+        toast("Spinning up the gyro.");
       }
     }
     n.addEventListener("click", go);
