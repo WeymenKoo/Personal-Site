@@ -4,7 +4,7 @@
   "statusLabel": "Design complete",
   "year": "2026",
   "spec": "STM32H757 · 55 × 40 mm · 8 layers · ArduPilot",
-  "summary": "A flight-controller system-on-module for UBC AeroDesign. The STM32H757, two IMUs, two barometers, a magnetometer, FRAM and microSD sit on one module that plugs into a carrier board through two Hirose DF17 connectors. Rev A is design-complete and not yet fabricated.",
+  "summary": "A flight-controller system-on-module for UBC AeroDesign. The STM32H757, two IMUs, two barometers, a magnetometer, FRAM and microSD sit on one module that plugs into a carrier board through two Hirose DF17 connectors. I led the design and trained a newer member on the power path. Rev A is design-complete and not yet fabricated.",
   "cover": {
     "src": "card.jpg",
     "alt": "Render of the flight controller SoM at an angle on a dark background: the STM32H757 in the centre, USB-C on the right, UBC AeroDesign logo and Square Lemon mark",

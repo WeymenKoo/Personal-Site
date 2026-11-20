@@ -371,7 +371,7 @@ test.describe('as shipped', () => {
     await expect(gyro).toHaveClass(/gyro/);
     await expect(page.locator('#toast')).toContainText('gyro');
     const aero = page.locator('a.org-link');
-    await expect(aero).toHaveCount(3);
+    await expect(aero).toHaveCount(4);
     for (const h of await aero.evaluateAll(a => a.map(x => x.getAttribute('href')))) expect(h).toBe('https://ubcaerodesign.com/');
     const links = await page.locator('.job li a').evaluateAll(a => a.map(x => x.getAttribute('href')));
     expect(links.length).toBeGreaterThanOrEqual(4);

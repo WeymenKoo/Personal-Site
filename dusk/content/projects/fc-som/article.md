@@ -2,12 +2,15 @@
 title: Flight Controller SoM
 subtitle: A flight-controller system-on-module for UBC AeroDesign, built around the STM32H757 and running ArduPilot.
 team: UBC AeroDesign
+role: Lead designer: architecture, schematic, layout, manufacturing release
 date: Rev A · Nov 2026
 ---
 
 The 55 × 40 mm, 8-layer module carries the MCU, two IMUs, two barometers, a magnetometer, FRAM, microSD and the power path. It plugs into a carrier board and a payload board through two Hirose DF17 board-to-board connectors.
 
 ![Render of the flight controller SoM, top side](cover.jpg#wide "Top side: STM32H757, USB-C, SWD header, boot and reset buttons.")
+
+**My role:** I led the design: the architecture, the schematic, the layout and the manufacturing release. I brought Lachlan Biersteker, a newer member, onto the board to train him. He selected the eFuse, the buck and the LDO under my review and did early routing, which I took over and finished.
 
 **Status:** Rev A. Design complete. Altium DRC clean (0 violations, 14 Nov 2026). Manufacturing files exported 15 Nov 2026. Not yet fabricated or tested.
 
@@ -22,7 +25,7 @@ The 55 × 40 mm, 8-layer module carries the MCU, two IMUs, two barometers, a mag
 | Power | 5 V from the carrier or USB-C, eFuse with a 1.1 A limit |
 | I/O | 16 PWM, 8 UARTs + USB, 4 I2C, 2 CAN, 5 ADC |
 | Assembly | 150 parts (59 top, 91 bottom), 22 test pads |
-| Designers | Weymen Koo, Lachlan Biersteker |
+| Designers | Weymen Koo (lead) · Lachlan Biersteker (trained on this board) |
 | Files | [Repository](https://github.com/WeymenKoo/UBCAeroDesign-2026-Flight-Controller) · [Schematic (PDF)](https://github.com/WeymenKoo/UBCAeroDesign-2026-Flight-Controller/blob/main/FC_SoM_RevA_Schematic.pdf) · [STEP model](https://github.com/WeymenKoo/UBCAeroDesign-2026-Flight-Controller/blob/main/mechanical/FC_SoM_RevA.step) |
 
 ## Board views
@@ -142,3 +145,12 @@ The upload set is in the repository under [`jlcpcb/`](https://github.com/WeymenK
 ## Status
 
 Rev A. Design complete, not yet fabricated or tested. The carrier board is in development; the plan is to order the module and the carrier together.
+
+Bring-up plan, in order; results go here as they come in:
+
+- [ ] Bare-board checks: rail-to-ground resistance, BGA X-ray
+- [ ] Current-limited first power on USB-C: 3.3 V and sensor rail levels, eFuse limit
+- [ ] SWD connect, clock and SMPS configuration
+- [ ] ArduPilot build boots; both IMUs, both barometers, the magnetometer, FRAM and microSD detected
+- [ ] IMU orientation confirmed with a motion test
+- [ ] On the carrier: CAN, PWM outputs, UARTs and the ADC dividers
