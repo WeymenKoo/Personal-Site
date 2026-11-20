@@ -441,6 +441,7 @@
         if (shipImg && ship.x > -60) add(ship.x, ship.y, shipImg.width, shipImg.height, function () {
           boom(ship.x + shipImg.width / 2, ship.y + shipImg.height / 2, 34);
           ship.x = -rnd(500, 900); ship.y = Math.round(rnd(H * .18, H * .42));
+          if (!game.invading) nextCraft(rnd(200, 400));
           line("ship", "You shot down your own escort. Bold.");
         });
       }
@@ -449,7 +450,7 @@
         var top = L.sep ? SS.height - BO.height : SS.height;
         add(L.x - SS.width / 2, L.y, SS.width, top, function () {
           boom(L.x, L.y + top / 2, 60); if (L.sep && !L.gone) boom(L.bx, L.by + BO.height / 2, 40);
-          L.t = -rnd(400, 900); smoke = []; line("rud", RUD);
+          nextCraft(rnd(200, 450)); line("rud", RUD);
         });
         if (L.sep && !L.gone) add(L.bx - BO.width / 2, L.by, BO.width, BO.height, function () {
           boom(L.bx, L.by + BO.height / 2, 40); L.gone = true; line("booster", "Booster recovery: not today.");
@@ -459,7 +460,7 @@
         var img = R.sep ? (scene === "falcon-heavy" ? FHC : STC) : (scene === "falcon-heavy" ? FH : STK);
         add(R.x - img.width / 2, R.y, img.width, img.height, function () {
           boom(R.x, R.y + img.height / 2, 70); R.parts.forEach(function (q) { boom(q.x, q.y + q.img.height / 2, 30); });
-          R.parts = []; R.y = -9999; R.t = -rnd(400, 900); smoke = []; line("rud", RUD);
+          R.y = -9999; nextCraft(rnd(200, 450)); line("rud", RUD);
         });
         R.parts.forEach(function (q) {
           add(q.x - q.img.width / 2, q.y, q.img.width, q.img.height, function () {
@@ -468,19 +469,19 @@
         });
       }
       if (scene === "landing" && D.t >= 0) add(D.x - SH.width / 2, D.y - SH.height / 2, SH.width, SH.height, function () {
-        boom(D.x, D.y, 50); D.t = -rnd(300, 700); D.pl = []; line("landing", "Wheel stop cancelled.");
+        boom(D.x, D.y, 50); nextCraft(rnd(200, 450)); line("landing", "Wheel stop cancelled.");
       });
       if (scene === "station" && !(Q.wait > 0)) add(Q.x, Q.y, ST.width, ST.height, function () {
-        boom(Q.x + ST.width / 2, Q.y + ST.height / 2, 60); Q.x = -149; Q.wait = rnd(300, 600); line("station", "Station deorbited, ahead of schedule.");
+        boom(Q.x + ST.width / 2, Q.y + ST.height / 2, 60); nextCraft(rnd(200, 450)); line("station", "Station deorbited, ahead of schedule.");
       });
       if (scene === "capsule" && C.t >= 0) add(C.x - 50, C.y - 50, 100, 50 + CA.height, function () {
-        boom(C.x, C.y, 40); C.t = -rnd(300, 600); line("capsule", "Splashdown cancelled.");
+        boom(C.x, C.y, 40); nextCraft(rnd(200, 450)); line("capsule", "Splashdown cancelled.");
       });
       if (scene === "hubble" && !(U.wait > 0)) add(U.x, U.y, HU.width, HU.height, function () {
-        boom(U.x + HU.width / 2, U.y + HU.height / 2, 50); U.x = -199; U.wait = rnd(300, 600); line("hubble", "There go thirty years of deep fields.");
+        boom(U.x + HU.width / 2, U.y + HU.height / 2, 50); nextCraft(rnd(200, 450)); line("hubble", "There go thirty years of deep fields.");
       });
       if (scene === "roadster" && !(Z.wait > 0)) add(Z.x, Z.y, RD.width, RD.height, function () {
-        boom(Z.x + RD.width / 2, Z.y + RD.height / 2, 36); Z.x = -199; Z.wait = rnd(300, 600); line("roadster", "Starman, no!");
+        boom(Z.x + RD.width / 2, Z.y + RD.height / 2, 36); nextCraft(rnd(200, 450)); line("roadster", "Starman, no!");
       });
       return out;
     }
@@ -603,6 +604,21 @@
     var asked = (location.search.match(/[?&]scene=([\w-]+)/) || [])[1];     /* ?scene=launch picks one */
     var scene = SCENE_LIST.indexOf(asked) >= 0 ? asked : SCENE_LIST[Math.floor(Math.random() * SCENE_LIST.length)];
     sky.dataset.scene = scene;
+    /* one craft in the sky at a time; when it's popped or gone, the next is a different one, picked at random */
+    var CRAFT = SCENE_LIST.slice(1);
+    function nextCraft(wait) {
+      var pool = CRAFT.filter(function (k) { return k !== scene; }), k = pool[Math.floor(Math.random() * pool.length)];
+      scene = k; sky.dataset.scene = k; smoke = [];
+      if (k === "launch") L.t = -wait;
+      else if (k === "landing") { D.t = -wait; D.pl = []; }
+      else if (k === "capsule") C.t = -wait;
+      else if (k === "shuttle-launch" || k === "falcon-heavy") { R.t = -wait; R.parts = []; }
+      else if (k === "station") { Q.x = -9999; Q.wait = wait; }
+      else if (k === "hubble") { U.x = -9999; U.first = false; U.wait = wait; }
+      else if (k === "roadster") { Z.x = -9999; Z.first = false; Z.wait = wait; }
+      return k;
+    }
+    game.next = nextCraft;
     var horizon = function () { return H - (parseFloat(css("--counterH")) || 92) - 40; };
     var big = 3;
     var SS = sprite("starship", big), BO = sprite("booster", big), ST = sprite("station", big),
@@ -670,7 +686,7 @@
       if (fire) fire(R.x, R.y, img, R.sep); else flame(R.x, R.y + img.height, (R.sep ? 7 : 11) + Math.floor(Math.random() * 3));
       if (!R.sep && Math.random() < .9) puff(R.x, R.y + img.height + 30, 3, "rgba(230,225,240,.9)");
       drawSmoke(dt);
-      if (R.y < -img.height - 40 && R.parts.every(function (q) { return q.y > H; })) R.t = -rnd(400, 900);
+      if (R.y < -img.height - 40 && R.parts.every(function (q) { return q.y > H; })) nextCraft(rnd(400, 900));
     }
     var U = { x: -300, y: 0, first: true }, Z = { x: -300, y: 0, rot: 0, first: true };
     var SCENES = {
@@ -688,6 +704,7 @@
       },
       hubble: function (dt, t) {
         if (U.wait > 0) { U.wait -= dt; return; }
+        if (U.x > W + 200 && U.x < 9000) { nextCraft(rnd(300, 700)); return; }
         if (U.x < -200 || U.x > W + 200) { U.x = U.first ? rnd(W * .5, W * .75) : -180; U.y = rnd(H * .1, H * .3); U.first = false; }
         U.x += .3 * dt;
         blow(U, U.x + HU.width / 2, U.y + HU.height / 2, dt);
@@ -696,6 +713,7 @@
       },
       roadster: function (dt) {
         if (Z.wait > 0) { Z.wait -= dt; return; }
+        if (Z.x > W + 200 && Z.x < 9000) { nextCraft(rnd(300, 700)); return; }
         if (Z.x < -200 || Z.x > W + 200) { Z.x = Z.first ? rnd(W * .5, W * .75) : -160; Z.y = rnd(H * .1, H * .35); Z.rot = rnd(-.3, .3); Z.first = false; }
         Z.x += .4 * dt; Z.y += .05 * dt; Z.rot += .0025 * dt;   /* tumbling, very slowly */
         blow(Z, Z.x + RD.width / 2, Z.y + RD.height / 2, dt);
@@ -713,7 +731,7 @@
           if (!L.gone) { ctx.drawImage(BO, L.bx - BO.width / 2, L.by); if (L.bvy > .5) flame(L.bx, L.by + BO.height, 4); }
           ctx.drawImage(SS, 0, 0, SS.width, SS.height - BO.height, L.x - SS.width / 2, L.y, SS.width, SS.height - BO.height);
           flame(L.x, L.y + SS.height - BO.height, 6);
-          if (L.by > H) { L.t = -rnd(400, 900); }
+          if (L.by > H) nextCraft(rnd(400, 900));
         } else {
           ctx.drawImage(SS, L.x - SS.width / 2, L.y);
           flame(L.x, L.y + SS.height, 10 + Math.floor(Math.random() * 4));
@@ -766,10 +784,11 @@
           ctx.fillRect(-hw + SH.width * .62 - g, belly + g * 3, g * 3, g);
         }
         ctx.restore();
-        if (D.y > horizon() + 20 || D.x < -SH.width - 60) D.t = -rnd(300, 700);
+        if (D.y > horizon() + 20 || D.x < -SH.width - 60) nextCraft(rnd(300, 700));
       },
       station: function (dt, t) {
         if (Q.wait > 0) { Q.wait -= dt; return; }
+        if (Q.x > W + 150 && Q.x < 9000) { nextCraft(rnd(300, 700)); return; }
         if (Q.x < -150 || Q.x > W + 150) { Q.x = -140; Q.y = rnd(H * .08, H * .25); }
         Q.x += .45 * dt;
         blow(Q, Q.x + ST.width / 2, Q.y + ST.height / 2, dt);
@@ -785,7 +804,7 @@
         ctx.strokeStyle = "rgba(200,200,215,.6)"; ctx.lineWidth = 1;
         [-30, 0, 30].forEach(function (o) { ctx.beginPath(); ctx.moveTo(C.x + o + sway, C.y - 16); ctx.lineTo(C.x + sway * .4, C.y + 4); ctx.stroke(); });
         ctx.drawImage(CA, C.x - CA.width / 2 + sway * .4, C.y);
-        if (C.y > horizon() + 30) C.t = -rnd(300, 600);
+        if (C.y > horizon() + 30) nextCraft(rnd(300, 700));
       }
     };
     function patrol(dt, t) {
@@ -898,7 +917,7 @@
     game.hitAt = function (x, y) { return !!hitAt(x, y); };
 
     game.invade = function () {
-      scene = "patrol";
+      scene = "patrol"; sky.dataset.scene = "patrol"; game.invading = true;   /* your own ship comes back while the aliens are here */
       for (var i = 0; i < 12; i++) spawnAlien(W * .4 + i * (W * .05));
       ship.x = 20; ship.vx = 1.6;
       toast("↑↑↓↓←→←→BA — incoming. 30 lives granted (not really).");

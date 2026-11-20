@@ -273,7 +273,8 @@ test.describe('as shipped', () => {
     });
     await page.mouse.click(p.x, p.y);
     await expect(page.locator('#toast')).toContainText('deorbited');
-    expect(await page.evaluate(() => window.fx.game.craft().station.wait)).toBeGreaterThan(0);
+    // the next craft is a different one, picked at random
+    expect(await page.evaluate(() => document.getElementById('sky').dataset.scene)).not.toBe('station');
     // the aliens too: invade, then shoot one by hand
     await page.keyboard.press('Escape');
     const hits = await page.evaluate(() => { window.fx.game.invade(); return window.fx.game.hits; });
@@ -323,6 +324,35 @@ test.describe('as shipped', () => {
       await page.waitForTimeout(600);
       expect(errors).toEqual([]);
     }
+  });
+
+  test('a popped research sub implodes, and a different one sinks in', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const errors = await open(page, server.url);
+    const z = await page.evaluate(() => { window.depths.layout(); return window.depths.zones(); });
+    await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), (z.sea + z.stTop) / 2 - 450);
+    const before = await page.evaluate(() => window.depths.fleet().map(v => v.k));
+    expect(before.length).toBe(3);
+    expect(new Set(before).size).toBe(3);                 // never two the same
+    await page.evaluate(() => window.depths.implode(window.depths.fleet()[0]));
+    await expect(page.locator('#toast')).not.toBeEmpty();
+    await page.waitForFunction(() => window.depths.fleet().length === 2, null, { timeout: 10000 });
+    await page.waitForFunction(() => window.depths.fleet().length === 3, null, { timeout: 15000 });
+    const after = await page.evaluate(() => window.depths.fleet().map(v => ({ k: v.k, state: v.state })));
+    expect(new Set(after.map(v => v.k)).size).toBe(3);
+    expect(after.some(v => v.state === 'sink' || v.state === 'live')).toBe(true);
+    expect(errors).toEqual([]);
+  });
+
+  test('the wreck on the seabed pays out a coin when clicked', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await open(page, server.url);
+    await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
+    await page.waitForFunction(() => window.depths.wreck(), null, { timeout: 5000 });
+    const b = await page.evaluate(() => { const w = window.depths.wreck(); return { x: w.x + w.w * .5, y: w.y + w.h * .6 - scrollY }; });
+    await page.mouse.click(b.x, b.y);
+    await page.waitForFunction(() => window.depths.score.coins === 1, null, { timeout: 3000 });
+    await expect(page.locator('#toast')).toContainText('coin');
   });
 
   test('the cursor on the track stops the train', async ({ page }) => {
