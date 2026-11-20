@@ -139,6 +139,8 @@
       "....rG.", "...rrG.", "g..rG.g", "gppppPg", "gppppPg", "gpPpppg", "gpppppg", "gppPppg", "gpppppg", "ggggggg"] },
     lassi: { pal: { g: "rgba(239,228,255,.72)", a: "#ffc23d", f: "#fff2c4", m: "#5ef0a6" }, rows: [
       "...mm..", "g.mm..g", "gfffffg", "gaaaaag", "gaaaaag", "gaaaaag", "gaaaaag", "gaaaaag", "gaaaaag", ".ggggg."] },
+    solo: { pal: { w: "#f4f0ec", r: "#d8222e", R: "#a8121e" }, rows: [
+      "wwwwwwwww", "rrrrrrrrr", ".rrrrrrr.", ".RRRRRRR.", ".rrrrrrr.", ".RRRRRRR.", "..rrrrr..", "..rrrrr..", "..RRRRR.."] },
     boba: { pal: { l: "rgba(239,228,255,.85)", s: "#ff8fd0", t: "#d9b38c", k: "#2a1a14", g: "rgba(239,228,255,.72)" }, rows: [
       "....ss.", "....ss.", "lllllll", "gtttttg", "gtttttg", "gtttttg", "gtktktg", "gkttkkg", "gkkktkg", ".ggggg."] }
   };
@@ -175,7 +177,8 @@
     ["oj", "Fresh orange juice. 100% vitamin C, 0% capacitors."],
     ["watermelon", "Watermelon juice. Mostly water, like the flux washer."],
     ["lassi", "Mango lassi. Thick enough for thermal paste. Please don't."],
-    ["boba", "Brown sugar boba from Richmond. Mind the pearls in the straw."]
+    ["boba", "Brown sugar boba from Richmond. Mind the pearls in the straw."],
+    ["solo", "Red cup. Don't ask what's in it."]
   ];
   /* The cursor can push them along the counter (sweep across a glass),
      or pick one up and slide it (drag and let go). They slow down on
@@ -342,7 +345,7 @@
   if (sky) (function () {
     var ctx = sky.getContext("2d"), P = 3, W = 0, H = 0;
     var stars = [], shoots = [], aliens = [], bolts = [], bits = [], pops = [];
-    var shipImg = null, alienImg = sprite("alien", P);
+    var shipImg = null, alienImg = null;                               /* painted with the rest (paintCraft) */
     var ship = { x: -60, y: 0, vx: 1.1, roll: 0, cool: 0 };
     var skyRect = null;
     document.addEventListener("pointermove", function (e) {
@@ -370,10 +373,6 @@
         stars.push({ x: Math.round(rnd(0, W) / P) * P, y: Math.round(rnd(0, H * .55) / P) * P, t: rnd(0, 6.28), s: rnd(.4, 1.6), big: Math.random() < .12 });
       }
       ship.y = Math.round(H * .3);
-      /* the ship flies sideways: draw the upward sprite turned to the right */
-      var up = sprite("ship", P), c = el("canvas"); c.width = up.height; c.height = up.width;
-      var x = c.getContext("2d"); x.translate(c.width, 0); x.rotate(Math.PI / 2); x.drawImage(up, 0, 0);
-      shipImg = c;
       placeSOS();
     }
 
@@ -382,7 +381,7 @@
     }
 
     function explode(a) {
-      for (var i = 0; i < 18; i++) bits.push({ x: a.x + 12, y: a.y + 9, vx: rnd(-2.2, 2.2), vy: rnd(-2.2, 2.2), life: rnd(25, 50), c: Math.random() < .5 ? "#7dff7a" : "#ffd36e" });
+      for (var i = 0; i < 18; i++) bits.push({ x: a.x + alienImg.width / 2, y: a.y + alienImg.height / 2, vx: rnd(-2.2, 2.2), vy: rnd(-2.2, 2.2), life: rnd(25, 50), c: Math.random() < .5 ? "#7dff7a" : "#ffd36e" });
       pops.push({ x: a.x, y: a.y, life: 50 });
       game.score += 100; game.hits++;
       if (game.hits === 10) toast("10 aliens down. The bar's quieter now.");
@@ -406,9 +405,9 @@
     function drawBits(dt) {
       bits = bits.filter(function (b) {
         b.x += b.vx * dt; b.y += b.vy * dt; b.vy += (b.g == null ? .05 : b.g) * dt; b.vx *= Math.pow(.985, dt); b.life -= dt;
-        var sz = b.big ? P * 2 : P;
+        var fp = SHUT.fp, sz = b.big ? fp * 2 : fp;
         ctx.globalAlpha = b.big ? Math.min(1, b.life / 60) : 1;
-        ctx.fillStyle = b.c; ctx.fillRect(Math.round(b.x / P) * P, Math.round(b.y / P) * P, sz, sz);
+        ctx.fillStyle = b.c; ctx.fillRect(Math.round(b.x / fp) * fp, Math.round(b.y / fp) * fp, sz, sz);
         ctx.globalAlpha = 1;
         return b.life > 0;
       });
@@ -436,7 +435,7 @@
       function add(x, y, w, h, kill) { out.push({ x: x, y: y, w: w, h: h, kill: kill }); }
       if (scene === "patrol") {
         aliens.forEach(function (a) {
-          add(a.x, a.y - 4, 27, 29, function () { explode(a); aliens.splice(aliens.indexOf(a), 1); boom(a.x + 13, a.y + 10, 20); });
+          add(a.x, a.y - 4, alienImg.width, alienImg.height + 8, function () { explode(a); aliens.splice(aliens.indexOf(a), 1); boom(a.x + alienImg.width / 2, a.y + alienImg.height / 2, 20); });
         });
         if (shipImg && ship.x > -60) add(ship.x, ship.y, shipImg.width, shipImg.height, function () {
           boom(ship.x + shipImg.width / 2, ship.y + shipImg.height / 2, 34);
@@ -477,6 +476,10 @@
       if (scene === "capsule" && C.t >= 0) add(C.x - 50, C.y - 50, 100, 50 + CA.height, function () {
         boom(C.x, C.y, 40); nextCraft(rnd(200, 450)); line("capsule", "Splashdown cancelled.");
       });
+      if (AIR[scene] && A.t >= 0) {
+        var ai = AIR[scene].img[A.dir > 0 ? 0 : 1];
+        add(A.x, A.y, ai.width, ai.height, function () { boom(A.x + ai.width / 2, A.y + ai.height / 2, 40); var key = scene, msg = AIR[key].line; nextCraft(rnd(200, 450)); line(key, msg); });
+      }
       if (scene === "hubble" && !(U.wait > 0)) add(U.x, U.y, HU.width, HU.height, function () {
         boom(U.x + HU.width / 2, U.y + HU.height / 2, 50); nextCraft(rnd(200, 450)); line("hubble", "There go thirty years of deep fields.");
       });
@@ -499,6 +502,7 @@
        the orbiter nose-left; the launch stack nose-up, orbiter belly against the tank, one booster
        in front of the tank (the other hides behind it). */
     var SH, STK, STC, SRB, SHUT = {}, fineP = 0;
+    var SS, BO, ST, CA, CH, FH, FHC, FHS, HU, RD, AIR = {};
     function cityPx() { var c = document.querySelector(".city"); return c && c.offsetHeight ? 2 * c.offsetHeight / 570 : 1.3; }
     function snap(c) {                                                /* every pixel fully on or off */
       var x = c.getContext("2d"), d = x.getImageData(0, 0, c.width, c.height), a = d.data;
@@ -581,6 +585,155 @@
       /* where the fires go, in page px from the image's centre and top */
       SHUT = { srbY: 51.5 * k * f, ssmeDx: (4.6 + 3.7) * k * f,          /* belly at 4.6 m off the axis, engines ~3.7 m above the belly */
                 ssmeY: (11 * k + 38.6 * k) * f, fp: Math.max(2, Math.round(f * 2)) };
+      paintCraft(f);
+    }
+    /* ---- everything else that flies, painted the same way: shapes in canvas pixels at the city's
+       pixel size, snapped on/off. Rockets nose-up; everything else faces right (flipped as needed). */
+    function paint(w, h, fn) { var c = el("canvas"); c.width = w; c.height = h; fn(c.getContext("2d")); return grow(snap(c), fineP); }
+    function flipX(c) { var o = el("canvas"); o.width = c.width; o.height = c.height; var x = o.getContext("2d"); x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(c, 0, 0); return o; }
+    function rr(x, X, Y, w, h, r) { x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + w, Y, X + w, Y + h, r); x.arcTo(X + w, Y + h, X, Y + h, r); x.arcTo(X, Y + h, X, Y, r); x.arcTo(X, Y, X + w, Y, r); x.closePath(); }
+    function pg(x, pts, col) { x.fillStyle = col; x.beginPath(); pts.forEach(function (p, i) { x[i ? "lineTo" : "moveTo"](p[0], p[1]); }); x.closePath(); x.fill(); }
+    function box(x, X, Y, w, h, col) { x.fillStyle = col; x.fillRect(X, Y, w, h); }
+    var STEEL = "#c9ccd6", STEEL_HI = "#eceef3", STEEL_SH = "#9aa0b0", INK = "#23242c";
+    function starship(x, oy, ship, booster) {                         /* Starship on Super Heavy; stainless, tiles on the windward side */
+      var c = 6, r = 4.5;
+      if (ship) {
+        x.fillStyle = STEEL; x.beginPath(); x.moveTo(c, oy); x.quadraticCurveTo(c + r + .5, oy + 4, c + r, oy + 12); x.lineTo(c + r, oy + 44); x.lineTo(c - r, oy + 44); x.lineTo(c - r, oy + 12); x.quadraticCurveTo(c - r - .5, oy + 4, c, oy); x.fill();
+        box(x, c + r - 2, oy + 6, 2, 38, STEEL_SH); box(x, c - 1, oy + 4, 1, 40, STEEL_HI);
+        box(x, c - r, oy + 10, 3, 34, INK);                           /* heat shield */
+        pg(x, [[c - r, oy + 9], [c - r - 2, oy + 15], [c - r, oy + 15]], INK); pg(x, [[c + r, oy + 9], [c + r + 2, oy + 15], [c + r, oy + 15]], STEEL_SH);
+        pg(x, [[c - r, oy + 33], [c - r - 3, oy + 44], [c - r, oy + 44]], INK); pg(x, [[c + r, oy + 33], [c + r + 3, oy + 44], [c + r, oy + 44]], STEEL_SH);
+      }
+      if (booster) {
+        var b = oy + (ship ? 44 : 0);
+        box(x, c - r, b, 2 * r, 4, "#3a3c48"); [1, 3, 5, 7].forEach(function (q) { box(x, c - r + q, b + 1, 1, 2, "#6a6f80"); });   /* hot-staging ring */
+        box(x, c - r, b + 4, 2 * r, 52, STEEL); box(x, c + r - 2, b + 4, 2, 52, STEEL_SH); box(x, c - 1, b + 4, 1, 52, STEEL_HI);
+        box(x, c - r - 2, b + 5, 2, 4, "#3a3c48"); box(x, c + r, b + 5, 2, 4, "#3a3c48");     /* grid fins */
+        box(x, c - r, b + 56, 2 * r, 6, "#5a5f6e"); [1.5, 4.5, 7.5].forEach(function (q) { box(x, c - r + q - .5, b + 60, 2, 2, "#3a3c48"); });
+      }
+    }
+    function falcon(x, center, sides, yoff) {                         /* Falcon Heavy: three cores, a fairing on the middle one */
+      function core(X, top, cone) {
+        if (cone) pg(x, [[X + 3, top - 8], [X + 6, top], [X, top]], "#f2f2f2");
+        box(x, X, top, 6, 114 - top - yoff, "#f2f2f2"); box(x, X + 4, top, 2, 114 - top - yoff, "#c9ccd6");
+        box(x, X, 38 - yoff, 6, 6, INK);                                 /* interstage */
+        box(x, X - 1, 46 - yoff, 1, 3, INK); box(x, X + 6, 46 - yoff, 1, 3, INK);   /* grid fins */
+        box(x, X, 114 - yoff, 6, 6, "#3a3c48"); box(x, X - 1, 112 - yoff, 1, 6, INK); box(x, X + 6, 112 - yoff, 1, 6, INK);   /* legs */
+      }
+      if (sides) { core(0, 38 - yoff, true); core(16, 38 - yoff, true); }
+      if (center) {
+        x.fillStyle = "#f2f2f2"; x.beginPath(); x.moveTo(11, 0); x.quadraticCurveTo(15.5, 3, 15, 10); x.lineTo(15, 16); x.lineTo(7, 16); x.lineTo(7, 10); x.quadraticCurveTo(6.5, 3, 11, 0); x.fill();
+        box(x, 13, 3, 2, 13, "#c9ccd6"); box(x, 8, 16, 6, 22, "#f2f2f2"); box(x, 12, 16, 2, 22, "#c9ccd6"); core(8, 44, false);
+      }
+    }
+    function paintCraft(f) {
+      SS = paint(12, 106, function (x) { starship(x, 0, true, true); });
+      BO = paint(12, 62, function (x) { starship(x, 0, false, true); });
+      FH = paint(22, 120, function (x) { falcon(x, true, true, 0); });
+      FHC = paint(22, 120, function (x) { falcon(x, true, false, 0); });
+      FHS = paint(8, 90, function (x) {                              /* one side booster, the same as on the full stack */
+        pg(x, [[4, 0], [7, 8], [1, 8]], "#f2f2f2"); box(x, 1, 8, 6, 76, "#f2f2f2"); box(x, 5, 8, 2, 76, "#c9ccd6"); box(x, 1, 8, 6, 6, INK);
+        box(x, 0, 16, 1, 3, INK); box(x, 7, 16, 1, 3, INK); box(x, 1, 84, 6, 6, "#3a3c48"); box(x, 0, 82, 1, 6, INK); box(x, 7, 82, 1, 6, INK); });
+      ST = paint(96, 36, function (x) {                               /* the station: truss, four pairs of wings, modules */
+        [8, 22, 64, 78].forEach(function (X) {
+          [[2, 14], [21, 14]].forEach(function (w) { box(x, X, w[0], 11, w[1], "#c8963a"); for (var q = 1; q < 11; q += 3) box(x, X + q, w[0], 1, w[1], "#8a6424"); box(x, X, w[0], 11, 1, "#e0b860"); });
+          box(x, X + 5, 2, 1, 32, "#6a6f80");
+        });
+        box(x, 2, 17, 92, 3, "#9aa0b0"); box(x, 2, 17, 92, 1, "#c9ccd6"); for (var q = 4; q < 94; q += 4) box(x, q, 18, 1, 2, "#6a6f80");
+        box(x, 30, 21, 4, 10, "#f2f2f2"); box(x, 62, 6, 4, 10, "#f2f2f2");
+        rr(x, 36, 14, 24, 8, 3); x.fillStyle = "#e6e8ee"; x.fill(); box(x, 36, 20, 24, 2, "#b8bcc8");
+        rr(x, 44, 6, 8, 24, 3); x.fillStyle = "#e6e8ee"; x.fill(); box(x, 50, 6, 2, 24, "#b8bcc8");
+        [40, 48, 56].forEach(function (X) { box(x, X, 14, 1, 8, "#b8bcc8"); });
+      });
+      ST.blink = [48 * f, 8 * f];
+      HU = paint(76, 34, function (x) {                               /* Hubble: the tube, the aperture door open, two wings */
+        [[1, 9], [25, 9]].forEach(function (w) { box(x, 22, w[0], 28, w[1] - 1, "#2a3a6a"); for (var q = 22; q < 50; q += 4) box(x, q, w[0], 1, w[1] - 1, "#c8963a"); box(x, 22, w[0], 28, 1, "#c8963a"); });
+        box(x, 35, 9, 2, 3, "#8a8f9e"); box(x, 35, 22, 2, 3, "#8a8f9e");
+        rr(x, 10, 11, 54, 12, 4); x.fillStyle = "#c9ccd6"; x.fill();
+        box(x, 12, 12, 50, 1, "#eceef3"); box(x, 10, 20, 54, 2, "#9aa0b0"); box(x, 10, 11, 20, 12, "#a9adb8"); box(x, 30, 11, 2, 12, "#3a3c48");
+        box(x, 6, 12, 4, 10, "#8a8f9e");
+        pg(x, [[63, 11], [72, 5], [74, 7], [65, 12]], "#9aa0b0"); box(x, 62, 12, 2, 10, INK);
+      });
+      HU.blink = [66 * f, 15 * f];
+      RD = paint(54, 24, function (x) {                               /* the roadster, and its driver in a white suit */
+        x.fillStyle = "#f0f0f4"; x.beginPath(); x.arc(24, 6, 4, 0, 7); x.fill(); box(x, 25, 5, 3, 2, INK);
+        box(x, 21, 9, 8, 6, "#f0f0f4"); pg(x, [[28, 10], [35, 12], [34, 14], [27, 13]], "#e0e2ea");
+        pg(x, [[2, 15], [10, 13], [18, 13], [22, 11], [34, 11], [42, 13], [52, 15], [52, 19], [2, 19]], "#c8202a");
+        box(x, 4, 14, 46, 1, "#ff4a4a"); box(x, 2, 18, 50, 1, "#8a1418"); pg(x, [[30, 9], [34, 9], [35, 11], [31, 11]], "#2a3a5a");
+        [11, 43].forEach(function (X) { x.fillStyle = "#1a1a22"; x.beginPath(); x.arc(X, 19, 3.6, 0, 7); x.fill(); box(x, X - 1, 18, 2, 2, "#8a8f9e"); });
+      });
+      CA = paint(28, 26, function (x) {                               /* a capsule home from orbit: scorched shield down */
+        pg(x, [[10, 2], [18, 2], [25, 20], [3, 20]], "#e9ebf2"); pg(x, [[16, 2], [18, 2], [25, 20], [21, 20]], "#c9ccd6");
+        box(x, 11, 0, 6, 3, "#8a8f9e"); box(x, 10, 8, 2, 2, INK); box(x, 15, 8, 2, 2, INK);
+        rr(x, 2, 19, 24, 6, 2); x.fillStyle = "#2a2a33"; x.fill(); box(x, 3, 19, 22, 1, "#5a3a2a");
+      });
+      CH = paint(34, 20, function (x) {                               /* a main chute: orange and white gores */
+        for (var g = 0; g < 6; g++) {
+          x.fillStyle = g % 2 ? "#f2f2f2" : "#ff8a3d"; x.beginPath(); x.moveTo(17, 19);
+          x.arc(17, 19, 16, Math.PI + g * Math.PI / 6, Math.PI + (g + 1) * Math.PI / 6); x.closePath(); x.fill();
+        }
+        box(x, 1, 18, 32, 1, "#c96a2a"); box(x, 16, 3, 2, 1, "#c9ccd6");
+      });
+      var ship = paint(34, 26, function (x) {                         /* the escort: a sleek little fighter, nose right */
+        pg(x, [[20, 10], [10, 1], [6, 1], [12, 10]], "#8a93a8"); pg(x, [[20, 16], [10, 25], [6, 25], [12, 16]], "#6a7488");
+        pg(x, [[33, 13], [26, 10], [10, 10], [4, 11], [4, 15], [10, 16], [26, 16]], "#d8dce6");
+        box(x, 6, 13, 22, 1, "#3a5ba8"); x.fillStyle = "#7ff3ff"; x.beginPath(); x.ellipse(24, 11.6, 3.5, 1.6, 0, 0, 7); x.fill();
+        box(x, 2, 11, 3, 4, "#3a3f52"); box(x, 0, 12, 2, 2, "#ff3ea5");
+      });
+      shipImg = ship;
+      alienImg = paint(22, 18, function (x) {                         /* a visitor: three eyes, a dome, wiggly legs */
+        [5, 9, 13, 17].forEach(function (X, i) { box(x, X, 14, 1.4, 3 + (i % 2), "#2fa04a"); });
+        x.fillStyle = "#2fa04a"; x.beginPath(); x.ellipse(11, 11, 9, 5, 0, 0, 7); x.fill();
+        x.fillStyle = "#5ef07a"; x.beginPath(); x.ellipse(11, 9.5, 9, 4.5, 0, 0, 7); x.fill();
+        x.fillStyle = "#7dff9a"; x.beginPath(); x.ellipse(11, 5.5, 6, 4.5, 0, 0, 7); x.fill();
+        [[7, 7], [11, 5], [15, 7]].forEach(function (e) { x.fillStyle = "#0d0820"; x.beginPath(); x.arc(e[0], e[1], 1.6, 0, 7); x.fill(); box(x, e[0] - 1, e[1] - 1, 1, 1, "#ffffff"); });
+      });
+      /* and the aircraft, nose right */
+      var dc3 = paint(100, 30, function (x) {                         /* Douglas DC-3: bare metal, a blue cheatline, round engines */
+        pg(x, [[12, 10], [6, 1], [1, 1], [4, 10]], "#b8bcc8"); box(x, 2, 2, 1, 8, "#9aa0b0");
+        pg(x, [[97, 14], [94, 10], [86, 8], [40, 8], [14, 10], [6, 12], [6, 15], [14, 17], [40, 19], [86, 19], [94, 17]], "#c9ccd6");
+        pg(x, [[94, 10], [86, 8], [40, 8], [14, 10], [12, 12], [96, 12]], "#e3e6ec");
+        box(x, 10, 13, 84, 1, "#2a4f9a"); box(x, 2, 13, 13, 1, "#9aa0b0");
+        for (var q = 46; q < 84; q += 5) box(x, q, 10, 2, 2, "#2a3a5a"); pg(x, [[88, 10], [92, 10], [93, 12], [88, 12]], "#2a3a5a");
+        box(x, 46, 17, 26, 2, "#9aa0b0"); rr(x, 66, 15, 15, 6, 2.5); x.fillStyle = "#b8bcc8"; x.fill(); box(x, 79, 15, 2, 6, "#6a6f80");
+        for (var y = 10; y < 27; y += 2) box(x, 83, y, 1, 1, "#8a8f9e");
+      });
+      var spit = paint(64, 22, function (x) {                         /* Supermarine Spitfire: camouflage, roundel, fin flash */
+        pg(x, [[8, 10], [4, 2], [1, 3], [2, 10]], "#4a5a3a"); box(x, 3, 4, 1, 5, "#c0303a"); box(x, 4, 4, 1, 5, "#f2f2f2"); box(x, 5, 5, 1, 4, "#2a3a7a");
+        pg(x, [[62, 11], [58, 8], [50, 7], [26, 8], [6, 10], [2, 10], [2, 12], [6, 12], [26, 14], [50, 15], [58, 14]], "#a8b8a8");
+        pg(x, [[58, 8], [50, 7], [26, 8], [6, 10], [2, 11], [60, 11]], "#4a5a3a");
+        [[16, 9, 6], [34, 8, 7], [48, 8, 5]].forEach(function (b) { box(x, b[0], b[1], b[2], 2, "#6a5a3a"); });
+        x.fillStyle = "#9ac8e8"; x.beginPath(); x.ellipse(37, 7, 5, 2.4, 0, Math.PI, 0); x.fill(); box(x, 36, 5, 1, 2, "#3a3a3a");
+        x.fillStyle = "#2a3a7a"; x.beginPath(); x.arc(22, 11, 3, 0, 7); x.fill(); x.fillStyle = "#f2f2f2"; x.beginPath(); x.arc(22, 11, 2, 0, 7); x.fill(); x.fillStyle = "#c0303a"; x.beginPath(); x.arc(22, 11, 1.1, 0, 7); x.fill();
+        box(x, 30, 13, 20, 2, "#7a8a7a"); box(x, 36, 15, 6, 2, "#5a6a5a"); box(x, 58, 9, 4, 4, "#3a3a3a");
+        for (var y = 2; y < 21; y += 2) box(x, 63, y, 1, 1, "#8a8f9e");
+      });
+      var tomcat = paint(104, 26, function (x) {                      /* F-14 Tomcat: twin tails, long nose, swept wing */
+        pg(x, [[18, 11], [9, 0], [4, 0], [6, 11]], "#6a7488");
+        pg(x, [[22, 11], [13, 0], [8, 0], [10, 11]], "#8a93a8");
+        pg(x, [[103, 15], [96, 12], [84, 10], [70, 9], [40, 10], [14, 11], [6, 12], [6, 17], [30, 18], [70, 18], [88, 17], [96, 16]], "#8a93a8");
+        pg(x, [[96, 12], [84, 10], [70, 9], [40, 10], [14, 11], [10, 13], [98, 13]], "#b8bcc8");
+        pg(x, [[76, 10], [80, 7], [86, 8], [89, 10]], "#2a3a5a"); box(x, 58, 13, 7, 4, "#3a3f52");
+        pg(x, [[58, 16], [30, 22], [24, 22], [44, 16]], "#7a8398"); pg(x, [[16, 15], [2, 18], [10, 18]], "#7a8398");
+        box(x, 3, 13, 4, 4, "#3a3c48"); box(x, 100, 14, 3, 1, "#6a6f80");
+      });
+      var seaking = paint(92, 40, function (x) {                      /* Sikorsky SH-3 Sea King: boat hull, sponsons, tail boom */
+        pg(x, [[30, 14], [6, 8], [4, 12], [26, 23]], "#6a7488"); pg(x, [[8, 10], [4, 1], [1, 2], [3, 12]], "#6a7488");
+        pg(x, [[88, 22], [86, 16], [78, 13], [30, 13], [24, 15], [24, 30], [80, 30], [88, 26]], "#6a7488");
+        pg(x, [[86, 16], [78, 13], [30, 13], [26, 16], [87, 18]], "#8a93a8"); box(x, 24, 26, 64, 4, "#4a5266");
+        rr(x, 40, 8, 30, 7, 2.5); x.fillStyle = "#6a7488"; x.fill(); box(x, 40, 10, 3, 3, "#3a3f52");
+        box(x, 54, 4, 4, 5, "#3a3c48");
+        pg(x, [[80, 15], [86, 16], [87, 20], [80, 20]], "#2a3a5a"); for (var q = 34; q < 72; q += 8) box(x, q, 18, 3, 3, "#2a3a5a");
+        box(x, 50, 17, 1, 9, "#4a5266");
+        x.fillStyle = "#4a5266"; x.beginPath(); x.ellipse(42, 30, 8, 3, 0, 0, 7); x.fill();
+        box(x, 30, 31, 1, 2, "#3a3c48"); box(x, 72, 31, 1, 2, "#3a3c48");
+      });
+      AIR = {
+        dc3: { img: [dc3, flipX(dc3)], v: 1.6, line: "DC-3 down. Ninety years of flying, undone in one click." },
+        spitfire: { img: [spit, flipX(spit)], v: 2.6, line: "Spitfire down. Somewhere a museum curator just felt that." },
+        tomcat: { img: [tomcat, flipX(tomcat)], v: 4.6, jet: [0, 15 * f], line: "Tomcat down. Bingo fuel, apparently." },
+        seaking: { img: [seaking, flipX(seaking)], v: 1.1, rotor: [56 * f, 4 * f, 46 * f], tail: [3 * f, 4 * f, 6 * f], line: "Sea King down. It was only out looking for a ship." }
+      };
     }
     rebuildShuttle();
     /* engine fire, in fine pixels: a white core, then yellow and orange; the main engines run blue-white */
@@ -600,7 +753,7 @@
 
     /* ---- one scene per visit: the patrol (ship vs aliens), a launch,
        a shuttle landing, the station going over, or a capsule coming home */
-    var SCENE_LIST = ["patrol", "launch", "landing", "station", "capsule", "shuttle-launch", "falcon-heavy", "hubble", "roadster"];
+    var SCENE_LIST = ["patrol", "launch", "landing", "station", "capsule", "shuttle-launch", "falcon-heavy", "hubble", "roadster", "dc3", "spitfire", "tomcat", "seaking"];
     var asked = (location.search.match(/[?&]scene=([\w-]+)/) || [])[1];     /* ?scene=launch picks one */
     var scene = SCENE_LIST.indexOf(asked) >= 0 ? asked : SCENE_LIST[Math.floor(Math.random() * SCENE_LIST.length)];
     sky.dataset.scene = scene;
@@ -616,15 +769,12 @@
       else if (k === "station") { Q.x = -9999; Q.wait = wait; }
       else if (k === "hubble") { U.x = -9999; U.first = false; U.wait = wait; }
       else if (k === "roadster") { Z.x = -9999; Z.first = false; Z.wait = wait; }
+      else if (AIR[k]) { A.t = -wait; A.trail = []; }
       return k;
     }
     game.next = nextCraft;
     var horizon = function () { return H - (parseFloat(css("--counterH")) || 92) - 40; };
     var big = 3;
-    var SS = sprite("starship", big), BO = sprite("booster", big), ST = sprite("station", big),
-        CA = sprite("capsule", big), CH = sprite("chute", big),
-        FH = sprite("falconheavy", big), FHC = sprite("fhcenter", big), FHS = sprite("fhside", big),
-        HU = sprite("hubble", big), RD = sprite("roadster", big);
     var smoke = [];
     function puff(x, y, n, col) { for (var i = 0; i < n; i++) smoke.push({ x: x + rnd(-6, 6), y: y, vx: rnd(-.6, .6), vy: rnd(.2, 1.2), life: rnd(30, 70), c: col }); }
     function drawSmoke(dt) {
@@ -632,17 +782,11 @@
         p.x += p.vx * dt; p.y += p.vy * dt; p.vy *= .98; p.life -= dt;
         blow(p, p.x, p.y, dt);
         ctx.globalAlpha = Math.max(0, Math.min(.8, p.life / 60)); ctx.fillStyle = p.c;
-        ctx.fillRect(Math.round(p.x / P) * P, Math.round(p.y / P) * P, P * 2, P * 2);
+        var b = SHUT.fp; ctx.fillRect(Math.round(p.x / b) * b, Math.round(p.y / b) * b, b * 2, b * 2);
         ctx.globalAlpha = 1; return p.life > 0;
       });
     }
-    function flame(x, y, len) {
-      for (var i = 0; i < len; i++) {
-        ctx.fillStyle = i < 2 ? "#ffffff" : i < len * .5 ? "#ffd36e" : "#ff8a3d";
-        var w = Math.max(1, 3 - Math.floor(i / 3)) + (Math.random() < .4 ? 1 : 0);
-        ctx.fillRect(x - w * P / 2, y + i * P, w * P, P);
-      }
-    }
+    function flame(x, y, len) { fineFlame(x, y, Math.round(len * 1.5), 3); }   /* in the city's pixels, like the rest */
     var L = { t: -2, x: 0, sep: false, bx: 0, by: 0, bvy: 0 };          /* timers start near zero: something flies as the page opens */
     var PLASMA = ["#fff4e0", "#ffc06b", "#ff6fae", "#9a5cff"];
     function drawPlasma(dt) {
@@ -662,7 +806,7 @@
     }
     var D = { t: -2 }, Q = { x: -200, y: 0, first: true }, C = { t: -2 };
     wind.blow = blow;
-    game.craft = function () { return { ship: ship, launch: L, shuttle: D, station: Q, capsule: C, rocket: R, hubble: U, roadster: Z, aliens: aliens }; };
+    game.craft = function () { return { ship: ship, launch: L, shuttle: D, station: Q, capsule: C, rocket: R, hubble: U, roadster: Z, aliens: aliens, air: A }; };
     /* a rocket that climbs, drops what it doesn't need, and keeps going */
     var R = { t: -2 };
     function climb(dt, full, rest, drops, sepAt, fire) {
@@ -689,6 +833,38 @@
       if (R.y < -img.height - 40 && R.parts.every(function (q) { return q.y > H; })) nextCraft(rnd(400, 900));
     }
     var U = { x: -300, y: 0, first: true }, Z = { x: -300, y: 0, rot: 0, first: true };
+    var A = { t: -2, trail: [] };                                     /* whichever aircraft is crossing */
+    /* an aircraft crossing the sky at a steady height: in from one side, out the other. The jet leaves a
+       trail and lights its burners; the helicopter's rotors turn. */
+    function flyby(k, dt, t) {
+      var d = AIR[k];
+      if (A.t < 0) {
+        A.t += dt;
+        if (A.t >= 0) { A.dir = Math.random() < .5 ? 1 : -1; var w0 = d.img[0].width; A.x = A.dir > 0 ? -w0 - 10 : W + 10; A.y = rnd(H * .1, H * .38); A.trail = []; }
+        return;
+      }
+      A.t += dt;
+      var img = d.img[A.dir > 0 ? 0 : 1];
+      A.x += A.dir * d.v * dt; A.y += Math.sin(A.t / 60) * .12 * dt;
+      blow(A, A.x + img.width / 2, A.y + img.height / 2, dt);
+      var fp = SHUT.fp;
+      if (d.jet) {                                                    /* a vapour trail, and the burners */
+        var tx = A.dir > 0 ? A.x + d.jet[0] : A.x + img.width - d.jet[0], ty = A.y + d.jet[1];
+        A.trail.push({ x: tx, y: ty, life: 90 });
+        A.trail = A.trail.filter(function (p) { p.life -= dt; ctx.globalAlpha = Math.max(0, p.life / 90) * .5; ctx.fillStyle = "#efe4ff"; ctx.fillRect(Math.round(p.x / fp) * fp, Math.round(p.y / fp) * fp, fp, fp); return p.life > 0; });
+        ctx.globalAlpha = 1;
+        for (var i = 0; i < 4 + Math.floor(Math.random() * 3); i++) { ctx.fillStyle = i < 2 ? "#bfe6ff" : "#ff8a3d"; ctx.fillRect(Math.round(tx - A.dir * (i + 1) * fp), Math.round(ty - fp / 2), fp, fp); }
+      }
+      ctx.drawImage(img, Math.round(A.x), Math.round(A.y));
+      if (d.rotor) {                                                  /* five blades seen edge-on: they shorten and lengthen as they turn */
+        var hx = A.dir > 0 ? A.x + d.rotor[0] : A.x + img.width - d.rotor[0], hy = A.y + d.rotor[1], L = d.rotor[2], a = t / 40;
+        ctx.fillStyle = "#2a2a33";
+        [0, 1.257, 2.513].forEach(function (o) { var l = Math.abs(Math.cos(a + o)) * L; ctx.fillRect(Math.round(hx - l), Math.round(hy), Math.round(l * 2), fp); });
+        var rx = A.dir > 0 ? A.x + d.tail[0] : A.x + img.width - d.tail[0], ry = A.y + d.tail[1], tl = Math.abs(Math.cos(t / 12)) * d.tail[2];
+        ctx.fillRect(Math.round(rx), Math.round(ry - tl), fp, Math.round(tl * 2));
+      }
+      if ((A.dir > 0 && A.x > W + 20) || (A.dir < 0 && A.x < -img.width - 20)) nextCraft(rnd(300, 700));
+    }
     var SCENES = {
       "shuttle-launch": function (dt) {
         climb(dt, STK, STC, [                                         /* both boosters off the tank's middle: one was hidden behind */
@@ -702,6 +878,10 @@
           { img: FHS, dx: FH.width / 2 - FHS.width / 2, dy: FH.height - FHS.height, vx: .5, vr: 0, burn: true }
         ], .42);
       },
+      dc3: function (dt, t) { flyby("dc3", dt, t); },
+      spitfire: function (dt, t) { flyby("spitfire", dt, t); },
+      tomcat: function (dt, t) { flyby("tomcat", dt, t); },
+      seaking: function (dt, t) { flyby("seaking", dt, t); },
       hubble: function (dt, t) {
         if (U.wait > 0) { U.wait -= dt; return; }
         if (U.x > W + 200 && U.x < 9000) { nextCraft(rnd(300, 700)); return; }
@@ -709,7 +889,7 @@
         U.x += .3 * dt;
         blow(U, U.x + HU.width / 2, U.y + HU.height / 2, dt);
         ctx.drawImage(HU, U.x, U.y);
-        if (Math.floor(t / 900) % 2) { ctx.fillStyle = "#7ff3ff"; ctx.fillRect(U.x + 21 * big, U.y + 4 * big, big, big); }
+        if (Math.floor(t / 900) % 2) { ctx.fillStyle = "#7ff3ff"; ctx.fillRect(U.x + HU.blink[0], U.y + HU.blink[1], SHUT.fp, SHUT.fp); }
       },
       roadster: function (dt) {
         if (Z.wait > 0) { Z.wait -= dt; return; }
@@ -793,7 +973,7 @@
         Q.x += .45 * dt;
         blow(Q, Q.x + ST.width / 2, Q.y + ST.height / 2, dt);
         ctx.drawImage(ST, Q.x, Q.y);
-        if (Math.floor(t / 700) % 2) { ctx.fillStyle = "#ff4f6d"; ctx.fillRect(Q.x + 13 * big, Q.y + 7 * big, big, big); }
+        if (Math.floor(t / 700) % 2) { ctx.fillStyle = "#ff4f6d"; ctx.fillRect(Q.x + ST.blink[0], Q.y + ST.blink[1], SHUT.fp, SHUT.fp); }
       },
       capsule: function (dt, t) {
         if (C.t < 0) { C.t += dt; if (C.t >= 0) { C.x = rnd(W * .2, W * .8); C.y = -80; } return; }
@@ -812,27 +992,27 @@
       spawnT -= dt / 60;
       if (spawnT <= 0) { spawnAlien(); spawnT = rnd(5, 11); }
       ship.x += ship.vx * dt;
-      blow(ship, ship.x + 18, ship.y + 18, dt);
+      blow(ship, ship.x + shipImg.width / 2, ship.y + shipImg.height / 2, dt);
       if (ship.x > W + 80) { ship.x = -80; ship.y = Math.round(rnd(H * .18, H * .42)); }
       ship.cool -= dt;
       var target = aliens.filter(function (a) { return a.x > ship.x && Math.abs(a.y - ship.y) < 30; })[0];
-      if (target && ship.cool <= 0 && target.x - ship.x < 420) { bolts.push({ x: ship.x + 38, y: ship.y + 18 }); ship.cool = 28; }
+      if (target && ship.cool <= 0 && target.x - ship.x < 420) { bolts.push({ x: ship.x + shipImg.width, y: ship.y + shipImg.height / 2 }); ship.cool = 28; }
       if (target) ship.y += Math.sign(target.y - ship.y) * .4 * dt;
 
       bolts = bolts.filter(function (b) {
         b.x += 7 * dt;
-        ctx.fillStyle = "#ff8fd0"; ctx.fillRect(b.x, b.y, 10, P);
+        ctx.fillStyle = "#ff8fd0"; ctx.fillRect(b.x, b.y, 12, SHUT.fp);
         for (var i = 0; i < aliens.length; i++) {
           var a = aliens[i];
-          if (b.x > a.x && b.x < a.x + 27 && b.y > a.y - 2 && b.y < a.y + 23) { explode(a); aliens.splice(i, 1); return false; }
+          if (b.x > a.x && b.x < a.x + alienImg.width && b.y > a.y - 3 && b.y < a.y + alienImg.height + 3) { explode(a); aliens.splice(i, 1); return false; }
         }
         return b.x < W;
       });
 
       aliens = aliens.filter(function (a) {
         a.bob += .05 * dt; a.x += a.vx * dt;
-        blow(a, a.x + 13, a.y + 10, dt);
-        ctx.drawImage(alienImg, Math.round(a.x / P) * P, Math.round((a.y + Math.sin(a.bob) * 4) / P) * P);
+        blow(a, a.x + alienImg.width / 2, a.y + alienImg.height / 2, dt);
+        ctx.drawImage(alienImg, Math.round(a.x), Math.round(a.y + Math.sin(a.bob) * 4));
         return a.x > -40;
       });
 
@@ -849,7 +1029,7 @@
       ctx.translate(Math.round(ship.x) + shipImg.width / 2, Math.round(ship.y) + shipImg.height / 2);
       if (ship.roll > 0) { ship.roll -= dt; ctx.scale(1, Math.cos((1 - ship.roll / 40) * Math.PI * 2)); }
       ctx.drawImage(shipImg, -shipImg.width / 2, -shipImg.height / 2);
-      if (Math.floor(t / 90) % 2) { ctx.fillStyle = "#ffd36e"; ctx.fillRect(-shipImg.width / 2 - P, -P / 2, P, P); }
+      if (Math.floor(t / 90) % 2) { var fp = SHUT.fp; ctx.fillStyle = "#ffd36e"; ctx.fillRect(-shipImg.width / 2 - fp, -fp / 2, fp, fp); }
       ctx.restore();
 
     }

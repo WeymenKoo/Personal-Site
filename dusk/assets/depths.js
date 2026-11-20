@@ -412,7 +412,7 @@
     var d = DSV[k], span = Z.stTop - Z.sea;
     var top = Math.max(Z.sea + 20, Math.min(Z.stTop - 120, scrollY - d.h * P - 20));
     var v = { k: k, x: d.cable ? rnd(.08, .85) * VW : rnd(.05, .85) * VW, y: top, dir: Math.random() < .5 ? 1 : -1, v: rnd(.12, .3),
-              state: "sink", mode: "hover", t: 0, arm: 0, find: null, imp: 0 };
+              state: "sink", mode: "hover", t: 0, arm: 0, find: null, imp: 0, ph: rnd(0, 6.28) };
     v.ty = Math.min(Z.stTop - 90, top + rnd(140, Math.max(160, innerHeight * .7)));
     if (settled) { v.y = v.ty = Z.sea + rnd(.1, .85) * span; v.state = "live"; }
     else if (!d.cable) {                                              /* cruise in from a side, at a depth on screen */
@@ -515,7 +515,7 @@
       }
       if (v.state !== "implode") shove(v, v.x + wpx / 2, v.y + hpx / 2, dt, d.cable);
       v.box = { x: v.x, y: v.y - 6, w: wpx, h: hpx + 12 };
-      var y = ay(v.y + (v.state === "live" ? Math.sin(t / 90 + v.x) * 4 : 0)), x = ax(v.x);
+      var y = ay(v.y + (v.state === "live" ? Math.sin(t / 90 + v.ph) * 4 : 0)), x = ax(v.x);   /* bob on its own clock, not its position */
       if (d.cable) {                                                /* the bathysphere hangs from its cable */
         ctx.globalAlpha = inColumn(v.x + wpx / 2) ? FADE : .8;
         rect(x + (d.w >> 1) - 1, Math.max(0, ay(Z.sea)), 1, Math.max(0, y - Math.max(0, ay(Z.sea))), "#9aa0b0");
@@ -547,12 +547,12 @@
       return true;
     });
   }
-  /* push a vessel away from the cursor, softly, by how close it is (the same feel as the sky's craft) */
+  /* push a vessel away from the cursor: exactly the sky's craft physics (fx.js blow: R 170, K .55) */
   function shove(o, cx, cy, dt, swayOnly) {
     if (!cur.in) return;
     var dx = cx - cur.x, dy = cy - cur.y, d = Math.sqrt(dx * dx + dy * dy), Rr = 170;
     if (d >= Rr || d < .001) return;
-    var f = 1 - d / Rr; f = f * f * 1.4 * dt;
+    var f = 1 - d / Rr; f = f * f * .55 * dt;
     o.x += dx / d * f * 2.2;
     if (!swayOnly) { o.y += dy / d * f * 1.6; if (o.ty != null) o.ty += dy / d * f * 1.6; }
   }
