@@ -251,9 +251,11 @@ load is logged there with `[entries]` and the file path.
   in the `prefers-color-scheme: light` block under it. The city has a
   picture for each: `assets/img/city-dark.png`, `city-light.png`.
 - **The city.** Drawn by `tools/city/build_city.py` (run it to redraw):
-  the Transamerica Pyramid, Petronas Towers, Bitexco Tower and Pacific
-  Central Station over a neon district, anchored to the right edge so the
-  towers stay clear of the title. `city-lights-a.png` / `-b.png` hold just
+  Marina Bay Sands, Pacific Central Station, Tokyo Tower, Elizabeth Tower,
+  Bitexco Tower, the Transamerica Pyramid and the Petronas Towers over a neon
+  district. It is one 4800 px wide banner, anchored to the right edge and
+  never repeated: narrower screens crop more off the left, so the landmarks
+  sit in the right half and stay clear of the title. `city-lights-a.png` / `-b.png` hold just
   the aviation lights; `site.css` blinks them (`@keyframes av`). The SOS
   window and the jazz club's button are placed by `TILE` in `fx.js`
   (`build_city.py --sos` prints the numbers if the picture changes).

@@ -437,14 +437,18 @@ test.describe('as shipped', () => {
     expect(await page.evaluate(() => window.depths.score.hits)).toBe(h1);
   });
 
-  test('the city sits to the right, and its aviation lights blink', async ({ page }) => {
+  test('the city is one banner anchored to the right, never repeated, and its aviation lights blink', async ({ page }) => {
     await open(page, server.url);
     const s = await page.locator('.city').evaluate(e => ({
       pos: getComputedStyle(e).backgroundPositionX,
+      rep: getComputedStyle(e).backgroundRepeat, lrep: getComputedStyle(e, '::before').backgroundRepeat,
       a: getComputedStyle(e, '::before').animationName, b: getComputedStyle(e, '::after').animationName,
       ai: getComputedStyle(e, '::before').backgroundImage, bi: getComputedStyle(e, '::after').backgroundImage,
     }));
-    expect(s.pos).toBe('100%');
+    expect(s.pos.split(',')[0].trim()).toBe('100%');
+    // one banner, cropped by the screen: never tiled
+    expect(s.rep.split(',')[0].trim()).toBe('no-repeat');
+    expect(s.lrep).toBe('no-repeat');
     expect([s.a, s.b]).toEqual(['av', 'av']);
     expect(s.ai).toContain('city-lights-a.png');
     expect(s.bi).toContain('city-lights-b.png');
