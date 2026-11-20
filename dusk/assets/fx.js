@@ -1110,9 +1110,10 @@
   /* ================================================================
      THE CITY: the picture is anchored to the right edge (so the towers
      stand clear of the title). These place things on it, in image pixels
-     of the 2400x570 tile (see tools/city/build_city.py --sos).
+     of the 4800x570 banner (see tools/city/build_city.py --sos). The banner
+     never repeats: a narrower screen crops more off its left.
      ================================================================ */
-  var TILE = { w: 2400, h: 570, sos: [1998, 208], jazz: [2128, 440, 2212, 524] };
+  var TILE = { w: 4800, h: 570, sos: [4398, 208], jazz: [4528, 440, 4612, 524] };
   function cityPoint(ix, iy) {
     var city = $(".city"); if (!city) return null;
     var s = city.getBoundingClientRect().height / TILE.h;

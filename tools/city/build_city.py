@@ -2,14 +2,17 @@
 """
 build_city.py: draws the title-screen skyline, dusk/assets/img/city-{dark,light}.png.
 
-Drawn at 1200x285 "art pixels" and scaled 2x (nearest) to 2400x570, so every
+Drawn at 2400x285 "art pixels" and scaled 2x (nearest) to 4800x570, so every
 art pixel is a 2x2 block on the page. The sky is transparent (the CSS gradient
-shows through) and the tile wraps left-to-right for background-repeat:x.
+shows through). It is one banner, not a tile: the page anchors it to the right
+edge and never repeats it, so a narrower screen just crops more off the left.
 
-Left to right: a low district (it sits under the title text, so it's kept short),
-  Pacific Central Station (Vancouver) · Bitexco Financial Tower (Saigon) ·
+The right half (art x >= X0) is what most screens see. Left to right in it:
+  a low district (under the title text, so it's kept short) ·
+  Marina Bay Sands (Singapore) · Pacific Central Station (Vancouver) ·
+  Tokyo Tower · Elizabeth Tower (London) · Bitexco Financial Tower (Saigon) ·
   Transamerica Pyramid (SF) · Petronas Twin Towers (KL) · The Low Pass jazz club.
-The page anchors the tile to the right edge, so the towers stand clear of the title.
+The left half is more of the district, for wide screens.
 
 Also writes city-lights-a.png / -b.png: just the aviation obstruction lights, lit,
 in two groups that site.css blinks out of step (lights on one building share a group).
@@ -24,13 +27,14 @@ from pathlib import Path
 
 from PIL import Image, ImageFilter
 
-W, H = 1200, 285
+W, H = 2400, 285
+X0 = 1200            # the right half starts here; the landmarks are placed from it
 SCALE = 2
 GROUND = 262          # buildings stand on this row
 OUT = Path(__file__).resolve().parents[2] / "dusk" / "assets" / "img"
 
 # the SOS window (art pixels) on Petronas tower 1; fx.js multiplies by 2
-SOS = (999, 104)
+SOS = (X0 + 999, 104)
 
 PALETTES = {
     "dark": dict(
@@ -46,6 +50,8 @@ PALETTES = {
         neon_purple="#b46bff", av_off="#4a1426", brick="#2a1030", brick_hi="#3d1a45", awning_a="#ff3ea5", awning_b="#3ef2ff", door="#ffb860",
         holo_a="#ff3ea5", holo_b="#5a2fd0", holo_c="#3ef2ff",
         antenna="#2a2050", blink="#ff4d5e", tank="#1e1440",
+        tt_red="#ff5a2a", tt_white="#ffe9d6", tt_dk="#7a2416", clock="#fff1c4", clock_hand="#2a2050", gilt="#ffd36e",
+        mbs="#34307a", mbs_hi="#8f88e0", mbs_dk="#1f1a52", mbs_win="#ffd9a0", deck="#b9b2f0", deck_dk="#4b4196", palm="#3fd08a", pool="#3ef2ff",
         cable="#07040f",
         lamp_post="#100a24", lamp="#ffe2a8",
         walk="#140d2a", road="#08050f", tail="#ff4d5e", head="#fff3e0",
@@ -65,6 +71,8 @@ PALETTES = {
         neon_purple="#8a52d8", av_off="#8a4a5a", brick="#4a2a5a", brick_hi="#5e3a70", awning_a="#e8408f", awning_b="#1fb8d0", door="#ffd08a",
         holo_a="#e8408f", holo_b="#6a4fd0", holo_c="#4fd0e8",
         antenna="#3a2f66", blink="#e0404f", tank="#3a2f66",
+        tt_red="#e8502a", tt_white="#fbf3ea", tt_dk="#a83a20", clock="#fff8e0", clock_hand="#3a2f66", gilt="#d8a030",
+        mbs="#9a94d0", mbs_hi="#e4e0fa", mbs_dk="#6a62a8", mbs_win="#6f66a8", deck="#f4f0ff", deck_dk="#8d86c8", palm="#2f9a6a", pool="#4fd0e8",
         cable="#241a44",
         lamp_post="#241a44", lamp="#fff0c8",
         walk="#3a2f66", road="#2a2150", tail="#e0404f", head="#fff7e8",
@@ -106,14 +114,14 @@ class Canvas:
         return hexc(self.p[role]) if isinstance(role, str) and not role.startswith("#") else hexc(role)
 
     def dot(self, x, y, role, glow=False):
-        if 0 <= y < H:
+        if 0 <= y < H and 0 <= x < W:
             col = self.c(role)
-            self.px[x % W, y] = col
+            self.px[x, y] = col
             if glow:
-                self.glow.append((x % W, y, col))
+                self.glow.append((x, y, col))
 
     def rect(self, x0, y0, x1, y1, role, glow=False):
-        """x1/y1 exclusive; wraps horizontally."""
+        """x1/y1 exclusive; clipped to the banner."""
         for y in range(max(0, y0), min(H, y1)):
             for x in range(x0, x1):
                 self.dot(x, y, role, glow)
@@ -127,8 +135,8 @@ class Canvas:
     def light(self, x, y, group="a"):
         """An aviation obstruction light: an unlit red lens in the city, a lit one in the blink layer."""
         self.dot(x, y, "av_off")
-        if 0 <= y < H:
-            self.lights.append((x % W, y, group))
+        if 0 <= y < H and 0 <= x < W:
+            self.lights.append((x, y, group))
 
     def light_layers(self):
         """One transparent PNG per blink group: the lit lenses and their halo. CSS blinks them."""
@@ -145,8 +153,8 @@ class Canvas:
             hp = halo.load()
             for x, y in mine:                          # a small plus of lit lens, bright core
                 for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                    if 0 <= y + dy < H:
-                        hp[(x + dx) % W, y + dy] = hexc("#ff3040", 230)
+                    if 0 <= y + dy < H and 0 <= x + dx < W:
+                        hp[x + dx, y + dy] = hexc("#ff3040", 230)
                 hp[x, y] = hexc("#ffb0a8")
             out[group] = halo.resize((W * SCALE, H * SCALE), Image.NEAREST)
         return out
@@ -418,6 +426,142 @@ def bitexco(cv, rnd, cx):
     antenna(cv, round(cx - 4), top - 14, crown(round(cx - 4)), "a")
 
 
+def tokyo_tower(cv, rnd, cx):
+    """Tokyo Tower: an open lattice in orange and white bands, two decks, Foot Town between the legs."""
+    tip, mast, deck2, deck1 = 46, 92, 100, 166
+
+    def hw(y):                                   # half-width of the lattice at row y
+        if y < deck2:
+            return 2
+        return 2 + 24 * ((y - deck2) / (GROUND - deck2)) ** 2.2
+
+    def band(y):
+        return "tt_red" if ((y - tip) // 23) % 2 == 0 else "tt_white"
+
+    cv.vline(cx, tip, mast - 14, "tt_white")                      # the antenna, stepping out toward the mast
+    for y in range(mast - 14, mast):
+        cv.hline(cx - 1, cx + 1, y, band(y))
+    for y in range(mast, GROUND):
+        h, role = round(hw(y)), band(y)
+        lit = role == "tt_red"
+        thick = 2 if y > deck1 else 1
+        if y > GROUND - 24:                                       # the feet: four legs, the arch open between them
+            for a in (cx - h, cx - h // 2 - 1, cx + h // 2 - 1, cx + h - thick):
+                cv.hline(a, a + thick, y, role, glow=lit and a in (cx - h, cx + h - thick))
+            continue
+        cv.hline(cx - h, cx - h + thick, y, role, glow=lit)
+        cv.hline(cx + h - thick + 1, cx + h + 1, y, role, glow=lit)
+        if (y - mast) % 6 == 0:                                   # girders
+            cv.hline(cx - h, cx + h + 1, y, role)
+        elif h > 3:                                               # cross bracing
+            f = ((y - mast) % 6) / 6
+            for k in range(max(1, h // 5)):
+                span = 2 * h / max(1, h // 5)
+                xa = cx - h + k * span
+                cv.dot(round(xa + span * f), y, "tt_dk" if not lit else role)
+                cv.dot(round(xa + span * (1 - f)), y, "tt_dk" if not lit else role)
+    for y0, y1, pad in ((deck2 - 3, deck2 + 1, 2), (deck1 - 4, deck1 + 3, 3)):   # the two observatories
+        h = round(hw(y0)) + pad
+        cv.rect(cx - h, y0, cx + h + 1, y1, "tt_white")
+        cv.hline(cx - h, cx + h + 1, y1, "tt_dk")
+        for x in range(cx - h + 1, cx + h, 2):
+            cv.dot(x, y0 + 1, "win_warm", glow=True)
+        cv.light(cx - h, y0 - 1, "b")
+        cv.light(cx + h, y0 - 1, "b")
+    cv.rect(cx - 11, GROUND - 13, cx + 12, GROUND, "near")        # Foot Town
+    cv.hline(cx - 11, cx + 12, GROUND - 13, "near_hi")
+    for x in range(cx - 9, cx + 10, 3):
+        cv.dot(x, GROUND - 9, "near_win"); cv.dot(x, GROUND - 5, "win_warm")
+    cv.light(cx, tip - 1, "b")
+
+
+def elizabeth_tower(cv, rnd, cx):
+    """Elizabeth Tower (Big Ben): stone shaft, the lit clock, belfry, and the stepped spire."""
+    hw, top = 7, 172                                              # shaft half-width; top of the shaft
+    cv.rect(cx - hw, top, cx + hw + 1, GROUND, "stone")
+    cv.vline(cx - hw, top, GROUND, "stone_hi")
+    cv.vline(cx + hw, top, GROUND, "stone_dk")
+    for x in range(cx - hw + 2, cx + hw, 3):                      # the tall recessed panels
+        cv.vline(x, top + 3, GROUND - 6, "stone_dk")
+    for y in range(top + 8, GROUND - 10, 9):
+        for x in range(cx - hw + 3, cx + hw, 3):
+            if rnd.random() < cv.p["lit_prob"] * .6:
+                cv.dot(x, y, "stone_win")
+    cv.hline(cx - hw - 1, cx + hw + 2, GROUND - 5, "stone_hi")    # plinth
+    # the clock stage, a little proud of the shaft
+    c0, c1 = top - 19, top
+    cv.rect(cx - hw - 1, c0, cx + hw + 2, c1, "stone")
+    cv.hline(cx - hw - 2, cx + hw + 3, c1, "stone_hi")
+    cv.hline(cx - hw - 2, cx + hw + 3, c0, "stone_hi")
+    cv.vline(cx + hw + 1, c0, c1, "stone_dk")
+    cy = c0 + 10
+    for dy in range(-6, 7):
+        for dx in range(-6, 7):
+            d = dx * dx + dy * dy
+            if d <= 30:
+                cv.dot(cx + dx, cy + dy, "clock", glow=True)
+            elif d <= 42:
+                cv.dot(cx + dx, cy + dy, "gilt")
+    cv.vline(cx, cy - 5, cy + 1, "clock_hand")                    # five o'clock
+    for i in range(1, 4):
+        cv.dot(cx + i, cy + i, "clock_hand")
+    # belfry: arched openings
+    b0 = c0 - 9
+    cv.rect(cx - hw, b0, cx + hw + 1, c0, "stone")
+    cv.hline(cx - hw - 1, cx + hw + 2, b0, "stone_hi")
+    for x in range(cx - hw + 2, cx + hw, 3):
+        cv.vline(x, b0 + 3, c0 - 1, "stone_dk")
+    # the roof: a steep pyramid, the lantern, the upper spire and its finial
+    for i in range(10):
+        h = hw - i * 5 // 10
+        cv.hline(cx - h, cx + h + 1, b0 - 1 - i, "stone_dk")
+        cv.dot(cx - h, b0 - 1 - i, "stone")
+    l0 = b0 - 15
+    cv.rect(cx - 3, l0, cx + 4, b0 - 10, "stone")
+    for x in (cx - 2, cx, cx + 2):
+        cv.dot(x, l0 + 2, "gilt", glow=True)
+    cv.hline(cx - 4, cx + 5, l0, "stone_hi")
+    for i in range(9):
+        h = max(0, 3 - i // 3)
+        cv.hline(cx - h, cx + h + 1, l0 - 1 - i, "stone_dk")
+    cv.vline(cx, l0 - 15, l0 - 9, "gilt")
+    cv.light(cx, l0 - 16, "a")
+    for x in (cx - hw - 1, cx + hw + 1):                          # corner pinnacles
+        cv.vline(x, c0 - 4, c0, "stone_hi")
+
+
+def marina_bay_sands(cv, rnd, x0):
+    """Marina Bay Sands: three splayed hotel towers under the SkyPark, which overhangs at one end."""
+    tw, gap, roof = 17, 9, 180
+    for i in range(3):
+        a = x0 + i * (tw + gap)
+        for y in range(roof, GROUND):
+            lean = round(5 * ((y - roof) / (GROUND - roof)) ** 1.6)   # the east slab leans out toward the ground
+            cv.hline(a - lean, a + tw, y, "mbs")
+            cv.dot(a - lean, y, "mbs_hi")
+            cv.dot(a + tw - 1, y, "mbs_dk")
+            if y > roof + 30 and lean:                                # the slot between the two slabs
+                cv.dot(a + 5 - lean // 2, y, "mbs_dk")
+        for y in range(roof + 4, GROUND - 6, 3):                      # room lights in floor bands
+            for x in range(a + 2, a + tw - 2, 2):
+                if rnd.random() < cv.p["lit_prob"] + .12:
+                    cv.dot(x, y, "mbs_win")
+    # the SkyPark: a long hull on top, bow overhanging past the last tower
+    l, r = x0 - 6, x0 + 3 * tw + 2 * gap + 15
+    cv.hline(l + 2, r - 1, roof - 5, "deck")
+    cv.hline(l, r + 1, roof - 4, "deck")
+    cv.hline(l + 1, r, roof - 3, "deck_dk")
+    cv.hline(l + 3, r - 3, roof - 2, "deck_dk")
+    for i in range(3):                                               # where it sits on each tower
+        a = x0 + i * (tw + gap)
+        cv.rect(a + 1, roof - 1, a + tw - 1, roof, "mbs_dk")
+    for x in range(l + 6, r - 22, 5):                                # palms
+        cv.dot(x, roof - 7, "palm"); cv.dot(x - 1, roof - 6, "palm"); cv.dot(x + 1, roof - 6, "palm")
+    cv.hline(l + 8, r - 26, roof - 5, "pool", glow=True)             # the infinity pool
+    cv.light(l, roof - 5, "b")
+    cv.light(r, roof - 5, "b")
+
+
 def pacific_central(cv, rnd, x0, w=130):
     """Pacific Central Station: long Beaux-Arts front, columned centre, the neon roof sign."""
     x1 = x0 + w
@@ -502,7 +646,7 @@ def street(cv, rnd):
 
 
 # ------------------------------------------------------------------ jazz club
-JAZZ = (1064, 220, 1106, GROUND)         # art px: x0, y0, x1, y1 (the click target in fx.js)
+JAZZ = (X0 + 1064, 220, X0 + 1106, GROUND)         # art px: x0, y0, x1, y1 (the click target in fx.js)
 
 
 def jazz_club(cv, rnd):
@@ -561,32 +705,47 @@ def draw(theme):
     """Right-anchored on the page: the low district sits under the title, the towers rise to its right."""
     cv = Canvas(PALETTES[theme])
     rnd = random.Random(2026)            # same layout for both themes
+    X = X0
 
     far_layer(cv, rnd)
 
-    district(cv, rnd, 0, 412, 160, 205)          # under the title: kept low
-    district(cv, rnd, 556, 738, 138, 196)
-    district(cv, rnd, 784, 868, 140, 190)
-    district(cv, rnd, 916, 986, 150, 196)
-    district(cv, rnd, 1050, 1200, 132, 190)
+    # the left half: more city for wide screens, no landmarks
+    district(cv, rnd, 0, 330, 150, 205)
+    district(cv, rnd, 336, 760, 118, 198)
+    district(cv, rnd, 766, X, 142, 205)
 
-    bitexco(cv, rnd, 760)
-    transamerica(cv, rnd, 895)
-    petronas(cv, rnd, 990)
+    district(cv, rnd, X, X + 312, 160, 205)          # under the title: kept low
+    district(cv, rnd, X + 556, X + 582, 150, 196)
+    district(cv, rnd, X + 646, X + 678, 150, 198)
+    district(cv, rnd, X + 704, X + 740, 150, 196)
+    district(cv, rnd, X + 784, X + 868, 140, 190)
+    district(cv, rnd, X + 916, X + 986, 150, 196)
+    district(cv, rnd, X + 1050, X + 1200, 132, 190)
 
-    near_layer(cv, rnd, [(0, 412), (556, 742), (778, 868), (918, 986), (1046, 1200)])
-    pacific_central(cv, rnd, 420)
+    marina_bay_sands(cv, rnd, X + 328)
+    tokyo_tower(cv, rnd, X + 613)
+    elizabeth_tower(cv, rnd, X + 691)
+    bitexco(cv, rnd, X + 760)
+    transamerica(cv, rnd, X + 895)
+    petronas(cv, rnd, X + 990)
+
+    near_layer(cv, rnd, [(0, X + 312), (X + 556, X + 582), (X + 648, X + 678), (X + 704, X + 742),
+                         (X + 778, X + 868), (X + 918, X + 986), (X + 1046, X + 1200)])
+    pacific_central(cv, rnd, X + 420)
     jazz_club(cv, rnd)
 
     # shopfront neon on the near layer
-    for word, x, y, role in (("BAR", 140, 238, "neon_pink"), ("OPEN", 300, 232, "neon_cyan"),
-                             ("NOOK", 600, 236, "neon_purple"), ("WK-01", 930, 240, "neon_yel"),
-                             ("BAR", 1150, 238, "neon_cyan")):
+    for word, x, y, role in (("BAR", X + 140, 238, "neon_pink"), ("OPEN", X + 270, 232, "neon_cyan"),
+                             ("NOOK", X + 654, 236, "neon_purple"), ("WK-01", X + 930, 240, "neon_yel"),
+                             ("BAR", X + 1150, 238, "neon_cyan"),
+                             ("OPEN", 180, 236, "neon_pink"), ("BAR", 520, 238, "neon_cyan"), ("NOOK", 900, 234, "neon_yel")):
         cv.rect(x - 2, y - 2, x + len(word) * 4 + 1, y + 7, "near")
         cv.text(word, x, y, role)
-    for x, y, n, role in ((60, 214, 30, "neon_red"), (250, 206, 36, "neon_pink"), (380, 210, 32, "neon_cyan"),
-                          (640, 204, 38, "neon_pink"), (800, 210, 30, "neon_yel"), (960, 208, 34, "neon_red"),
-                          (1180, 206, 34, "neon_purple")):
+    for x, y, n, role in ((X + 60, 214, 30, "neon_red"), (X + 250, 206, 36, "neon_pink"),
+                          (X + 668, 208, 30, "neon_pink"), (X + 800, 210, 30, "neon_yel"),
+                          (X + 960, 208, 34, "neon_red"), (X + 1180, 206, 34, "neon_purple"),
+                          (90, 210, 32, "neon_cyan"), (410, 204, 36, "neon_purple"), (700, 208, 32, "neon_red"),
+                          (1040, 206, 34, "neon_pink")):
         vertical_sign(cv, rnd, x, y, n, role)
 
     street(cv, rnd)
@@ -595,7 +754,7 @@ def draw(theme):
 
 if __name__ == "__main__":
     if "--sos" in sys.argv:
-        print(f"tile {W * SCALE}x{H * SCALE}; SOS image px ({SOS[0] * SCALE}, {SOS[1] * SCALE}); "
+        print(f"banner {W * SCALE}x{H * SCALE}; SOS image px ({SOS[0] * SCALE}, {SOS[1] * SCALE}); "
               f"jazz image px {tuple(v * SCALE for v in JAZZ)}")
         sys.exit()
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else OUT
