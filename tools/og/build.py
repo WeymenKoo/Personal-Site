@@ -25,7 +25,7 @@ def span(src, a, b, incl_b=False):
 
 SPR = span(FX, "  var SPR = {", "\n  };", True)
 SPRITE = span(FX, "  function sprite(name, scale, flip) {", "\n  }\n", True)
-SHUTTLE = re.sub(r"function cityPx\(\) \{[^\n]*\}", "function cityPx() { return 2; }",
+SHUTTLE = re.sub(r"function cityPx\(\) \{[^\n]*\}", "function cityPx() { return 1.3; }",
                  span(FX, "    var SH, STK, STC, SRB, SHUT = {}, fineP = 0;", "    rebuildShuttle();"))
 HELPERS = span(DP, "  function canvas(w, h)", "  var FONT")
 FLEET = span(DP, "  var DSV = {", "  var IMG = {};")
@@ -50,9 +50,11 @@ function band(list,y0,y1,maxK){
   var tot=fit(k),gap=(W-tot)/(list.length+1),x=gap;
   list.forEach(function(c){var im=up(c.c,c.k),yy=Math.round((y0+y1)/2-im.height/2);g.drawImage(im,Math.round(x),yy);x+=im.width+gap;});
 }
-var chunky=["ship","alien","starship","station","falconheavy","hubble","roadster","capsule"].map(function(n){return {c:sprite(n,1)};});
-band(chunky.slice(0,4).concat([{c:SH,k:1},{c:STK,k:1}]).concat(chunky.slice(4)),18,300,4);
-band(["martini","rocks","highball","wine","pint","mug","tokkuri","coconut","hurricane","tiki","margarita","oj","watermelon","lassi","boba"].map(function(n){return {c:sprite(n,1)};}),318,402,5);
+/* the sky, all at the city's pixel size: rockets, then things in orbit, then the aircraft */
+band([SS,STK,FH,CA].map(function(c){return {c:c,k:1};}).concat([{c:CH,k:1}]),6,170,1);
+band([alienImg,shipImg,ST,SH,HU,RD].map(function(c){return {c:c,k:1};}),176,236,1);
+band(["dc3","spitfire","tomcat","seaking"].map(function(k){return {c:AIR[k].img[0],k:1};}),240,304,1);
+band(["martini","rocks","highball","wine","pint","mug","tokkuri","coconut","hurricane","tiki","margarita","oj","watermelon","lassi","boba","solo"].map(function(n){return {c:sprite(n,1)};}),318,402,5);
 var subs=["bathy","alvin","dsc","trieste","shinkai","lf","jiaolong","mir"].map(function(k){return {c:pix(DSV[k].w,DSV[k].h,DSV[k].draw)};});
 subs.splice(4,0,{c:pix(HK.w,HK.h,drawHunter)});
 band(subs,420,615,2);
@@ -60,7 +62,7 @@ window.done=O.toDataURL("image/png");
 """
 
 HTML = ('<!doctype html><html><body style="margin:0"><canvas id="out" width="1200" height="627"></canvas><script>(function(){'
-        'function el(t){return document.createElement(t);}\n' + SPR + SPRITE + SHUTTLE + HELPERS + FLEET + COMPOSE + '})();</script></body></html>')
+        'function el(t){return document.createElement(t);}\nvar shipImg, alienImg;\n' + SPR + SPRITE + SHUTTLE + HELPERS + FLEET + COMPOSE + '})();</script></body></html>')
 
 if __name__ == "__main__":
     from playwright.sync_api import sync_playwright

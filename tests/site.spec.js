@@ -255,7 +255,7 @@ test.describe('as shipped', () => {
   test('every sky scene runs without errors', async ({ page }) => {
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
-    for (const sc of ['patrol', 'launch', 'landing', 'station', 'capsule', 'shuttle-launch', 'falcon-heavy', 'hubble', 'roadster']) {
+    for (const sc of ['patrol', 'launch', 'landing', 'station', 'capsule', 'shuttle-launch', 'falcon-heavy', 'hubble', 'roadster', 'dc3', 'spitfire', 'tomcat', 'seaking']) {
       await page.goto(server.url + 'index.html?scene=' + sc);
       await expect(page.locator('#sky')).toHaveAttribute('data-scene', sc);
       await page.waitForTimeout(1500);
@@ -394,7 +394,8 @@ test.describe('as shipped', () => {
       const c = window.fx.game.craft(), s = document.getElementById('sky').dataset.scene;
       return s === 'patrol' || (s === 'launch' && c.launch.t > 0) || (s === 'landing' && c.shuttle.t > 0) || (s === 'capsule' && c.capsule.t > 0)
         || ((s === 'shuttle-launch' || s === 'falcon-heavy') && c.rocket.t > 0) || (s === 'station' && c.station.x > -100)
-        || (s === 'hubble' && c.hubble.x > -100) || (s === 'roadster' && c.roadster.x > -100);
+        || (s === 'hubble' && c.hubble.x > -100) || (s === 'roadster' && c.roadster.x > -100)
+        || (['dc3', 'spitfire', 'tomcat', 'seaking'].includes(s) && c.air.t > 0);
     }, null, { timeout: 1500 });
   });
 
