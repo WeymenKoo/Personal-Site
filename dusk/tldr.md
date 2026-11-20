@@ -62,15 +62,15 @@ A maze-solving robot on a single board. V1 failed because the motor driver input
 
 ### [Protoboard flight computers](https://weymenkoo.github.io/Personal-Site/content/projects/protoboard-avionics/index.html)
 
-<img src="https://weymenkoo.github.io/Personal-Site/content/projects/protoboard-avionics/card.jpg" alt="Gen 3 flight computer: an Arduino Nano, a microSD adapter and a purple sensor board on blue protoboard" width="720">
+<img src="https://weymenkoo.github.io/Personal-Site/content/projects/protoboard-avionics/card.jpg" alt="Gen 4 flight computer: a Teensy 3.5, a BME280, an MPU6050, a buzzer and an RGB light on green protoboard, in its printed housing" width="720">
 
-**Gen 4 untested** · 2019–21 · Arduino Nano → Teensy 3.5 · BME280 · MPU6050 · SD logging · hand-wired
+**High school** · 2019–21 · Arduino Nano → Teensy 3.5 · BME280 · MPU6050 · SD logging · hand-wired
 
 Four flight computers for a water rocket, all soldered on protoboard: a servo timer, then altitude logging and apogee detection, then an IMU, then a Teensy 3.5. Each one was built to fix what broke on the last, and the last one ended with a note that I should learn to design PCBs.
 
 ### [Water rocket](https://weymenkoo.github.io/Personal-Site/content/projects/water-rocket/index.html)
 
-<img src="https://weymenkoo.github.io/Personal-Site/content/projects/water-rocket/card.jpg" alt="Me on the school field holding the science competition water rocket, a green bottle with blue fins" width="720">
+<img src="https://weymenkoo.github.io/Personal-Site/content/projects/water-rocket/card.jpg" alt="The science competition water rocket: a green bottle with blue fins" width="720">
 
 **High school** · 2019–21 · PET bottle airframe · 3D-printed nose cone · servo parachute release
 
@@ -78,9 +78,9 @@ The rocket around the flight computers: a bottle rocket from a school science co
 
 ### [Rovers](https://weymenkoo.github.io/Personal-Site/content/projects/rover/index.html)
 
-<img src="https://weymenkoo.github.io/Personal-Site/content/projects/rover/card.jpg" alt="The six-wheel rover on aluminium extrusion, with a clear electronics box and a GPS mast, April 2021" width="720">
+<img src="https://weymenkoo.github.io/Personal-Site/content/projects/rover/card.jpg" alt="Rover 2's SolidWorks model: a box chassis with an electronics bay, a fan cover and red-hubbed wheels" width="720">
 
-**On hold** · 2020–23 · 6 wheels: rocker-bogie → aluminium extrusion · 2× BTS7960 · GPS/compass · then a 4-wheel rebuild
+**Archived** · 2020–23 · 6 wheels: rocker-bogie → aluminium extrusion · 2× BTS7960 · GPS/compass · then a 4-wheel rebuild
 
 A lockdown rover inspired by the Mars rovers. The 3D-printed rocker-bogie had too many parts and wobbly joints, so I rebuilt it on aluminium extrusion; the plan was autonomy with ArduPilot, until I fried the magnetometer. A four-wheel Rover 2 followed at university in 2022, and got paused when AeroDesign took over.
 

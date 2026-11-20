@@ -1,14 +1,14 @@
 {
   "title": "Rovers",
-  "status": "stop",
-  "statusLabel": "On hold",
+  "status": "idle",
+  "statusLabel": "Archived",
   "year": "2020–23",
   "spec": "6 wheels: rocker-bogie → aluminium extrusion · 2× BTS7960 · GPS/compass · then a 4-wheel rebuild",
   "summary": "A lockdown rover inspired by the Mars rovers. The 3D-printed rocker-bogie had too many parts and wobbly joints, so I rebuilt it on aluminium extrusion; the plan was autonomy with ArduPilot, until I fried the magnetometer. A four-wheel Rover 2 followed at university in 2022, and got paused when AeroDesign took over.",
   "cover": {
     "src": "card.jpg",
     "webp": "card.webp",
-    "alt": "The six-wheel rover on aluminium extrusion, with a clear electronics box and a GPS mast, April 2021",
+    "alt": "Rover 2's SolidWorks model: a box chassis with an electronics bay, a fan cover and red-hubbed wheels",
     "fit": "cover"
   },
   "strip": [],
