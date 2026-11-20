@@ -39,3 +39,19 @@ body.resume{background:radial-gradient(60rem 40rem at 0% 0%,color-mix(in srgb,va
 .back{margin:3rem 0 0;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
 .back a{text-decoration:none}
 
+
+/* the company names that do something: Tesla goes red (with a car sound), Dometic spins like a boat gyro */
+.job .org .egg{display:inline-block;cursor:pointer;transition:color .35s;transform-style:preserve-3d}
+.job .org .egg:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.job .org .egg.tesla-red{color:#e82127}
+.job .org .egg.gyro{animation:gyro 2.6s cubic-bezier(.15,.7,.3,1)}
+@keyframes gyro{
+  0%{transform:perspective(600px) rotateY(0) rotateZ(0)}
+  25%{transform:perspective(600px) rotateY(900deg) rotateZ(4deg)}
+  50%{transform:perspective(600px) rotateY(1440deg) rotateZ(-3deg)}
+  75%{transform:perspective(600px) rotateY(1710deg) rotateZ(1.5deg)}
+  100%{transform:perspective(600px) rotateY(1800deg) rotateZ(0)}}
+/* UBC AeroDesign links to the team's site; it keeps the heading's look */
+.job .org a.org-link{color:inherit;text-decoration:none}
+.job .org a.org-link:hover,.job .org a.org-link:focus-visible{text-decoration:underline;text-underline-offset:.18em}
+@media (prefers-reduced-motion:reduce){.job .org .egg.gyro{animation:none}}

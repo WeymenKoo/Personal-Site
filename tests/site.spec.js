@@ -326,21 +326,23 @@ test.describe('as shipped', () => {
     }
   });
 
-  test('a popped research sub implodes, and a different one sinks in', async ({ page }) => {
+  test('a popped research sub implodes, and a different one cruises in from a side', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     const errors = await open(page, server.url);
     const z = await page.evaluate(() => { window.depths.layout(); return window.depths.zones(); });
     await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), (z.sea + z.stTop) / 2 - 450);
     const before = await page.evaluate(() => window.depths.fleet().map(v => v.k));
-    expect(before.length).toBe(3);
-    expect(new Set(before).size).toBe(3);                 // never two the same
+    expect(before.length).toBe(5);                        // the sea starts full
+    const ys = await page.evaluate(() => window.depths.fleet().map(v => v.y));
+    for (const y of ys) { expect(y).toBeGreaterThan(z.sea); expect(y).toBeLessThan(z.stTop); }   // in the sea, even though the cards loaded late
+    expect(new Set(before).size).toBe(5);                 // never two the same
     await page.evaluate(() => window.depths.implode(window.depths.fleet()[0]));
     await expect(page.locator('#toast')).not.toBeEmpty();
-    await page.waitForFunction(() => window.depths.fleet().length === 2, null, { timeout: 10000 });
-    await page.waitForFunction(() => window.depths.fleet().length === 3, null, { timeout: 15000 });
+    await page.waitForFunction(() => window.depths.fleet().length === 4, null, { timeout: 10000 });
+    await page.waitForFunction(() => window.depths.fleet().length === 5, null, { timeout: 15000 });
     const after = await page.evaluate(() => window.depths.fleet().map(v => ({ k: v.k, state: v.state })));
-    expect(new Set(after.map(v => v.k)).size).toBe(3);
-    expect(after.some(v => v.state === 'sink' || v.state === 'live')).toBe(true);
+    expect(new Set(after.map(v => v.k)).size).toBe(5);
+    expect(after.some(v => v.state === 'enter' || v.state === 'sink')).toBe(true);   // the new one, on its way in
     expect(errors).toEqual([]);
   });
 
@@ -353,6 +355,47 @@ test.describe('as shipped', () => {
     await page.mouse.click(b.x, b.y);
     await page.waitForFunction(() => window.depths.score.coins === 1, null, { timeout: 3000 });
     await expect(page.locator('#toast')).toContainText('coin');
+  });
+
+  test('résumé: Tesla goes red with a car sound, Dometic spins, AeroDesign and projects link out', async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', e => errors.push(e.message));
+    await offline(page);
+    await page.goto(server.url + 'resume.html');
+    const tesla = page.locator('[data-egg="tesla"]');
+    await tesla.click();
+    await expect(tesla).toHaveClass(/tesla-red/);
+    await expect(page.locator('#toast')).toContainText('Error chime');      // the first one is always the error chime
+    const gyro = page.locator('[data-egg="gyro"]');
+    await gyro.click();
+    await expect(gyro).toHaveClass(/gyro/);
+    await expect(page.locator('#toast')).toContainText('gyro');
+    const aero = page.locator('a.org-link');
+    await expect(aero).toHaveCount(3);
+    for (const h of await aero.evaluateAll(a => a.map(x => x.getAttribute('href')))) expect(h).toBe('https://ubcaerodesign.com/');
+    const links = await page.locator('.job li a').evaluateAll(a => a.map(x => x.getAttribute('href')));
+    expect(links.length).toBeGreaterThanOrEqual(4);
+    for (const h of links) expect(fs.existsSync(`${SITE}/${h}`), h).toBe(true);
+    expect(errors).toEqual([]);
+  });
+
+  test('pages carry a link preview: og tags and the 1200×627 card', async ({ page }) => {
+    for (const f of ['index.html', 'resume.html', 'contact.html']) {
+      const html = fs.readFileSync(`${SITE}/${f}`, 'utf8');
+      expect(html, f).toContain('property="og:image" content="https://weymenkoo.github.io/Personal-Site/assets/img/og-card.png"');
+      expect(html, f).toContain('name="twitter:card" content="summary_large_image"');
+    }
+    expect(fs.existsSync(`${SITE}/assets/img/og-card.png`)).toBe(true);
+  });
+
+  test('something is flying within a second of the page opening', async ({ page }) => {
+    await open(page, server.url);
+    await page.waitForFunction(() => {
+      const c = window.fx.game.craft(), s = document.getElementById('sky').dataset.scene;
+      return s === 'patrol' || (s === 'launch' && c.launch.t > 0) || (s === 'landing' && c.shuttle.t > 0) || (s === 'capsule' && c.capsule.t > 0)
+        || ((s === 'shuttle-launch' || s === 'falcon-heavy') && c.rocket.t > 0) || (s === 'station' && c.station.x > -100)
+        || (s === 'hubble' && c.hubble.x > -100) || (s === 'roadster' && c.roadster.x > -100);
+    }, null, { timeout: 1500 });
   });
 
   test('the cursor on the track stops the train', async ({ page }) => {

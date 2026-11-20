@@ -12,6 +12,7 @@
   },
   "tldr": {
     "src": "tldr.jpg",
+    "webp": "tldr.webp",
     "alt": "The assembled Rev 1 board, top side: the three-phase bridge, bulk capacitors, STM32G431 and JST-GH connectors"
   },
   "strip": [

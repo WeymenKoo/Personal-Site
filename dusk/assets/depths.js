@@ -41,6 +41,7 @@
       pipeA: "#2d5a78", pipeAh: "#4f88aa", pipeAs: "#21455e", pipeB: "#6e3f36", pipeBh: "#a0604a", pipeBs: "#552f29", cable: "#43306a", pulse: "#7ff3ff",
       brick: "#3a2440", brickHi: "#4e3256", fossil: "#4a3b66", fossilHi: "#5e4c80",
       seaTop: [24, 20, 62], seaMid: [18, 36, 86], seaBot: [7, 11, 34], seaA: .9, bubble: "rgba(190,230,255,.55)", beam: "rgba(255,240,200,.07)",
+      haze: "rgba(14,24,70,.42)", bedTop: [44, 40, 74], bedBot: [18, 14, 38], silt: "#3a3560",
       rock: "#120e26", rockHi: "#1c1738", vault: [16, 12, 36], wall: [40, 33, 76], stripe: "#c0303a", plate: "#120d26", plateText: "#e8ecf5",
       tunnel: "#05030b", lining: "#2e2758", platTop: "#3a3066", platEdge: "#e0b050", platFace: "#1a1534",
       car: "#2c56a8", carHi: "#4d7dd2", carSh: "#1d3c7e", roof: "#9aa3b8", door: "#c8343c", doorSh: "#9a2630", win: "#ffe2a0", winSh: "#c9a060", lamp: "#fff2c8", tail: "#ff3e5a"
@@ -50,6 +51,7 @@
       pipeA: "#5e9cc2", pipeAh: "#8cc0dc", pipeAs: "#4c82a6", pipeB: "#b9786a", pipeBh: "#d89c88", pipeBs: "#9c6458", cable: "#9c86c4", pulse: "#1fb8d0",
       brick: "#b294b8", brickHi: "#c6aacb", fossil: "#9a86b8", fossilHi: "#b2a0cc",
       seaTop: [208, 208, 238], seaMid: [196, 224, 246], seaBot: [132, 164, 218], seaA: .9, bubble: "rgba(255,255,255,.75)", beam: "rgba(255,250,220,.18)",
+      haze: "rgba(120,150,215,.3)", bedTop: [168, 160, 200], bedBot: [108, 98, 160], silt: "#b4aad6",
       rock: "#6c62a0", rockHi: "#7a70ae", vault: [150, 138, 200], wall: [232, 226, 244], stripe: "#d0404a", plate: "#2a2150", plateText: "#ffffff",
       tunnel: "#1e1838", lining: "#8a80b8", platTop: "#cfc4ea", platEdge: "#e0a530", platFace: "#a598cf",
       car: "#3d6cc4", carHi: "#6a93dc", carSh: "#2c5196", roof: "#c4cada", door: "#d0404a", doorSh: "#a8323b", win: "#fff4cf", winSh: "#d8c08a", lamp: "#fffbe8", tail: "#e0404f"
@@ -173,9 +175,6 @@
   var WRECK = { w: 136, h: 78, chest: [116, 64] };
   function drawWreck(x) {
     function ln(a, b, c, d, col, w) { x.strokeStyle = col; x.lineWidth = w || 1.2; x.beginPath(); x.moveTo(a, b); x.lineTo(c, d); x.stroke(); }
-    x.fillStyle = "#7a6c52"; x.beginPath(); x.ellipse(66, 75, 66, 6, 0, 0, 7); x.fill();              /* sand */
-    x.fillStyle = "#94866a"; x.beginPath(); x.ellipse(60, 74, 50, 3.5, 0, 0, 7); x.fill();
-    [[14, 72, 4], [102, 71, 3], [124, 73, 2.5]].forEach(function (r) { x.fillStyle = "#5a5260"; x.beginPath(); x.arc(r[0], r[1], r[2], 0, 7); x.fill(); });
     x.save(); x.translate(68, 52); x.rotate(-.24);                      /* listing, bow up */
     /* masts first, behind the hull: the main still standing, the fore snapped, a bowsprit */
     x.fillStyle = "#4a3828"; x.fillRect(-12, -54, 3, 44); x.fillRect(22, -30, 3, 20);
@@ -226,6 +225,8 @@
     Object.keys(DSV).forEach(function (k) { var c = pix(DSV[k].w, DSV[k].h, DSV[k].draw); IMG.dsv[k] = [c, flipped(c)]; });
     var h = pix(HK.w, HK.h, drawHunter); IMG.sub = [h, flipped(h)];
     IMG.wreck = pix(WRECK.w, WRECK.h, drawWreck);
+    var wx = IMG.wreck.getContext("2d");                              /* seen through water: a wash of the sea's colour */
+    wx.globalCompositeOperation = "source-atop"; wx.fillStyle = C.haze; wx.fillRect(0, 0, WRECK.w, WRECK.h);
     IMG.coin = [8, 6, 2, 6].map(function (w) {                       /* four turns of a spinning coin */
       return pix(10, 12, function (x) {
         x.fillStyle = "#b8862a"; x.beginPath(); x.ellipse(5, 6, w / 2 + .6, 5.6, 0, 0, 7); x.fill();
@@ -261,7 +262,12 @@
     var span = Math.max(400, stTop - start), ug = Math.round(Math.min(720, Math.max(240, span * .22)));
     var r = main.getBoundingClientRect(), cs = getComputedStyle(main);
     var colL = r.left + parseFloat(cs.paddingLeft), colR = r.right - parseFloat(cs.paddingRight);
+    var old = Z;
     Z = { start: start, sea: start + ug, stTop: stTop, stH: stH, colL: colL, colR: colR };
+    if (old && (old.sea !== Z.sea || old.stTop !== Z.stTop) && subs.length) {   /* the page grew (cards load late): keep each sub at the same depth of sea */
+      var map = function (y) { return Z.sea + (y - old.sea) / Math.max(1, old.stTop - old.sea) * (Z.stTop - Z.sea); };
+      subs.forEach(function (v) { v.y = map(v.y); v.ty = map(v.ty); });
+    }
     var k = [W, H, P.toFixed(3), Math.round(start), Math.round(stTop), Math.round(colL), theme].join();
     if (k !== key) { key = k; build(); }
   }
@@ -269,7 +275,7 @@
   /* ---------- the static parts, drawn once per layout ---------- */
   function build() {
     var gap = 12;
-    S = { mL: Math.max(0, Z.colL - gap), mR: Math.min(VW, Z.colR + gap) };
+    S = { mL: Math.max(0, Z.colL - gap), mR: Math.min(VW, Z.colR + gap), bed: null };
     images();
     buildUnderground();
     buildSea();
@@ -409,12 +415,25 @@
               state: "sink", mode: "hover", t: 0, arm: 0, find: null, imp: 0 };
     v.ty = Math.min(Z.stTop - 90, top + rnd(140, Math.max(160, innerHeight * .7)));
     if (settled) { v.y = v.ty = Z.sea + rnd(.1, .85) * span; v.state = "live"; }
+    else if (!d.cable) {                                              /* cruise in from a side, at a depth on screen */
+      var lo = Math.max(Z.sea + 30, scrollY + 60), hi = Math.min(Z.stTop - 90, scrollY + innerHeight - d.h * P - 40);
+      v.y = v.ty = hi > lo ? rnd(lo, hi) : Z.sea + rnd(.1, .85) * span;
+      v.dir = Math.random() < .5 ? 1 : -1;
+      v.x = v.dir > 0 ? -d.w * P - 10 : VW + 10;
+      v.state = "enter"; v.v = rnd(.5, .8); v.stopAt = rnd(30, VW * .2);
+    }
     subs.push(v);
     return v;
   }
+  var FLEET = 5;
   function vesselsInit() {
     sub = { fy: .42, x: -160, dir: 1, cool: 240 };
-    for (var i = 0; i < 3; i++) spawnDSV(null, true);
+    var span = Z.stTop - Z.sea;
+    for (var i = 0; i < FLEET; i++) {                                 /* the sea starts full, spread top to bottom */
+      var v = spawnDSV(null, true);
+      v.y = v.ty = Z.sea + span * ((i + .5) / FLEET * .86 + .04) + rnd(-30, 30);
+      if (DSV[v.k].cable) v.y = v.ty = Math.min(v.y, Z.sea + span * .5);
+    }
   }
 
   /* ---------- per-frame drawing, in canvas pixels ---------- */
@@ -469,7 +488,10 @@
     due = due.filter(function (q) { q.t -= dt; if (q.t <= 0) { spawnDSV(); return false; } return true; });
     subs = subs.filter(function (v) {
       var d = DSV[v.k], img = IMG.dsv[v.k][v.dir > 0 ? 0 : 1], wpx = d.w * P, hpx = d.h * P;
-      if (v.state === "sink") {                                     /* coming down from above, swaying */
+      if (v.state === "enter") {                                    /* cruising in from the edge */
+        v.x += v.dir * v.v * dt;
+        if ((v.dir > 0 && v.x > v.stopAt) || (v.dir < 0 && v.x < VW - wpx - v.stopAt)) { v.state = "live"; v.mode = "cruise"; v.len = rnd(120, 300); v.t = 0; v.v = rnd(.12, .3); }
+      } else if (v.state === "sink") {                                 /* coming down from above, swaying */
         v.y += .8 * dt; v.x += Math.sin(t / 40 + v.ty) * .25 * dt;
         if (v.y >= v.ty) { v.state = "live"; choose(v); }
       } else if (v.state === "live") {
@@ -491,6 +513,7 @@
           return false;
         }
       }
+      if (v.state !== "implode") shove(v, v.x + wpx / 2, v.y + hpx / 2, dt, d.cable);
       v.box = { x: v.x, y: v.y - 6, w: wpx, h: hpx + 12 };
       var y = ay(v.y + (v.state === "live" ? Math.sin(t / 90 + v.x) * 4 : 0)), x = ax(v.x);
       if (d.cable) {                                                /* the bathysphere hangs from its cable */
@@ -524,6 +547,15 @@
       return true;
     });
   }
+  /* push a vessel away from the cursor, softly, by how close it is (the same feel as the sky's craft) */
+  function shove(o, cx, cy, dt, swayOnly) {
+    if (!cur.in) return;
+    var dx = cx - cur.x, dy = cy - cur.y, d = Math.sqrt(dx * dx + dy * dy), Rr = 170;
+    if (d >= Rr || d < .001) return;
+    var f = 1 - d / Rr; f = f * f * 1.4 * dt;
+    o.x += dx / d * f * 2.2;
+    if (!swayOnly) { o.y += dy / d * f * 1.6; if (o.ty != null) o.ty += dy / d * f * 1.6; }
+  }
   function implode(v) {
     if (v.state === "implode") return;
     v.state = "implode"; v.imp = 0; score.imploded++;
@@ -539,10 +571,31 @@
     if (mL >= ww * .7 + 4) x = Math.min(Math.floor(mL) - ww - 4, 8);         /* left: the theme button lives bottom right */
     else if (room >= ww * .7 + 4) x = Math.max(Math.ceil(mR) + 4, W - ww - 8);
     else return;
-    var y = ay(Z.stTop) + G.tunTop - 5 - WRECK.h + 6;
-    if (y > H || y + WRECK.h < 0) return;
+    var bed = ay(Z.stTop) + G.tunTop - 5, y = bed - WRECK.h - 14;      /* keel ~15 px down in the mound */
+    if (y - 30 > H || bed < 0) return;
+    var L = S.bed;
+    if (!L || L.x !== x) L = S.bed = seabed(x, ww);
+    ctx.drawImage(L.back, L.x0, bed - L.h);
     ctx.drawImage(IMG.wreck, x, y);
+    ctx.drawImage(L.front, L.x0, bed - L.h);
     wreckBox = { x: x * P, y: base + y * P, w: ww * P, h: WRECK.h * P, cx: (x + WRECK.chest[0]) * P, cy: base + (y + WRECK.chest[1]) * P };
+  }
+  /* the mound of seabed the wreck lies in, grown out of the tunnel's rock; drawn once, in two layers */
+  function seabed(x, ww) {
+    var x0 = Math.min(x, 0), x1 = Math.min(Math.floor(S.mL / P), x + ww + 30), h = 34, w = Math.max(1, x1 - x0);
+    var back = canvas(w, h), front = canvas(w, h), b = back.getContext("2d"), f = front.getContext("2d");
+    function hump(q) { var u = (q - (x + ww * .5)) / (ww * .75); return Math.max(0, Math.round(26 * Math.max(0, 1 - u * u) + Math.sin(q * .21) * 1.5 + 3)); }
+    for (var q = x0; q < x1; q++) {
+      var t = hump(q), a = q > x1 - 24 ? (x1 - q) / 24 : 1;           /* thins out before the column */
+      b.globalAlpha = a;
+      for (var j = 0; j < t; j++) { b.fillStyle = mix(C.bedTop, C.bedBot, j / Math.max(1, t)); b.fillRect(q - x0, h - t + j, 1, 1); }
+      if (q >= x - 4 && q < x + ww + 8) {                            /* silt banked against the hull, in front */
+        var lip = Math.round(4 + Math.sin(q * .37) * 1.5 + Math.sin(q * .09) * 1.5), top = h - t - lip + 3;
+        f.globalAlpha = a;
+        for (j = top; j < h; j++) { f.fillStyle = j === top ? C.silt : mix(C.bedTop, C.bedBot, .25 + .75 * (j - top) / Math.max(1, h - top)); f.fillRect(q - x0, j, 1, 1); }
+      }
+    }
+    return { back: back, front: front, x: x, x0: x0, h: h };
   }
   function coin() {
     if (!wreckBox) return;
@@ -598,6 +651,8 @@
   function hunter(t, dt) {
     var img = IMG.sub[sub.dir > 0 ? 0 : 1], wpx = img.width * P, wy = seaY(sub.fy) + Math.sin(t / 120) * 8;
     sub.x += sub.dir * .4 * dt;
+    var keep = { x: sub.x, y: seaY(sub.fy) }; shove(keep, sub.x + wpx / 2, keep.y + img.height * P / 2, dt);
+    sub.x = keep.x; sub.fy = Math.max(.05, Math.min(.92, (keep.y - Z.sea) / (Z.stTop - Z.sea)));
     if (sub.x > VW + 60) sub.dir = -1; if (sub.x < -wpx - 60) sub.dir = 1;
     sub.box = { x: sub.x, y: wy, w: wpx, h: img.height * P };
     var y = ay(wy), on = y > -30 && y < H;
@@ -745,7 +800,10 @@
   /* ---------- the loop: only while something below the city is on screen ---------- */
   var running = false, lastT = 0, clock = 0, frames = 0;
   function visible() { return Z && scrollY + innerHeight > Z.start; }
+  var SLOW = window.matchMedia && matchMedia("(pointer: coarse)").matches, lastDraw = 0;
   function frame(now) {
+    if (SLOW && running && now - lastDraw < 30) { requestAnimationFrame(frame); return; }
+    lastDraw = now;
     var dt = REDUCED ? 0 : Math.min(50, now - (lastT || now)) / 16.67; lastT = now; clock += dt; frames++;
     if (++themeAge > 60) { themeAge = 0; readTheme(); }
     var off = scrollY % P; base = scrollY - off;
