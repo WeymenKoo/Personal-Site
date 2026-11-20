@@ -30,8 +30,11 @@ function projects() {
       image: `dusk/content/projects/${slug}/${(e.tldr || e.cover).src}`, alt: (e.tldr || e.cover).alt,
       imageUrl: `${SITE}content/projects/${slug}/${(e.tldr || e.cover).src}`,
       url: e.link ? SITE + e.link : null,
+      portfolio: e.portfolio !== false,
     };
-  });
+  // "portfolio": false in entry.json keeps a project on the site but out of
+  // the profile README and the PDF (the high-school ones)
+  }).filter(p => p.portfolio);
 }
 
 /* ---------------- the profile README's Projects section ----------------

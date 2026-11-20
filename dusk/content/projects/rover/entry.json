@@ -12,5 +12,6 @@
     "fit": "cover"
   },
   "strip": [],
-  "link": "content/projects/rover/index.html"
+  "link": "content/projects/rover/index.html",
+  "portfolio": false
 }

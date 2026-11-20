@@ -12,5 +12,6 @@
     "fit": "cover"
   },
   "strip": [],
-  "link": "content/projects/water-rocket/index.html"
+  "link": "content/projects/water-rocket/index.html",
+  "portfolio": false
 }
