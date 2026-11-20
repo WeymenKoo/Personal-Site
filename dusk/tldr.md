@@ -10,7 +10,7 @@ The short version. Each title links to the full write-up on [my site](https://we
 
 **Design complete** · 2026 · STM32H757 · 55 × 40 mm · 8 layers · ArduPilot
 
-A flight-controller system-on-module for UBC AeroDesign. The STM32H757, two IMUs, two barometers, a magnetometer, FRAM and microSD sit on one module that plugs into a carrier board through two Hirose DF17 connectors. Rev A is design-complete and not yet fabricated.
+A flight-controller system-on-module for UBC AeroDesign. The STM32H757, two IMUs, two barometers, a magnetometer, FRAM and microSD sit on one module that plugs into a carrier board through two Hirose DF17 connectors. I led the design and trained a newer member on the power path. Rev A is design-complete and not yet fabricated.
 
 ### [FOC motor controller](https://weymenkoo.github.io/Personal-Site/content/projects/foc-controller/index.html)
 
@@ -26,7 +26,7 @@ A single-axis, sensored field-oriented-control motor controller for one joint of
 
 **Flown 2025** · 2025 · 2S–4S in · 5 V 15 A · LM5146 · 2 × TPS25983 · 6 layers
 
-The power board for UBC AeroDesign's 2025 Advanced Class aircraft. It takes the flight battery and gives every servo, radio and sensor a protected 5 V rail, with eFuses on the input and the servo output, servo current sensing, and the flight controller plugged in on top.
+The power board for UBC AeroDesign's 2025 Advanced Class aircraft. It takes the flight battery and gives every servo, radio and sensor a protected 5 V rail, with eFuses on the input and the servo output, servo current sensing, and the flight controller plugged in on top. I was the lead designer: a clean-sheet redesign after the previous revision did not work. Bench validation is in progress.
 
 ### [Shadow: power distribution](https://weymenkoo.github.io/Personal-Site/content/projects/avionics-2024/index.html)
 

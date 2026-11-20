@@ -2,7 +2,7 @@
 title: AeroDesign Power Board
 subtitle: The 5 V, 15 A power board for UBC AeroDesign's 2025 Advanced Class aircraft.
 team: UBC AeroDesign
-role: Power board design, with B. Liu
+role: Lead designer: schematic, layout, bring-up
 date: 2024–25 season
 ---
 
@@ -10,11 +10,13 @@ The power board sits between the flight battery and everything else in the aircr
 
 ![Render of Flight Controller v2 seated on the power board](render-stack.jpg#wide "The power board with Flight Controller v2 plugged in, rendered in Blender from the Altium STEP models and Gerbers.")
 
-**Status:** built and flown in UBC AeroDesign's aircraft in the Advanced Class of SAE Aero Design 2025. There is no recorded test data (ripple, regulation, temperature) for this board.
+I was the lead designer of this board, a clean-sheet redesign after the previous revision did not work. B. Liu is credited on the silkscreen for groundwork from that earlier revision.
+
+**Status:** built and flown in UBC AeroDesign's aircraft in the Advanced Class of SAE Aero Design 2025. Bench validation (ripple, regulation, protection thresholds, temperature) is in progress; see [Validation](#validation) at the end.
 
 | | |
 |---|---|
-| Input | 2S–4S LiPo, 7–22 V |
+| Input | 2S–4S LiPo; input eFuse window `5.97–24.86 V` |
 | Output | 5 V, 15 A maximum (design) |
 | Buck | TI LM5146 controller, 2 × AON7534 FETs, 3.3 µH, 300 kHz |
 | Protection | TPS25983 eFuse on the input and on the servo output · P-channel reverse-polarity FET · TVS diodes · an ESD array on every connector |
@@ -23,7 +25,7 @@ The power board sits between the flight battery and everything else in the aircr
 | Flight controller | Plugs in through two 1 × 14, 2.54 mm headers (J12, J13) |
 | Board | 110 × 60 mm, 6 layers |
 | Tools | Altium Designer |
-| Designers | W. Koo, B. Liu |
+| Designers | W. Koo (lead) · B. Liu (earlier revision) |
 
 ## Planning | From the chalkboard
 
@@ -59,7 +61,7 @@ The crossed-out blocks are what the design started with: a second battery with i
 | Setting | Value |
 |---|---|
 | Undervoltage | on at `5.97 V`, off at `5.48 V` |
-| Overvoltage | off at `24.86 V`, back on at `.79 V` |
+| Overvoltage | off at `24.86 V` |
 | Current limit | `17.81 A` |
 | Transient overcurrent blanking | `2021 µs` |
 | Inrush | `0.46 A`, no dV/dt start-up required |
@@ -85,7 +87,7 @@ The design targets, as written on the sheet:
 | Loop crossover | `50 kHz` |
 
 - **Controller:** TI LM5146 (U3), synchronous, driving two AON7534 N-channel MOSFETs (Q2 high side, Q3 low side).
-- **Inductor:** Codaca CSBX1275-3R3M, 3.3 µH, rated  A, saturating at 37 A. The sheet records the rule it was picked by: saturation current above the eFuse current limit (17.81 A).
+- **Inductor:** Codaca CSBX1275-3R3M, 3.3 µH, saturating at 37 A. The sheet records the rule it was picked by: saturation current above the eFuse current limit (17.81 A).
 - **Output voltage:** 24.9 kΩ over 4.75 kΩ on the 0.8 V feedback pin, which sets `4.994 V`.
 - **Capacitors:** 4 × 4.7 µF ceramic on the input, 5 × 4.7 µF ceramic on the output; a 2.2 Ω + 100 nF RC across the input.
 - **Compensation:** a type III network (R15, C44, C46 on `COMP`; R16, R17, C47 on `FB`) for the 50 kHz crossover.
@@ -181,3 +183,16 @@ The power board and Flight Controller v2 flew in UBC AeroDesign's aircraft, numb
 ![Aircraft 221 in flight against a clear sky, a flag on the right](comp-2025-flight.jpg#bleed "In flight.")
 
 Results: [SAE Aero Design Advanced Class results (PDF)](https://www.saeaerodesign.com/content/Advanced-Class-Results.pdf).
+
+## Validation | Bench tests
+
+The design numbers above are targets. These are the bench tests, run on a bench supply and power resistors, with a scope on a short ground spring. Each result goes here with its conditions and scope capture.
+
+- [ ] Smoke test: 16 V in, 0.5 A current limit, no load
+- [ ] Input eFuse: undervoltage and overvoltage thresholds, measured against the settings in the table above
+- [ ] Line regulation: 8 V to 25 V in, at 1 A
+- [ ] Load regulation: 0 to 1 A to 5 A
+- [ ] Output ripple at 1 A and 5 A, against the `8 mV` target
+- [ ] Load step response
+- [ ] Servo current sense: `SRV_Isns` against a meter, 0–5 A
+- [ ] Thermal: 5 A for one hour, temperature of the FETs, inductor and shunt

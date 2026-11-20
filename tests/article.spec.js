@@ -369,7 +369,7 @@ test.describe('the seven articles, as shipped', () => {
     await openArticle(page, server.url + url('power-board'));
     await expect(page.locator('section.ar-ch h2')).toHaveText([
       'From the chalkboard', 'Power flow', 'Input eFuse and reverse polarity', '5 V, 15 A: LM5146', 'Output eFuse and current sense',
-      'Connectors', 'PCB layout', 'The flight controller (not my design)', "The flight controller didn't fit", 'SAE Aero Design 2025',
+      'Connectors', 'PCB layout', 'The flight controller (not my design)', "The flight controller didn't fit", 'SAE Aero Design 2025', 'Bench tests',
     ]);
     // every schematic sheet after the top one is shown, and the results link goes to SAE
     await expect(page.locator('img[src^="sch-"]')).toHaveCount(4);

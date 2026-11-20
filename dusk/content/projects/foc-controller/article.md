@@ -112,6 +112,20 @@ Screenshots are from the GUI's built-in board simulator, not a live board.
 | [Sim and bench results](https://github.com/WeymenKoo/Motor-Controller/blob/main/FOC_Motor_Controller_Sim_and_Bench_Results.pdf) | Simulation and bench-correlation slides |
 | [Design notes](https://github.com/WeymenKoo/Motor-Controller/blob/main/Documentation/Design_Notes.md) | The full design write-up: theory, power stage, gate drive, current sensing, power tree, layout, safety, bring-up, Rev 2 list, lessons |
 
+## Validation | What's proven, what's next
+
+Each step runs on a current-limited supply before the next. Ticked items are done; the rest get a scope capture and conditions here as they're run.
+
+- [x] MCU, gate driver over SPI, current-sense amplifiers and PWM verified on a 12 V supply
+- [x] Motor identified: T-Motor MN601-S resistance, inductance and back-EMF
+- [x] Open-loop (I/f) spin to 1000 rpm on 12 V
+- [ ] Switch node on each phase at 12S: rise and fall, overshoot, ringing
+- [ ] Dead time measured at the gate pins
+- [ ] Closed-loop current (torque) control, step response
+- [ ] Closed-loop speed control on the encoder
+- [ ] Phase current at the 10 A RMS target, with board temperature over time
+- [ ] DC bus sag and ripple during throttle steps
+
 ## Rev 2, top items
 
 1. Thermal vias in the low-side drain pads, or a bottom-side switch-node pour
