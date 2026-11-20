@@ -25,3 +25,12 @@ test('the TL;DR moved to the profile: README.md here just points there, no PDF a
   expect(s).toContain('https://github.com/WeymenKoo');
   expect(fs.existsSync(path.join(ROOT, 'portfolio.pdf'))).toBe(false);
 });
+
+test('projects marked "portfolio": false stay on the site but not in the README section or the PDF', () => {
+  const md = fs.readFileSync(TLDR, 'utf8');
+  const { projects: slugs } = JSON.parse(fs.readFileSync(path.join(ROOT, 'dusk/content/manifest.json'), 'utf8'));
+  const off = slugs.filter(s => JSON.parse(fs.readFileSync(path.join(ROOT, 'dusk/content/projects', s, 'entry.json'), 'utf8')).portfolio === false);
+  expect(off).toEqual(['protoboard-avionics', 'water-rocket', 'rover']);
+  for (const s of off) expect(md).not.toContain('/projects/' + s + '/');
+  expect(projects().map(p => p.slug)).toEqual(slugs.filter(s => !off.includes(s)));
+});

@@ -100,6 +100,7 @@ them by name in step 3.
 | `cover.fit` | `cover` crops to fill the frame; `contain` shows the whole image (use for renders on white) |
 | `strip` | optional row of thumbnails under the spec; `[]` hides it |
 | `tldr` | optional: `{ "src", "alt" }`, a 4:3 photo of the real board for the GitHub profile README and `portfolio.pdf` (`npm run tldr`, then commit `dusk/tldr.md` and `dusk/portfolio.pdf`); without it they use `cover` |
+| `portfolio` | optional: `false` keeps the project on the site but out of the GitHub profile README and `portfolio.pdf` (used for the high-school projects) |
 | `link` | where "Read →" goes: `"content/projects/<slug>/index.html"` for the write-up in this folder (see "Writing an article"), or any URL; `""` hides the link |
 
 The card shows the `tldr` picture (the one on the GitHub profile and in the PDF)
