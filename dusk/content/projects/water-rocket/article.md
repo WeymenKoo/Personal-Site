@@ -13,7 +13,6 @@ The other half of the flight computer project was designing the mechanism and th
 
 This was from a science competition. The servo timer in the first flight computer was built after this one's parachute failed.
 
-![Me on the school field holding the competition rocket: a green bottle with blue fins and a taped nose](competition-field.jpg "On the field.")
 ![The competition rocket indoors: a green bottle with blue fins](competition-rocket.jpg "The rocket.")
 ![A white printed nose section with fins and a servo, standing on a base](competition-printed.jpg "A printed section with a servo.")
 ![The rocket on the grass after landing, with its parts and string scattered beside it](competition-landed.jpg "After landing.")
