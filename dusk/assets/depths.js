@@ -17,6 +17,7 @@
   "use strict";
   var main = document.querySelector("body > main");
   if (!main || !document.createElement("canvas").getContext) return;
+  if (document.documentElement.classList.contains("lite")) return;      /* phones: a plain gradient instead (site.css) */
   var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var body = document.body, hero = document.getElementById("hero");
   function el(t, c) { var n = document.createElement(t); if (c) n.className = c; return n; }

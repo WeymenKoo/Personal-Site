@@ -455,6 +455,53 @@ test.describe('as shipped', () => {
     for (const f of ['city-lights-a.png', 'city-lights-b.png']) expect(fs.existsSync(`${SITE}/assets/img/${f}`), f).toBe(true);
   });
 
+  test('phones get the lite site: stars stand still, nothing under the city, the drinks still slide', async ({ browser }) => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 664 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 });
+    const page = await ctx.newPage();
+    const errors = await open(page, server.url);
+    expect(await page.evaluate(() => document.documentElement.classList.contains('lite'))).toBe(true);
+    await expect(page.locator('canvas.depths, .station')).toHaveCount(0);
+    expect(await page.evaluate(() => typeof window.depths)).toBe('undefined');
+    // the sky is drawn once: two frames apart, the same picture
+    const shot = () => page.evaluate(() => document.getElementById('sky').toDataURL());
+    const a = await shot(); await page.waitForTimeout(400);
+    expect(await shot()).toBe(a);
+    for (const sel of ['.shine', '.sos', '.blink']) expect(await page.locator(sel).first().evaluate(n => getComputedStyle(n).animationName)).toBe('none');
+    expect(await page.locator('.counter .drink').count()).toBeGreaterThan(0);
+    // ?full brings everything back
+    await page.goto(server.url + 'index.html?full');
+    expect(await page.evaluate(() => document.documentElement.classList.contains('lite'))).toBe(false);
+    await expect(page.locator('canvas.depths')).toHaveCount(1);
+    expect(errors).toEqual([]);
+    await ctx.close();
+  });
+
+  test('desktop keeps the full site', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await open(page, server.url);
+    expect(await page.evaluate(() => document.documentElement.classList.contains('lite'))).toBe(false);
+    await expect(page.locator('canvas.depths')).toHaveCount(1);
+  });
+
+  test('the top bar stays on one line on a phone; no window frames over the city; no empty toast', async ({ browser }) => {
+    for (const w of [320, 360, 390, 430]) {
+      const ctx = await browser.newContext({ viewport: { width: w, height: 700 }, isMobile: true, hasTouch: true });
+      const page = await ctx.newPage();
+      for (const url of ['index.html', 'resume.html', 'contact.html', 'content/projects/kyogre-spirit/index.html']) {
+        await offline(page);
+        await page.goto(server.url + url);
+        const bar = page.locator('.topbar, .ar-bar').first();
+        const h = await bar.evaluate(n => { const r = n.querySelector('.brand').getBoundingClientRect(); return { h: r.height, lh: parseFloat(getComputedStyle(n).fontSize) * 2.2, right: Math.max(...[...n.querySelectorAll('a,span')].map(e => e.getBoundingClientRect().right)) }; });
+        expect(h.h, url + ' @' + w).toBeLessThan(h.lh);
+        expect(h.right, url + ' @' + w).toBeLessThanOrEqual(w);
+      }
+      await page.goto(server.url + 'index.html');
+      await expect(page.locator('.glass')).toHaveCount(0);
+      expect(await page.locator('#toast').evaluate(n => getComputedStyle(n).visibility)).toBe('hidden');
+      await ctx.close();
+    }
+  });
+
   test('scrolling holds 60 fps (p95 frame under 20 ms)', async ({ browser }) => {
     test.skip(!!process.env.CI, 'shared CI runners are too noisy to time frames');
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 });

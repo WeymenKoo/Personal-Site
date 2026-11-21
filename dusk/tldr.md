@@ -42,7 +42,7 @@ The power distribution system for Shadow, UBC AeroDesign's 2023–24 Advanced Cl
 
 **Flown once** · 2023 · 2 airframes · 120 in span · S1223 wing · NACA 0012 tail · balsa, ply and carbon fibre
 
-Two seasons as mechanical lead for lifting surfaces and aerodynamics on UBC AeroDesign's Advanced Class team: Kyogre in 2021–22, then Spirit, a blended wing body built twice in 2022–23. The analysis behind Kyogre, then mostly photos: a crash, Spirit's one flight and two shipments lost by UPS.
+Two seasons as mechanical lead for lifting surfaces and aerodynamics on UBC AeroDesign's Advanced Class team: Kyogre in 2021–22, then Spirit, a blended wing body built twice in 2022–23. Sketches, XFLR5, CAD, the build, and how it ended: a crash, one flight and two shipments lost by UPS.
 
 ### [DC electronic load](https://weymenkoo.github.io/Personal-Site/content/projects/dc-load/index.html)
 
