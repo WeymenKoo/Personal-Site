@@ -25,6 +25,11 @@ It was lockdown, so I drew up a rover in Fusion 360 that would be about 90% 3D p
 
 ## Printing it
 
+![A new 3D printer in its foam-lined box](printer-box.jpg "The printer, September 2019.")
+![The printer's hot end over the bed, mid-print](printer-printing.jpg "Printing.")
+
+![Grey printed leg parts and links laid out on a desk](first-legs.jpg "April 2020: the first legs.")
+
 ![The white printed body with grey printed legs, on a desk](printed-body.jpg "Body and legs.")
 ![The printed body from the other side, with a small plant behind it](printed-body-2.jpg "The other side.")
 
@@ -35,6 +40,9 @@ It was lockdown, so I drew up a rover in Fusion 360 that would be about 90% 3D p
 
 ![Top view: two blue motor drivers inside the white body, legs out to the sides](top-drivers.jpg "Motor drivers in the body.")
 ![Top view of the whole rover with wheels and servos](top-drivers-2.jpg "From above.")
+
+![The printed rover from the side on a tiled floor, the legs and servo wiring along it](july-side.jpg "July 2020, side.")
+![The printed rover from the front on a tiled floor, the white body between the legs](july-front.jpg "Front.")
 
 ## Motors | Two BTS7960s
 
@@ -51,6 +59,7 @@ I started working two part-time jobs around this time, so the project went on ho
 
 ![The printed rover with its legs, servos and wiring](servos.jpg "Servos and wiring on the legs.")
 ![The rover on the desk next to its RC transmitter](servos-rc.jpg "With the transmitter.")
+![The printed rover on a glass desk from above at an angle, the servos and wiring on its legs](july-desk.jpg "July 2020.")
 
 ## Mar 2021 | Aluminium rebuild
 
