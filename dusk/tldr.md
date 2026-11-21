@@ -22,7 +22,7 @@ A single-axis, sensored field-oriented-control motor controller for one joint of
 
 ### [AeroDesign power board](https://weymenkoo.github.io/Personal-Site/content/projects/power-board/index.html)
 
-<img src="https://weymenkoo.github.io/Personal-Site/content/projects/power-board/tldr.jpg" alt="The power board on the bench next to a roll of solder, tweezers and a soldering iron, with an inset of the reworked flight controller" width="720">
+<img src="https://weymenkoo.github.io/Personal-Site/content/projects/power-board/tldr.jpg" alt="The power board on the bench, a roll of solder below it, tweezers and a soldering iron at the edges" width="720">
 
 **Flown 2025** · 2025 · 2S–4S in · 5 V 15 A · LM5146 · 2 × TPS25983 · 6 layers
 

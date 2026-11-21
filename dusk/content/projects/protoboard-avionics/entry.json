@@ -8,7 +8,7 @@
   "cover": {
     "src": "card.jpg",
     "webp": "card.webp",
-    "alt": "Gen 4 flight computer: a Teensy 3.5, a BME280, an MPU6050, a buzzer and an RGB light on green protoboard, in its printed housing",
+    "alt": "The first PCB, from 2023: a green board with a Teensy, a microSD slot and connectors, a small chip held over it in red tweezers",
     "fit": "cover"
   },
   "strip": [],

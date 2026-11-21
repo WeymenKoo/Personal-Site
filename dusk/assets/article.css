@@ -69,7 +69,7 @@
 .ar-grid img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;border-radius:3px}
 .ar-grid.land img{aspect-ratio:4/3}
 .ar-grid figcaption{font-family:var(--mono);font-size:.66rem;line-height:1.5;color:var(--dim);margin-top:.5rem}
-@media(max-width:640px){.ar-grid.two,.ar-grid.three{grid-template-columns:1fr}.ar-grid img{aspect-ratio:auto}}
+@media(max-width:640px){.ar-grid.two,.ar-grid.three{grid-template-columns:1fr}.ar-grid img{aspect-ratio:var(--ar,auto)}}
 
 /* ---------- text messages (the 02:10 / 05:23 bit) ---------- */
 .ar-chat{margin:2.4rem 0;display:grid;gap:.45rem;justify-items:start;font-family:var(--mono)}
@@ -179,7 +179,9 @@
 /* images written as ![alt](file.jpg "caption"). A small image stays its
    own size instead of being stretched to the column. */
 #article .ar-fig img{width:auto;max-width:100%}
-.ar-grid.nat img{aspect-ratio:auto;object-fit:contain}
+/* with its size known (sizes.json) a picture is that wide, or the column's width, before it loads */
+#article .ar-fig img{width:min(100%,var(--w))}
+.ar-grid.nat img{aspect-ratio:var(--ar,auto);object-fit:contain}
 .ar-grid.nat{align-items:start}
 @media(min-width:64rem){
   .ar-fig.wide,.ar-grid.wide{margin-inline:-7rem}
@@ -206,10 +208,11 @@ body.article{background:radial-gradient(60rem 40rem at 0% 0%,color-mix(in srgb,v
 .ar-grid.many{grid-template-columns:repeat(var(--cols,3),1fr);align-items:start}
 .ar-grid.many img{aspect-ratio:3/4;object-fit:cover}
 @media(max-width:900px){.ar-grid.many{grid-template-columns:1fr 1fr}}
-@media(max-width:640px){.ar-grid.many{grid-template-columns:1fr}.ar-grid.many img{aspect-ratio:auto}}
-#article.ar-gallery .ar-grid:not(.many) img{aspect-ratio:auto;object-fit:contain}
+@media(max-width:640px){.ar-grid.many{grid-template-columns:1fr}.ar-grid.many img{aspect-ratio:var(--ar,auto)}}
+#article.ar-gallery .ar-grid:not(.many) img{aspect-ratio:var(--ar,auto);object-fit:contain}
 #article.ar-gallery .ar-grid.two,#article.ar-gallery .ar-grid.three{align-items:start}
 #article.ar-gallery .ar-fig img{max-height:80vh;width:auto;margin-inline:auto}
+#article.ar-gallery .ar-fig img{width:min(100%,var(--w),calc(80vh * var(--r)))}
 #article.ar-gallery .ar-fig figcaption{text-align:center}
 @media(min-width:64rem){#article.ar-gallery .ar-fig.wide,#article.ar-gallery .ar-grid.wide{margin-inline:0}}
 
@@ -218,3 +221,9 @@ body.article{background:radial-gradient(60rem 40rem at 0% 0%,color-mix(in srgb,v
   .ar-chat .msg,.ar-chat .seen{opacity:1;transform:none;transition:none}
   .ar-chat .typing{display:none}
 }
+
+/* phones: --vh0 is the window's height when the page opened (theme.js), so toolbars don't resize anything */
+.lite .ar-head{padding-top:clamp(3rem,calc(var(--vh0,1vh)*10),6rem)}
+.lite .ar-ch{padding-top:clamp(4rem,calc(var(--vh0,1vh)*11),7rem)}
+.lite #article{min-height:calc(var(--vh0,1svh)*100)}
+.lite #article.ar-gallery .ar-fig img{max-height:calc(var(--vh0,1vh)*80);width:min(100%,var(--w),calc(var(--vh0,1vh)*80 * var(--r)))}

@@ -55,3 +55,7 @@ body.resume{background:radial-gradient(60rem 40rem at 0% 0%,color-mix(in srgb,va
 .job .org a.org-link{color:inherit;text-decoration:none}
 .job .org a.org-link:hover,.job .org a.org-link:focus-visible{text-decoration:underline;text-underline-offset:.18em}
 @media (prefers-reduced-motion:reduce){.job .org .egg.gyro{animation:none}}
+
+.lite .cv{padding-top:clamp(5rem,calc(var(--vh0,1vh)*12),7rem)}
+.lite .job{transition:border-left-color .3s}
+.lite .job.lit{border-left-color:var(--accent)}

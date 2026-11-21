@@ -67,9 +67,16 @@
     img.setAttribute("src", src.slice(0, i));
     return src.slice(i + 1).split(/[#,+]/);
   }
+  var SIZES = {};                                                      /* sizes.json (npm run stamp): each picture's width and height */
   function figure(img) {
     var cap = img.getAttribute("title");
     img.removeAttribute("title");
+    var wh = SIZES[img.getAttribute("src")];
+    if (wh) {                                                          /* hold its space before it loads, so the page doesn't jump */
+      img.setAttribute("width", wh[0]); img.setAttribute("height", wh[1]);
+      img.style.setProperty("--ar", wh[0] + "/" + wh[1]);
+      img.style.setProperty("--w", wh[0] + "px"); img.style.setProperty("--r", wh[0] / wh[1]);
+    }
     img.setAttribute("loading", "lazy");
     img.setAttribute("decoding", "async");
     /* click a figure to see it big, in the lightbox (fx.js); the link
@@ -251,17 +258,19 @@
   }
 
   window.articleReady = Promise.all([
-    script(ASSETS + "vendor/marked.umd.js?v=b904538d"),
+    script(ASSETS + "vendor/marked.umd.js?v=2caa85b5"),
     get("entry.json", "json").catch(function (e) { console.error("[article]", e.message); return {}; }),
-    get("article.md", "text")
+    get("article.md", "text"),
+    get("sizes.json", "json").catch(function () { return {}; })
   ]).then(function (r) {
+    SIZES = r[3] || {};
     build(r[1], r[2]);
   }).catch(sorry).then(function () {
     /* fx.js (quote, pets, lightbox) and article.js (text-message reveal)
        read the page when they start, so they load after it's built */
-    return script(ASSETS + "fx.js?v=b904538d");
+    return script(ASSETS + "fx.js?v=2caa85b5");
   }).then(function () {
-    return script(ASSETS + "article.js?v=b904538d");
+    return script(ASSETS + "article.js?v=2caa85b5");
   }).then(function () {
     if (location.hash.length > 1) {
       var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));

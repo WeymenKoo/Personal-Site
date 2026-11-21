@@ -327,6 +327,26 @@ test.describe('the seven articles, as shipped', () => {
   test.beforeAll(async () => { server = await startServer(SITE); });
   test.afterAll(async () => { await server.close(); });
 
+  test('sizes.json in every folder is up to date (run: npm run stamp)', () => {
+    expect(require('../tools/sizes').run(true)).toEqual([]);
+  });
+
+  test('on a phone every picture holds its space before it loads, so scrolling never jumps', async ({ browser }) => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 664 }, isMobile: true, hasTouch: true });
+    const page = await ctx.newPage();
+    let release; const hold = new Promise(r => { release = r; });
+    await page.route(/\/content\/projects\/.*\.(jpe?g|png|gif|webp)(\?|$)/, async r => { await hold; await r.continue(); });
+    for (const slug of SLUGS) {
+      await offline(page);
+      await page.goto(server.url + url(slug), { waitUntil: 'domcontentloaded' });
+      await page.evaluate(() => window.articleReady);
+      const flat = await page.evaluate(() => [...document.querySelectorAll('.ar img')].filter(i => !i.complete && i.getBoundingClientRect().height < 40).map(i => i.getAttribute('src')));
+      expect(flat, slug).toEqual([]);
+    }
+    release();
+    await ctx.close();
+  });
+
   test('each card links to its own article', async ({ page }) => {
     await offline(page);
     await page.goto(server.url + 'index.html');
