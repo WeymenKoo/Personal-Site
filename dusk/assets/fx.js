@@ -14,6 +14,7 @@
   "use strict";
 
   var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var LITE = document.documentElement.classList.contains("lite");     /* phones: only the drinks move (theme.js) */
   var ASSETS = (document.currentScript && document.currentScript.src || "").replace(/[^/]*$/, "");
 
   function $(s, r) { return (r || document).querySelector(s); }
@@ -364,8 +365,9 @@
     }
 
     function size() {
-      if (typeof rebuildShuttle === "function" && SH) rebuildShuttle();
       var r = sky.getBoundingClientRect();
+      if (Math.round(r.width) === W && Math.round(r.height) === H) { placeSOS(); return; }   /* phone toolbars fire resize on scroll */
+      if (typeof rebuildShuttle === "function" && SH) rebuildShuttle();
       W = sky.width = Math.round(r.width); H = sky.height = Math.round(r.height); skyRect = null;
       ctx.imageSmoothingEnabled = false;
       stars = [];
@@ -1073,7 +1075,23 @@
     var running = false;
     function start() { if (running || REDUCED) return; running = true; last = 0; requestAnimationFrame(frame); }
     function stop() { running = false; }
+    /* phones: the stars, drawn once, and nothing flying */
+    function still() {
+      ctx.clearRect(0, 0, W, H); starCol = css("--star") || "#fff";
+      stars.forEach(function (s) {
+        ctx.globalAlpha = .35 + .65 * Math.abs(Math.sin(s.t)); ctx.fillStyle = starCol;
+        ctx.fillRect(s.x, s.y, s.big ? P : P - 1, s.big ? P : P - 1);
+      });
+      ctx.globalAlpha = 1;
+    }
     size();
+    if (LITE) {
+      still();
+      window.addEventListener("resize", function () { var w = W, h = H; size(); if (w !== W || h !== H) still(); });
+      new MutationObserver(function () { setTimeout(still, 0); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+      if (window.matchMedia) { var mq = matchMedia("(prefers-color-scheme: dark)"); (mq.addEventListener ? mq.addEventListener("change", still) : mq.addListener(still)); }
+      return;
+    }
     window.addEventListener("resize", size);
     if (REDUCED) { frame(0); return; }
     if ("IntersectionObserver" in window) {
