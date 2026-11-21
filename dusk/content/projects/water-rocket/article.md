@@ -1,39 +1,63 @@
 ---
 title: Water rocket
-subtitle: The rocket around the flight computers: a bottle body, a printed nose cone and a parachute release.
+subtitle: A better way to open a parachute, year by year.
 team: Individual work
 role: Design, 3D printing, assembly
-date: 2019 – 2021
+date: 2019 – 2022
 layout: gallery
 ---
 
-The other half of the flight computer project was designing the mechanism and the housing. The electronics have [their own page](../protoboard-avionics/index.html). This one is mostly pictures of the rocket.
+It started with a science competition rocket whose parachute didn't open. Everything after was about building a better way to deploy one, and it led to CAD, then electronics, then PCBs, and eventually [avionics at UBC AeroDesign](../avionics-2024/index.html). The electronics have [their own page](../protoboard-avionics/index.html).
 
-## Science competition | Where it started
+## The science competition | Where it started
 
-This was from a science competition. The servo timer in the first flight computer was built after this one's parachute failed.
-
-![The competition rocket indoors: a green bottle with blue fins](competition-rocket.jpg "The rocket.")
+![The competition rocket indoors: a green bottle with blue fins](competition-rocket.jpg "The competition rocket.")
 ![A white printed nose section with fins and a servo, standing on a base](competition-printed.jpg "A printed section with a servo.")
-![The rocket on the grass after landing, with its parts and string scattered beside it](competition-landed.jpg "After landing.")
+![The rocket on the grass after landing, with its parts and string scattered beside it](competition-landed.jpg "After landing. The parachute didn't open.")
 
-## 2019 | A clear bottle body
+## A clear bottle body | 2019
 
-The Gen 1 flight computer deployed the parachute, on the ground at least. The rocket wasn't airtight.
+![The clear bottle body on a tiled floor with the electronics inside](gen1-body.jpg "April 2019: the first flight computer inside a clear bottle.")
+![The clear body standing up, with the seven-segment countdown showing through](gen1-countdown.jpg "The countdown, showing through.")
+![The flight computer's protoboard on a printed ring at the top of the body](gen1-electronics.jpg "The electronics bay. It wasn't airtight.")
 
-![The clear bottle body on a tiled floor with the electronics inside](gen1-body.jpg "The bottle body.")
-![The clear body standing up, with the seven-segment countdown showing through](gen1-countdown.jpg "Countdown showing through.")
-![The flight computer's protoboard on a printed ring at the top of the body](gen1-electronics.jpg "The electronics bay.")
+![A white printed rocket with fins standing on a desk, its body hinged open down one side](printed-body-2019.jpg "July 2019: a printed body, hinged down the side.")
+![A bottle rocket with a dark nose cone and white fins on a launch pad on artificial turf](on-the-pad.jpg "September 2019: for a physics essay on water-to-air ratio against height.")
 
-## 2020 | Printed nose cone
+## The clamshell | 2019–20
+
+![The first printed clamshell nose cone, its front half lifted off the body to show the latch inside](clamshell-first.jpg "November 2019: the first clamshell nose cone.")
+![Inside the grey clamshell: a spring catch on one side and a gear on a printed plate, the back half standing open behind them](clamshell-latch.jpg "The catch: a spring and a gear.")
+![The grey clamshell with its front half off, a servo inside, cables running out the bottom](clamshell-servo.jpg "December 2019: the servo inside.")
+
+![The grey clamshell on a desk: one half swings off and drops, the other stays on the body](clamshell-release.gif "Release test, November 2019.")
+
+![Four nose cones in a row: a white one, two grey ones crossed out in red tape, and the last grey one with a tick](clamshell-versions.jpg "February 2020: four versions, three crossed out.")
+
+## Grey | 2020
 
 ![The grey printed nose cone, split open beside the closed one](nose-open-closed.jpg "Open and closed.")
-
-![The nose cone with one half off, showing the pegs that hold it](nose-open.jpg "One half off.")
 ![A servo with a printed arm](latch-servo.jpg "The servo and its printed arm.")
 ![A flight computer on a printed base, with the nose cone halves and a LiPo battery behind it](nose-and-electronics.jpg "Electronics, nose and battery.")
-![The flight computer sliding into the white printed body](body-open.jpg "Into the body.")
-![The last flight computer inside its white printed housing, a servo on the side](gen4-housing.jpg "The Gen 4 housing, 2021.")
 
-> The final goal is to build a reliable water rocket parachute deployment system.
-> — "My Projects," July 2021
+![The two halves of the grey clamshell against a white backdrop: the body with one half attached, the loose half beside it](clamshell-halves.jpg "October 2020.")
+![The grey clamshell open on its body against a white backdrop, the spring and pegs showing](clamshell-open.jpg "Open.")
+
+## White | 2020–21
+
+![A white printed body with a servo arm on top, next to the grey rocket with its clamshell open](bodies-white-grey.jpg "November 2020: white next to grey.")
+![The flight computer sliding into the white printed body](body-open.jpg "The flight computer going into the white body.")
+![The white clamshell open on its body, a servo arm on top, the loose half beside it](clamshell-white.jpg "January 2021.")
+![The last flight computer inside its white printed housing, a servo on the side](gen4-housing.jpg "July 2021: the last protoboard flight computer, in its housing.")
+
+## Gold | 2021
+
+![The clear bottle rocket with a gold printed nose cone and white fins on a printed stand](gold-on-stand.jpg "December 2021, on its stand.")
+![The two gold clamshell halves standing open on a desk](gold-halves.jpg "The gold clamshell.")
+![The flight computer stack on a gold printed base with a servo underneath](gold-electronics.jpg "The electronics, on a gold base.")
+
+## On the scale | 2022
+
+![The grey rocket nose and body standing on a kitchen scale, the flight computer showing through an opening](on-the-scale.jpg "November 2022.")
+
+After this came [the first PCB](../protoboard-avionics/index.html), then [AeroDesign](../avionics-2024/index.html).
