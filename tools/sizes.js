@@ -56,7 +56,28 @@ function run(check) {
   return stale;
 }
 
-module.exports = { dims, sizesFor, run };
+/* a JPEG's EXIF orientation (1 = as stored). Phones save sideways or upside-down pixels and a tag
+   that says how to turn them; site pictures must be turned for real, with no tag (the tests check). */
+function orientation(file) {
+  const b = fs.readFileSync(file);
+  if (!(b[0] === 0xff && b[1] === 0xd8)) return 1;
+  for (let i = 2; i < b.length - 4;) {
+    if (b[i] !== 0xff) { i++; continue; }
+    const m = b[i + 1], len = b.readUInt16BE(i + 2);
+    if (m === 0xda) break;                                             // image data: no more headers
+    if (m === 0xe1 && b.toString('ascii', i + 4, i + 8) === 'Exif') {
+      const t = i + 10, le = b.toString('ascii', t, t + 2) === 'II';
+      const u16 = o => le ? b.readUInt16LE(o) : b.readUInt16BE(o), u32 = o => le ? b.readUInt32LE(o) : b.readUInt32BE(o);
+      const ifd = t + u32(t + 4), n = u16(ifd);
+      for (let k = 0; k < n; k++) { const e = ifd + 2 + k * 12; if (u16(e) === 0x0112) return u16(e + 8); }
+      return 1;
+    }
+    i += 2 + len;
+  }
+  return 1;
+}
+
+module.exports = { dims, sizesFor, run, orientation };
 
 if (require.main === module) {
   const check = process.argv.includes('--check');

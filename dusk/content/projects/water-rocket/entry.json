@@ -2,9 +2,9 @@
   "title": "Water rocket",
   "status": "idle",
   "statusLabel": "High school",
-  "year": "2019–21",
+  "year": "2019–22",
   "spec": "PET bottle airframe · 3D-printed nose cone · servo parachute release",
-  "summary": "The rocket around the flight computers: a bottle rocket from a school science competition, then a clear bottle body, then a printed nose cone that splits open to let the parachute out. Mostly pictures.",
+  "summary": "A science competition rocket whose parachute didn't open, and four years of trying to do better: a clear bottle body, then a printed clamshell nose cone in grey, white and gold. It led to CAD, electronics, PCBs and AeroDesign. A timeline, mostly pictures.",
   "cover": {
     "src": "card.jpg",
     "webp": "card.webp",

@@ -327,6 +327,16 @@ test.describe('the seven articles, as shipped', () => {
   test.beforeAll(async () => { server = await startServer(SITE); });
   test.afterAll(async () => { await server.close(); });
 
+  test('no picture is stored sideways or upside down (no EXIF rotation tag)', () => {
+    const { orientation } = require('../tools/sizes');
+    const root = `${SITE}/content/projects`, turned = [];
+    for (const slug of fs.readdirSync(root)) {
+      if (!fs.statSync(`${root}/${slug}`).isDirectory()) continue;
+      for (const f of fs.readdirSync(`${root}/${slug}`)) if (/\.jpe?g$/i.test(f) && orientation(`${root}/${slug}/${f}`) !== 1) turned.push(`${slug}/${f}`);
+    }
+    expect(turned, 'rotate these for real and save without EXIF').toEqual([]);
+  });
+
   test('sizes.json in every folder is up to date (run: npm run stamp)', () => {
     expect(require('../tools/sizes').run(true)).toEqual([]);
   });
