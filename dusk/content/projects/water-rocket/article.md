@@ -58,6 +58,9 @@ It started with a science competition rocket whose parachute didn't open. Everyt
 
 ## On the scale | 2022
 
+![A flight computer on green protoboard: a Teensy 4.1 in the middle, a BMP388 and a BNO055 on the left, an SD card board on the right](fc-2022-front.jpg "November 2022: the flight computer that went inside. Teensy 4.1, BMP388, BNO055, SD card.")
+![The back of the protoboard: point-to-point wiring in blue, yellow, red and white](fc-2022-back.jpg "The back.")
+
 ![The grey rocket nose and body standing on a kitchen scale, the flight computer showing through an opening](on-the-scale.jpg "November 2022.")
 
 After this came [the first PCB](../protoboard-avionics/index.html), then [AeroDesign](../avionics-2024/index.html).

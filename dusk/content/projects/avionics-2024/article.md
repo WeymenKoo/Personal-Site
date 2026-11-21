@@ -342,6 +342,14 @@ The final design is a 2-layer board, with no special stackup requirement, follow
 
 ## Nobody said it was easy
 
+### December 2023: a short
+
+We assembled the first boards ourselves. One of them had a short on it, and the cause was a 0 Ω resistor we forgot to leave off.
+
+![The wiring hub, revision 1.0, with the main power module soldered on: the ISL8117A buck, its inductor and capacitors, marked 5 V out, 15 A max](hub-rev1-module.jpg "Wiring hub rev 1.0 with the power module, 9 December 2023.")
+![A hand probing the power module with tweezers on a lab bench](debug-module.jpg "Looking for the short.")
+![The power module on a lab bench, wired to a bench supply, an oscilloscope and a multimeter, hands holding the probes](debug-bench.jpg "On the bench the next day, 10 December 2023.")
+
 ![A power module exposed to the elements on the airframe](fail-exposure.jpg "Bad integration, exposure to the elements.")
 ![A damaged power module held in a hand](fail-shoot-through.jpg "Suspected shoot-through event, killing 4 servos.")
 ![The power module installed in the fuselage under the Cube Orange](fail-connectors.jpg "Not rework-friendly; cheap connectors.")
