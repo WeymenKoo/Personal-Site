@@ -1491,6 +1491,16 @@
   var martini = $(".martini");
   if (martini) martini.addEventListener("dblclick", function () { toast("One Pan Galactic Gargle Blaster, shaken. Bench closes at 3 a.m."); });
 
+  /* phones have no hover: the card or job in the middle of the screen lights up instead */
+  if (LITE && "IntersectionObserver" in window) {
+    var lit = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { e.target.classList.toggle("lit", e.isIntersecting); });
+    }, { rootMargin: "-40% 0px -40% 0px" });
+    var watch = function () { document.querySelectorAll(".proj,.job").forEach(function (n) { lit.observe(n); }); };
+    watch();
+    if (window.entriesReady) window.entriesReady.then(watch);
+  }
+
   /* for the people who open the console */
   if (window.console && console.log) {
     console.log("%c WK · TOP FLOOR ", "background:#0d0820;color:#7ff3ff;font:bold 14px monospace;padding:4px 8px");

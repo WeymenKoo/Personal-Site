@@ -323,7 +323,15 @@ bullets).
 This puts a fresh `?v=…` on every link to the CSS, JS and images, so a
 returning visitor's browser can't pair the new page with an old cached
 script (that shows up as a broken-looking page for ten minutes). `npm test`
-fails if you forget. Editing `article.md` or `entry.json` doesn't need it.
+fails if you forget. Editing `article.md` or `entry.json` doesn't need it,
+but adding or changing pictures in a project folder does: it also rewrites
+that folder's `sizes.json`, so phones hold each picture's space while it
+loads instead of jumping as you scroll.
+
+On phones (`html.lite`, set by `theme.js`) nothing flies or swims: the
+stars are drawn once, and the underground and sea are one still picture
+that scrolls with the page. Add `?full` to the address to see everything on
+a phone, `?lite` to see the phone version on a desktop.
 
 ### Hidden things
 

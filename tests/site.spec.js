@@ -455,25 +455,70 @@ test.describe('as shipped', () => {
     for (const f of ['city-lights-a.png', 'city-lights-b.png']) expect(fs.existsSync(`${SITE}/assets/img/${f}`), f).toBe(true);
   });
 
-  test('phones get the lite site: stars stand still, nothing under the city, the drinks still slide', async ({ browser }) => {
-    const ctx = await browser.newContext({ viewport: { width: 390, height: 664 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 });
+  const PHONE = { viewport: { width: 390, height: 664 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 };
+  test('phones get the lite site: stars stand still, no subs or flyers, one still picture under the city', async ({ browser }) => {
+    const ctx = await browser.newContext(PHONE);
     const page = await ctx.newPage();
     const errors = await open(page, server.url);
     expect(await page.evaluate(() => document.documentElement.classList.contains('lite'))).toBe(true);
-    await expect(page.locator('canvas.depths, .station')).toHaveCount(0);
-    expect(await page.evaluate(() => typeof window.depths)).toBe('undefined');
     // the sky is drawn once: two frames apart, the same picture
-    const shot = () => page.evaluate(() => document.getElementById('sky').toDataURL());
-    const a = await shot(); await page.waitForTimeout(400);
-    expect(await shot()).toBe(a);
-    for (const sel of ['.shine', '.sos', '.blink']) expect(await page.locator(sel).first().evaluate(n => getComputedStyle(n).animationName)).toBe('none');
+    const shot = (id) => page.evaluate(sel => document.querySelector(sel).toDataURL(), id);
+    const a = await shot('#sky'); await page.waitForTimeout(400);
+    expect(await shot('#sky')).toBe(a);
+    expect(await page.evaluate(() => getComputedStyle(document.querySelector('.city'), '::before').animationName)).toBe('av');
+    // below the city: one canvas as tall as the underground + sea + station, scrolling with the page, no subs
+    const d = await page.evaluate(() => {
+      const c = document.querySelector('canvas.depths'), z = depths.zones(), r = c.getBoundingClientRect();
+      return { pos: getComputedStyle(c).position, top: r.top + scrollY, h: r.height, want: z.stTop + z.stH - z.start, start: z.start, subs: depths.fleet().length };
+    });
+    expect(d.pos).toBe('absolute');
+    expect(Math.abs(d.top - d.start)).toBeLessThan(2);
+    expect(d.h).toBeGreaterThanOrEqual(d.want - 2);
+    expect(d.subs).toBe(0);
+    const deep = await shot('canvas.depths');
+    await page.evaluate(() => scrollTo(0, document.body.scrollHeight)); await page.waitForTimeout(400);
+    expect(await shot('canvas.depths')).toBe(deep);
+    // the building lights, the title's shine and the drinks still go
+    for (const sel of ['.shine', '.sos']) expect(await page.locator(sel).first().evaluate(n => getComputedStyle(n).animationName)).not.toBe('none');
     expect(await page.locator('.counter .drink').count()).toBeGreaterThan(0);
+    // the card in the middle of the screen lights up, as a hover would
+    await page.locator('.proj').nth(2).evaluate(n => n.scrollIntoView({ block: 'center' }));
+    await expect(page.locator('.proj').nth(2)).toHaveClass(/\blit\b/);
+    await expect(page.locator('.proj.lit')).toHaveCount(1);
     // ?full brings everything back
     await page.goto(server.url + 'index.html?full');
     expect(await page.evaluate(() => document.documentElement.classList.contains('lite'))).toBe(false);
-    await expect(page.locator('canvas.depths')).toHaveCount(1);
+    expect(await page.locator('canvas.depths').evaluate(c => getComputedStyle(c).position)).toBe('fixed');
     expect(errors).toEqual([]);
     await ctx.close();
+  });
+
+  test('phones: an in-app browser toolbar sliding away resizes nothing', async ({ browser }) => {
+    for (const url of ['index.html', 'resume.html', 'contact.html', 'content/projects/kyogre-spirit/index.html']) {
+      const ctx = await browser.newContext(PHONE);
+      const page = await ctx.newPage();
+      await offline(page);
+      await page.goto(server.url + url);
+      await page.evaluate(() => (window.entriesReady || window.articleReady));
+      await page.waitForTimeout(300);
+      const measure = () => page.evaluate(() => {
+        const out = {};
+        for (const sel of ['.hero', '.city', '.station', 'canvas.depths', '.cv', '.tg', '.ar-head', '.ar-ch', '.backdrop .city', '.projects-wrap']) {
+          const n = document.querySelector(sel); if (n) { const r = n.getBoundingClientRect(), fixed = !!n.closest('.backdrop'); out[sel] = fixed ? [Math.round(r.height)] : [Math.round(r.height), Math.round(r.top + scrollY)]; }   // the contact page's backdrop is pinned to the window, so only its size counts
+        }
+        out.page = document.documentElement.scrollHeight;
+        return out;
+      });
+      await page.evaluate(() => scrollTo(0, 600));
+      const before = await measure();
+      await page.setViewportSize({ width: 390, height: 744 });           // the toolbar slides away
+      await page.waitForTimeout(300);
+      expect(await measure(), url).toEqual(before);
+      await page.setViewportSize({ width: 390, height: 664 });           // and back
+      await page.waitForTimeout(300);
+      expect(await measure(), url).toEqual(before);
+      await ctx.close();
+    }
   });
 
   test('desktop keeps the full site', async ({ page }) => {

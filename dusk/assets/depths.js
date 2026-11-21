@@ -17,7 +17,8 @@
   "use strict";
   var main = document.querySelector("body > main");
   if (!main || !document.createElement("canvas").getContext) return;
-  if (document.documentElement.classList.contains("lite")) return;      /* phones: a plain gradient instead (site.css) */
+  /* phones (html.lite): one still picture, as tall as the page, that scrolls with it. No subs, no loop. */
+  var LITE = document.documentElement.classList.contains("lite");
   var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var body = document.body, hero = document.getElementById("hero");
   function el(t, c) { var n = document.createElement(t); if (c) n.className = c; return n; }
@@ -28,7 +29,7 @@
   function sayOnce(k, m) { if (!once[k]) { once[k] = 1; say(m); } }
 
   /* ---------- the canvas, and a room at the bottom for the station ---------- */
-  var cv = el("canvas", "depths"); cv.setAttribute("aria-hidden", "true");
+  var cv = el("canvas", LITE ? "depths still" : "depths"); cv.setAttribute("aria-hidden", "true");
   body.insertBefore(cv, body.firstChild);
   var ctx = cv.getContext("2d");
   var station = el("div", "station"); station.setAttribute("aria-hidden", "true");
@@ -255,9 +256,11 @@
     VW = document.documentElement.clientWidth; VH = innerHeight;
     P = pixelSize();
     W = Math.ceil(VW / P); H = Math.ceil(VH / P) + 2;
-    if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
-    ctx.imageSmoothingEnabled = false;
-    cv.style.width = W * P + "px"; cv.style.height = H * P + "px";
+    if (!LITE) {
+      if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+      ctx.imageSmoothingEnabled = false;
+      cv.style.width = W * P + "px"; cv.style.height = H * P + "px";
+    }
     var start = hero ? pageTop(hero) + hero.offsetHeight : pageTop(main) + 40;
     var stTop = pageTop(station), stH = station.offsetHeight;
     var span = Math.max(400, stTop - start), ug = Math.round(Math.min(720, Math.max(240, span * .22)));
@@ -269,8 +272,27 @@
       var map = function (y) { return Z.sea + (y - old.sea) / Math.max(1, old.stTop - old.sea) * (Z.stTop - Z.sea); };
       subs.forEach(function (v) { v.y = map(v.y); v.ty = map(v.ty); });
     }
+    if (LITE) {                                                        /* the canvas covers start .. the station's floor; the viewport's height plays no part */
+      H = Math.ceil((stTop + stH - start) / P); base = start;
+    }
     var k = [W, H, P.toFixed(3), Math.round(start), Math.round(stTop), Math.round(colL), theme].join();
-    if (k !== key) { key = k; build(); }
+    if (k !== key) {
+      key = k;
+      if (LITE) {
+        cv.width = W; cv.height = H; ctx.imageSmoothingEnabled = false;
+        cv.style.width = VW + "px"; cv.style.height = (stTop + stH - start) + "px"; cv.style.top = start + "px";   /* never past the station's floor: it would lengthen the page */
+      }
+      build();
+      if (LITE) still();
+    }
+  }
+  function still() {                                                   /* the whole of it, once: the train waits at the platform */
+    ctx.clearRect(0, 0, W, H);
+    underground(0);
+    sea();
+    T.phase = "dwell"; T.x = G.stop; T.t = 220; T.v = 0;
+    stationScene(0);
+    wreck(0);
   }
 
   /* ---------- the static parts, drawn once per layout ---------- */
@@ -822,7 +844,7 @@
     if (running && !REDUCED && visible() && !document.hidden) requestAnimationFrame(frame); else { running = false; lastT = 0; }
   }
   function wake() {
-    if (!Z) return;
+    if (!Z || LITE) return;
     if (REDUCED) { requestAnimationFrame(frame); return; }
     if (!running && visible() && !document.hidden) { running = true; requestAnimationFrame(frame); }
   }
@@ -841,7 +863,7 @@
     return null;
   }
   function blocked(e) { return e.target.closest && e.target.closest("a,button,input,textarea,.proj,.dock,.lb,#hero,.topbar,.job"); }
-  document.addEventListener("pointermove", function (e) {
+  if (!LITE) document.addEventListener("pointermove", function (e) {
     if (e.pointerType === "touch") return;
     cur.cx = cur.x = e.clientX; cur.cy = e.clientY; cur.y = e.clientY + scrollY; cur.in = !!Z && cur.y > Z.start;
     if (cur.in && !blocked(e)) body.classList.toggle("aim", !!thingAt(cur.x, cur.y));
@@ -853,13 +875,17 @@
     wake();
   }, { passive: true });
   document.addEventListener("click", function (e) {
-    if (!Z || blocked(e)) return;
+    if (!Z || LITE || blocked(e)) return;
     var t = thingAt(e.clientX, e.clientY + scrollY);
     if (t) t.act();
   });
   document.addEventListener("visibilitychange", wake);
 
-  readTheme(); layout(); vesselsInit(); wake();
+  readTheme(); layout(); if (!LITE) vesselsInit(); wake();
+  if (LITE) {                                                          /* no frame loop to notice a theme change */
+    new MutationObserver(readTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    if (window.matchMedia) { var mq = matchMedia("(prefers-color-scheme: dark)"); (mq.addEventListener ? mq.addEventListener("change", readTheme) : mq.addListener(readTheme)); }
+  }
   window.addEventListener("resize", function () { layout(); wake(); });
   if ("ResizeObserver" in window) new ResizeObserver(function () { layout(); wake(); }).observe(body);
 
