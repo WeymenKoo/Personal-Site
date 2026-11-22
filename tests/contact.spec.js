@@ -29,13 +29,12 @@ async function tap(page, pattern) {
   await page.waitForTimeout(800);
 }
 
-test('email and phone are on the cheat sheet in plain sight; the message line starts closed', async ({ page }) => {
+test('email is on the cheat sheet in plain sight, no phone number; the message line starts closed', async ({ page }) => {
   const errors = await open(page);
   await expect(page.locator('#plainEmail')).toBeVisible();
   await expect(page.locator('#plainEmail')).toHaveText('kchweymen@gmail.com');
   await expect(page.locator('#plainEmail')).toHaveAttribute('href', 'mailto:kchweymen@gmail.com');
-  await expect(page.locator('#plainPhone')).toHaveText('+1 604 968 9695');
-  await expect(page.locator('#plainPhone')).toHaveAttribute('href', 'tel:+16049689695');
+  await expect(page.locator('#plainPhone')).toHaveCount(0);
   await expect(page.locator('#line')).toBeHidden();
   expect(errors).toEqual([]);
 });
@@ -89,8 +88,7 @@ test('the message is words only: no file input, and it goes out by email or text
   const mail = await page.locator('#sendEmail').getAttribute('href');
   expect(mail.startsWith('mailto:kchweymen@gmail.com?subject=')).toBe(true);
   expect(decodeURIComponent(mail.split('&body=')[1])).toBe('Hello & 73\n\n— Ada');
-  const sms = await page.locator('#sendText').getAttribute('href');
-  expect(sms.startsWith('sms:+16049689695?&body=')).toBe(true);
+  await expect(page.locator('#sendText')).toHaveCount(0);
   // the message is echoed in Morse under the box
   await expect(page.locator('#echo')).toContainText('···· ·');
 });
@@ -134,4 +132,14 @@ test('the front page links here from the top bar and the footer', async ({ page 
 test('asset links carry the current stamp (run: npm run stamp)', () => {
   const { stale } = run(true);
   expect(stale, 'stale ?v= stamps: run `npm run stamp` and commit').toEqual([]);
+});
+
+test('no phone number anywhere on the site (it lives only in the résumé PDF)', () => {
+  const fs = require('fs'), path = require('path');
+  const walk = d => fs.readdirSync(d, { withFileTypes: true }).flatMap(e =>
+    e.isDirectory() ? walk(path.join(d, e.name)) : /\.(html|js|css|md|json)$/.test(e.name) ? [path.join(d, e.name)] : []);
+  for (const f of walk(path.join(__dirname, '..', 'dusk'))) {
+    const s = fs.readFileSync(f, 'utf8');
+    expect(s, f).not.toMatch(/tel:|sms:|604[\s.-]?968/);
+  }
 });

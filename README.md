@@ -13,20 +13,17 @@ tools/       scroll-profile.js, a frame-time profiler (npm run profile)
 
 ## Projects
 
-The short version of every project, one picture each, and the printable
-**portfolio.pdf** are on my GitHub profile: **[github.com/WeymenKoo](https://github.com/WeymenKoo)**.
-
-They're generated here from the projects' `entry.json` by `npm run tldr`
-(into `dusk/tldr.md` and `dusk/portfolio.pdf`), published with the site,
-and the profile repo picks them up on its own (see
-[`.github/workflows/sync-portfolio.yml`](https://github.com/WeymenKoo/WeymenKoo/blob/main/.github/workflows/sync-portfolio.yml) there).
+The printable one-page-per-project **[portfolio.pdf](https://weymenkoo.github.io/Personal-Site/portfolio.pdf)**
+is generated from the projects' `entry.json` by `npm run tldr` (into
+`dusk/portfolio.pdf`) and published with the site. The GitHub profile
+README is hand-written and just links here.
 
 ## Editing
 
 Each project is a folder under `dusk/content/projects/` with its images
 and one Markdown file, `article.md`, which is the write-up. Edit that file
-to change the article. The profile's Projects section and `portfolio.pdf` come
-from each project's `entry.json`: after changing one, run `npm run tldr`.
+to change the article. `portfolio.pdf` comes from each project's `entry.json`: after changing
+one, run `npm run tldr`.
 
 Adding projects, writing an article, running it
 locally, and deploying: see **[dusk/README.md](dusk/README.md)**.

@@ -9,7 +9,7 @@
 (function () {
   "use strict";
 
-  var EMAIL = "kchweymen@gmail.com", PHONE = "+16049689695";
+  var EMAIL = "kchweymen@gmail.com";
   var DASH_MS = 220;        /* a press this long or longer is a dash */
   var LETTER_MS = 650;      /* this long with the key up ends the letter */
   var WORD_MS = 1700;       /* and this long ends the word */
@@ -145,7 +145,7 @@
 
   /* ---------- the message: words only ---------- */
   var msg = $("msg"), from = $("from"), echo = $("echo"), count = $("count");
-  var sendEmail = $("sendEmail"), sendText = $("sendText");
+  var sendEmail = $("sendEmail");
   function toMorse(s) {
     return s.toUpperCase().split("").map(function (c) { return c === " " ? "/" : (MORSE[c] ? pretty(MORSE[c]) : ""); })
       .filter(Boolean).join(" ");
@@ -157,11 +157,10 @@
     var full = body + (who ? "\n\n— " + who : "");
     sendEmail.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent("Telegram from the website" + (who ? " — " + who : "")) +
       "&body=" + encodeURIComponent(full);
-    sendText.href = "sms:" + PHONE + "?&body=" + encodeURIComponent(full);
   }
   msg.addEventListener("input", compose);
   from.addEventListener("input", compose);
-  [sendEmail, sendText].forEach(function (a) {
+  [sendEmail].forEach(function (a) {
     a.addEventListener("click", function (e) {
       if (!msg.value.trim()) { e.preventDefault(); toast("The tape is blank. Write something first."); msg.focus(); }
     });
