@@ -50,7 +50,7 @@ Two seasons as mechanical lead for lifting surfaces and aerodynamics on UBC Aero
 
 **Rev A tested** · 2024–26 · Rev A: 1.93 A · 36 W · 2 × IRF530 · USB-C · Rev B: 10 A, 150 W
 
-A programmable DC load for testing power supplies and batteries. Rev A was built in late 2024 and bench-tested in November 2026: it reaches 1.93 A and about 36 W, and the tests confirmed the gate-drive and voltage-sense faults a schematic review had predicted. Rev B, with four MOSFETs and isolation from USB, is placed but not yet routed.
+A programmable DC load for testing power supplies and batteries. Rev A was built in late 2024 and bench-tested in November 2026: it reaches 1.93 A and about 36 W, and the tests confirmed the gate-drive and voltage-sense faults a schematic review had predicted. Rev B, with four MOSFETs and one current loop each, is placed but not yet routed.
 
 ### [Micromouse](https://weymenkoo.github.io/Personal-Site/content/projects/micromouse/index.html)
 

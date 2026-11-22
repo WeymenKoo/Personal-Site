@@ -103,7 +103,6 @@ The design:
 | Set / readback | MCP4822 12-bit DAC (2.44 mA per step) · ADS1118 16-bit ADC, true 4-wire voltage sense |
 | Protection | 15 A fuse, TVS, over-temperature 85 °C, over-voltage 62 V, NTC-open, dropout KILL, hardware OFF (LM339) |
 | MCU | STM32G0B1RBT6 |
-| Isolation | CA-IS3761 digital isolator, 4 mm barrier |
 | Power and UI | One USB-C port (power, SCPI over CDC, DFU) · OLED, encoder, three buttons |
 | Board | Control board 170 × 40 mm and power board 170 × 60 mm on one 2-layer, 2 oz panel |
 | Cost | About US$25 of catalogue parts per unit, plus the OLED, blower and PCB |
