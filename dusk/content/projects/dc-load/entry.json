@@ -1,34 +1,34 @@
 {
   "title": "DC electronic load",
   "status": "wip",
-  "statusLabel": "Rev E in layout",
+  "statusLabel": "Rev A tested",
   "year": "2024–26",
-  "spec": "150 W · 0.6–58 V · 0–10 A · 4 × IRFP250N · isolated USB-C",
-  "summary": "A programmable DC load for testing power supplies and batteries. Rev B was built in late 2024 as a control board and a power board; a schematic review found errors in the power board. Rev E, the current design, uses four MOSFETs with one current loop each, isolation from USB, and is placed but not yet routed.",
+  "spec": "Rev A: 1.93 A · 36 W · 2 × IRF530 · USB-C · Rev B: 10 A, 150 W",
+  "summary": "A programmable DC load for testing power supplies and batteries. Rev A was built in late 2024 and bench-tested in November 2026: it reaches 1.93 A and about 36 W, and the tests confirmed the gate-drive and voltage-sense faults a schematic review had predicted. Rev B, with four MOSFETs and isolation from USB, is placed but not yet routed.",
   "cover": {
     "src": "card.jpg",
-    "alt": "The Rev B power board and control board side by side on a wooden desk",
+    "alt": "The Rev A power board and control board side by side on a wooden desk",
     "fit": "cover"
   },
   "tldr": {
     "src": "tldr.jpg",
     "webp": "tldr.webp",
-    "alt": "The Rev B power board and control board side by side on a wooden desk"
+    "alt": "The Rev A power board and control board side by side on a wooden desk"
   },
   "strip": [
     {
       "src": "thumb-boards.jpg",
-      "alt": "The Rev B power board and control board on a desk",
-      "caption": "Rev B built"
+      "alt": "The Rev A power board and control board on a desk",
+      "caption": "Rev A built"
     },
     {
       "src": "thumb-control.jpg",
-      "alt": "The Rev B control board held up in front of its Altium layout",
+      "alt": "The Rev A control board held up in front of its Altium layout",
       "caption": "Control board"
     },
     {
       "src": "thumb-bench.jpg",
-      "alt": "The Rev B boards on a CPU cooler on the bench, wired to a supply and an ST-Link",
+      "alt": "The Rev A boards on a CPU cooler on the bench, wired to a supply and an ST-Link",
       "caption": "On the bench"
     }
   ],
