@@ -12,7 +12,7 @@ The power board sits between the flight battery and everything else in the aircr
 
 I was the lead designer of this board, a clean-sheet redesign after the previous revision did not work. B. Liu is credited on the silkscreen for groundwork from that earlier revision.
 
-**Status:** built and flown in UBC AeroDesign's aircraft in the Advanced Class of SAE Aero Design 2025. Bench validation (ripple, regulation, protection thresholds, temperature) is in progress; see [Validation](#validation) at the end.
+**Status:** built and flown in UBC AeroDesign's aircraft in the Advanced Class of SAE Aero Design 2025. Bench-characterised in November 2026 up to 1.9 A: the protection and regulation match the design, and three faults turned up; see [Validation](#validation) at the end.
 
 | | |
 |---|---|
@@ -112,7 +112,7 @@ A second TPS25983 (U1) sits between the buck and the connectors:
 - An AON7534 (Q1) is driven from the eFuse's `DVDT/BGATE` pin.
 - An SMCJ12A TVS on the buck side, a Schottky (RSX501L) from the output to ground, and 2 × 100 µF on the output.
 
-**Current sense.** A 5 mΩ, 3 W shunt (R1) carries the whole servo rail. A TI INA240A2 reads it with a gain of 20 V/V, referenced to mid-supply (2.5 V at 0 A):
+**Current sense.** A 5 mΩ, 3 W shunt (R1) carries the whole servo rail. A TI INA240A2 reads it, referenced to mid-supply (2.5 V at 0 A). The sheet assumes a gain of 20 V/V; the A2 is a 50 V/V part, which the bench tests caught (see [Validation](#validation)). The design numbers on the sheet:
 
 | | |
 |---|---|
@@ -186,13 +186,70 @@ Results: [SAE Aero Design Advanced Class results (PDF)](https://www.saeaerodesig
 
 ## Validation | Bench tests
 
-The design numbers above are targets. These are the bench tests, run on a bench supply and power resistors, with a scope on a short ground spring. Each result goes here with its conditions and scope capture.
+The board flew the 2025 season without bench data. In November 2026 I characterised it on the bench: a KORAD KA3005P supply, a RIGOL DHO804 scope, a Brymen BM235 meter and my own [DC electronic load](../dc-load/index.html), all driven from Python with every test scripted and logged.
 
-- [ ] Smoke test: 16 V in, 0.5 A current limit, no load
-- [ ] Input eFuse: undervoltage and overvoltage thresholds, measured against the settings in the table above
-- [ ] Line regulation: 8 V to 25 V in, at 1 A
-- [ ] Load regulation: 0 to 1 A to 5 A
-- [ ] Output ripple at 1 A and 5 A, against the `8 mV` target
-- [ ] Load step response
-- [ ] Servo current sense: `SRV_Isns` against a meter, 0–5 A
-- [ ] Thermal: 5 A for one hour, temperature of the FETs, inductor and shunt
+![The bench: a bench supply, a scope, the DC load on its heat-pipe heatsink, and the power board with probe wires soldered on](bench-setup.jpg#wide "The bench, November 2026. The power board is at the bottom, with probe wires soldered on.")
+
+The load tops out at 1.9 A, so every output measurement covers 0 to 1.9 A of the board's 15 A rating. The short-circuit test goes far beyond that.
+
+### Measured against the design
+
+| Parameter | Design | Measured |
+|---|---|---|
+| Input undervoltage, on / off | `5.97 / 5.48 V` | `5.97–5.995 / 5.53–5.55 V` |
+| Input overvoltage, off / back on | `24.86 / 22.79 V` | `24.92–24.95 / 23.03–23.05 V` |
+| Reverse polarity, −22 V | blocked | under `10 µA` |
+| Output, no load | `4.994 V` | `5.055–5.063 V`; `5 mV` line regulation over 7.4–22 V |
+| Load regulation, 0 to 1.9 A | – | `3–6 mV` at the buck, about `50 mV` at the servo headers |
+| Efficiency at 1.9 A | – | `94.4 / 93.8 / 92.4 / 91.0 %` at 7.4 / 12 / 16.8 / 22 V in |
+| Switching frequency | `300 kHz` | `308.8 kHz` at every load |
+| Soft start | `4 ms` | `2.95 ms` (10–90 %), `9 mV` overshoot |
+| Output ripple at 1.9 A | `8 mV` | `14–15 mV` peak-to-peak |
+| Load step, 1.55 A | – | `67–172 mV` dip, `160–430 µs` to settle, well damped |
+| Switch-node peak, 22 V in | under `27 V` | `23.4 V` (a minimum: 70 MHz scope) |
+| Current-sense sensitivity | `0.10 V/A` | `0.251 V/A` |
+| Servo short circuit | limit, 4 retries, latch | trips in under `0.1 ms`, 5 retries, latches; a power cycle recovers it |
+| Hot-plug input peak at 7.4 / 12 / 16.8 V | – | `11.6 / 19.7 / 30.5 V` |
+
+Every protection threshold is within about 1 % of its design value. The sequencing is clean, the loop is stable, and the board survived a hard short on the servo rail at 22 V in.
+
+![Efficiency against load current at four input voltages](bench-efficiency.png "Efficiency, measured to the servo headers, so it includes the eFuse and shunt.")
+![The 5 V rail and the power-good signals during start-up at 12 V](bench-startup.png "Start-up at 12 V.")
+
+### What the bench found
+
+| | Finding |
+|---|---|
+| **Major** | **Hot-plug overshoot.** Touching a live supply onto the input rings it to 1.8 × the supply voltage. A full 4S pack (16.8 V) puts `30.5 V` on 30 V-rated parts; the TVS clamps too high to help. |
+| **Major** | **Load dump on the buck output.** Each time the servo eFuse trips, the inductor's energy lands on 5 × 4.7 µF: about `11 V` on capacitors rated for 10 V. |
+| **Major** | **Current sense gain.** The INA240A2 is a 50 V/V part; the schematic note assumed 20 V/V. The output is `0.25 V/A`, so the flight controller's 3.3 V ADC clips at about `3.2 A`. |
+| Moderate | **Servo-path resistance.** The buck's feedback is taken before the eFuse, FET and shunt, which measure `23.5 mΩ`: 50 mV of droop at 1.9 A, about 0.35 V and 5 W at 15 A. |
+| Minor | Ripple is `14–15 mV` against an 8 mV target: the 100 µF output capacitors lose about half their capacitance at 5 V. |
+| Minor | Load-step recovery is slow but well damped; the dip is `172 mV` at 7.4 V in. |
+
+![Input voltage ringing above the supply voltage when a live supply is connected](bench-hotplug.png "Hot-plug overshoot at three input voltages.")
+![Scope capture of the servo rail short circuit: the buck output jumping at each eFuse retry](scope-short-circuit.png "Servo rail shorted at 22 V in. The buck output (cyan, 5 V/div) jumps at each retry.")
+![The current-sense output against load current, a straight line at 0.251 V per amp](bench-current-sense.png "Servo current sense: 0.251 V/A, not the 0.10 V/A designed.")
+![The voltage drop from the buck output to the servo headers against load current](bench-servo-drop.png "Drop from the buck to the servo headers: 23.5 mΩ.")
+![The 5 V rail dipping and recovering when the load steps by 1.55 A](bench-loadstep.png#wide "Load step, 0.1 to 1.8 A, at three input voltages.")
+
+### Not tested
+
+These need a load above 1.9 A:
+
+- Regulation, efficiency, ripple and switch-node stress from 2 to 15 A
+- The `17.81 A` current limit and its 2 ms blanking
+- A 15 A thermal soak
+- A real LiPo plug-in through the flight harness
+
+### Fixes
+
+For the flown board:
+
+1. **Current sense:** correct the gain in firmware to 0.25 V/A, and add a divider so the signal cannot exceed 3.3 V at the flight controller's ADC.
+2. **Buck output:** add at least 47 µF of bulk capacitance next to the inductor, and swap the 10 V capacitors for 16 V parts.
+3. **Input:** add at least 100 µF of low-ESR capacitance across the input, then re-measure the 4S hot-plug.
+
+The next revision takes the same three fixes into the design, moves the feedback point to the servo rail, and gets tested at full current on a bigger load.
+
+Schematic, test log, scripts, raw data and every scope capture: [github.com/WeymenKoo/2025-Power-Board](https://github.com/WeymenKoo/2025-Power-Board).

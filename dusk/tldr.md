@@ -26,7 +26,7 @@ A single-axis, sensored field-oriented-control motor controller for one joint of
 
 **Flown 2025** · 2025 · 2S–4S in · 5 V 15 A · LM5146 · 2 × TPS25983 · 6 layers
 
-The power board for UBC AeroDesign's 2025 Advanced Class aircraft. It takes the flight battery and gives every servo, radio and sensor a protected 5 V rail, with eFuses on the input and the servo output, servo current sensing, and the flight controller plugged in on top. I was the lead designer: a clean-sheet redesign after the previous revision did not work. Bench validation is in progress.
+The power board for UBC AeroDesign's 2025 Advanced Class aircraft. It takes the flight battery and gives every servo, radio and sensor a protected 5 V rail, with eFuses on the input and the servo output, servo current sensing, and the flight controller plugged in on top. I was the lead designer: a clean-sheet redesign after the previous revision did not work. Bench-tested in November 2026: thresholds within 1 % of design, 91–94 % efficient, and three faults found for the next revision.
 
 ### [Shadow: power distribution](https://weymenkoo.github.io/Personal-Site/content/projects/avionics-2024/index.html)
 
@@ -46,11 +46,11 @@ Two seasons as mechanical lead for lifting surfaces and aerodynamics on UBC Aero
 
 ### [DC electronic load](https://weymenkoo.github.io/Personal-Site/content/projects/dc-load/index.html)
 
-<img src="https://weymenkoo.github.io/Personal-Site/content/projects/dc-load/tldr.jpg" alt="The Rev B power board and control board side by side on a wooden desk" width="720">
+<img src="https://weymenkoo.github.io/Personal-Site/content/projects/dc-load/tldr.jpg" alt="The Rev A power board and control board side by side on a wooden desk" width="720">
 
-**Rev E in layout** · 2024–26 · 150 W · 0.6–58 V · 0–10 A · 4 × IRFP250N · isolated USB-C
+**Rev A tested** · 2024–26 · Rev A: 1.93 A · 36 W · 2 × IRF530 · USB-C · Rev B: 10 A, 150 W
 
-A programmable DC load for testing power supplies and batteries. Rev B was built in late 2024 as a control board and a power board; a schematic review found errors in the power board. Rev E, the current design, uses four MOSFETs with one current loop each, isolation from USB, and is placed but not yet routed.
+A programmable DC load for testing power supplies and batteries. Rev A was built in late 2024 and bench-tested in November 2026: it reaches 1.93 A and about 36 W, and the tests confirmed the gate-drive and voltage-sense faults a schematic review had predicted. Rev B, with four MOSFETs and isolation from USB, is placed but not yet routed.
 
 ### [Micromouse](https://weymenkoo.github.io/Personal-Site/content/projects/micromouse/index.html)
 

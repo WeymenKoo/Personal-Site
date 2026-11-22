@@ -4,7 +4,7 @@
   "statusLabel": "Flown 2025",
   "year": "2025",
   "spec": "2S–4S in · 5 V 15 A · LM5146 · 2 × TPS25983 · 6 layers",
-  "summary": "The power board for UBC AeroDesign's 2025 Advanced Class aircraft. It takes the flight battery and gives every servo, radio and sensor a protected 5 V rail, with eFuses on the input and the servo output, servo current sensing, and the flight controller plugged in on top. I was the lead designer: a clean-sheet redesign after the previous revision did not work. Bench validation is in progress.",
+  "summary": "The power board for UBC AeroDesign's 2025 Advanced Class aircraft. It takes the flight battery and gives every servo, radio and sensor a protected 5 V rail, with eFuses on the input and the servo output, servo current sensing, and the flight controller plugged in on top. I was the lead designer: a clean-sheet redesign after the previous revision did not work. Bench-tested in November 2026: thresholds within 1 % of design, 91–94 % efficient, and three faults found for the next revision.",
   "cover": {
     "src": "card.jpg",
     "alt": "Render of the power board with Flight Controller v2 plugged in on top, on a dark background",
