@@ -214,24 +214,27 @@ The load tops out at 1.9 A, so every output measurement covers 0 to 1.9 A of the
 Every protection threshold is within about 1 % of its design value. The sequencing is clean, the loop is stable, and the board survived a hard short on the servo rail at 22 V in.
 
 ![Efficiency against load current at four input voltages](bench-efficiency.png "Efficiency, measured to the servo headers, so it includes the eFuse and shunt.")
-![The 5 V rail and the power-good signals during start-up at 12 V](bench-startup.png "Start-up at 12 V.")
+![The 5 V rail and the power-good signals during start-up at 12 V](bench-startup.png "Start-up at 12 V, from the logged data.")
+![Annotated scope capture of the same start-up: soft-start span, 5V_PROT and OPGD marked](scope-startup.png "The same start-up on the scope, labelled: 2.94 ms soft-start, then 5V_PROT, then OPGD.")
 
 ### What the bench found
 
 | | Finding |
 |---|---|
 | **Major** | **Hot-plug overshoot.** Touching a live supply onto the input rings it to 1.8 × the supply voltage. A full 4S pack (16.8 V) puts `30.5 V` on 30 V-rated parts; the TVS clamps too high to help. |
-| **Major** | **Load dump on the buck output.** Each time the servo eFuse trips, the inductor's energy lands on 5 × 4.7 µF: about `11 V` on capacitors rated for 10 V. |
+| **Major** | **Load dump on the buck output.** Each time the servo eFuse trips, the inductor's energy lands on 5 × 4.7 µF: up to about `11.3 V` on capacitors rated for 10 V (4 of 5 retries go above 10 V). |
 | **Major** | **Current sense gain.** The INA240A2 is a 50 V/V part; the schematic note assumed 20 V/V. The output is `0.25 V/A`, so the flight controller's 3.3 V ADC clips at about `3.2 A`. |
 | Moderate | **Servo-path resistance.** The buck's feedback is taken before the eFuse, FET and shunt, which measure `23.5 mΩ`: 50 mV of droop at 1.9 A, about 0.35 V and 5 W at 15 A. |
 | Minor | Ripple is `14–15 mV` against an 8 mV target: the 100 µF output capacitors lose about half their capacitance at 5 V. |
 | Minor | Load-step recovery is slow but well damped; the dip is `172 mV` at 7.4 V in. |
 
-![Input voltage ringing above the supply voltage when a live supply is connected](bench-hotplug.png "Hot-plug overshoot at three input voltages.")
-![Scope capture of the servo rail short circuit: the buck output jumping at each eFuse retry](scope-short-circuit.png "Servo rail shorted at 22 V in. The buck output (cyan, 5 V/div) jumps at each retry.")
+![Input voltage ringing above the supply voltage when a live supply is connected](bench-hotplug.png "Hot-plug overshoot at three input voltages, from the logged data.")
+![Annotated scope capture of the 16.8 V hot-plug, peaking at 30.5 V against the 30 V rating line](scope-hotplug.png "The 16.8 V hot-plug on the scope, labelled: 30.5 V peak against a 30 V rating.")
+![Annotated scope capture of the servo rail short circuit: each eFuse retry numbered, with the 7.93 V and 10 V lines](scope-short-circuit.png "Servo rail shorted at 22 V in, labelled. The buck output (CH2, 5 V/div) jumps to about 9.3 V on the trip and 9.6–11.3 V on each of the 5 retries, then the eFuse latches.")
 ![The current-sense output against load current, a straight line at 0.251 V per amp](bench-current-sense.png "Servo current sense: 0.251 V/A, not the 0.10 V/A designed.")
 ![The voltage drop from the buck output to the servo headers against load current](bench-servo-drop.png "Drop from the buck to the servo headers: 23.5 mΩ.")
-![The 5 V rail dipping and recovering when the load steps by 1.55 A](bench-loadstep.png#wide "Load step, 0.1 to 1.8 A, at three input voltages.")
+![The 5 V rail dipping and recovering when the load steps by 1.55 A](bench-loadstep.png#wide "Load step, 0.1 to 1.8 A, at three input voltages, from the logged data.")
+![Annotated scope capture of the 7.4 V load step: the 172 mV dip marked](scope-loadstep.png "The 7.4 V step on the scope, labelled: 172 mV dip, AC-coupled, 16 averages.")
 
 ### Not tested
 
