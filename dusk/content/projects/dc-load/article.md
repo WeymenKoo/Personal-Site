@@ -75,8 +75,10 @@ The board ran locked-down test firmware: the DAC starts at 0, it needs an arm co
 ![Load current against DAC code with the fit residual](bench-transfer.png "Setpoint transfer: 2.516 mA per code, against 2.727 designed.")
 ![Current against input voltage at three setpoints, falling off along a 0.56 Ω line](bench-dropout.png "Minimum input voltage: every curve follows 0.56 Ω.")
 ![A load step from 0.1 to 1.8 A with 12 µs edges and no ringing](bench-step.png#wide "Load step, 0.1 ↔ 1.8 A.")
+![Labelled scope capture of the 0.1 to 1.8 A step: Source1, Source2 and both gates, with the 11.6 µs 10–90 % span marked](scope-step.png "The same step on the scope, labelled: 11.6 µs rise, 0.4 % overshoot, both FETs tracking.")
 ![Heatsink temperature over a 23-minute run at 10, 20 and 30 W, with the fitted thermal model](bench-thermal.png "The thermal run: 10, 20 and 30 W for three minutes each, no fan.")
 ![The voltage-sense output stuck at 3.98 V while the input sweeps from 0 to 20 V](bench-vsen.png "Voltage readback, latched at 3.98 V.")
+![Labelled scope capture of the voltage-sense output at 3.96 V with the DUT at 20 V, against the 2.0 V it should read](scope-vsen.png "On the scope with 20 V on the input: 3.96 V, where it should read 2.0 V.")
 
 Rev A is now a working tool within those limits: the firmware and GUI enforce 1.90 A, 30 V and 35 W. It was the load for the [AeroDesign power board's bench tests](../power-board/index.html).
 
