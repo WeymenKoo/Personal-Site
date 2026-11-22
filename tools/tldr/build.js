@@ -1,11 +1,8 @@
 // TL;DR: one picture and a short description per project, built from
 // dusk/content (manifest.json + each project's entry.json).
 //
-//   npm run tldr      writes dusk/tldr.md (the Projects section for the
-//                     GitHub profile README) and prints dusk/portfolio.pdf
-//                     (one project per page). Both are published with the
-//                     site; the profile repo, WeymenKoo/WeymenKoo, fetches
-//                     them into its README and its portfolio.pdf.
+//   npm run tldr      prints dusk/portfolio.pdf (one project per page),
+//                     published with the site at /portfolio.pdf.
 //
 // Edit the projects in their entry.json, never in the outputs or here.
 // The picture is entry.json's "tldr" (a 4:3 photo of the real board) if
@@ -16,8 +13,6 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..', '..');
 const CONTENT = path.join(ROOT, 'dusk', 'content');
 const SITE = 'https://weymenkoo.github.io/Personal-Site/';
-const START = '<!-- tldr:start (generated in WeymenKoo/Personal-Site by npm run tldr, do not edit by hand) -->';
-const END = '<!-- tldr:end -->';
 
 function projects() {
   const { projects: slugs } = JSON.parse(fs.readFileSync(path.join(CONTENT, 'manifest.json'), 'utf8'));
@@ -28,36 +23,15 @@ function projects() {
       year: e.year, spec: e.spec, summary: e.summary,
       // "tldr" in entry.json: a photo of the real board; without it, the card's cover
       image: `dusk/content/projects/${slug}/${(e.tldr || e.cover).src}`, alt: (e.tldr || e.cover).alt,
-      imageUrl: `${SITE}content/projects/${slug}/${(e.tldr || e.cover).src}`,
       url: e.link ? SITE + e.link : null,
       portfolio: e.portfolio !== false,
     };
   // "portfolio": false in entry.json keeps a project on the site but out of
-  // the profile README and the PDF (the high-school ones)
+  // the PDF (the high-school ones)
   }).filter(p => p.portfolio);
 }
 
-/* ---------------- the profile README's Projects section ----------------
-   Pictures and links are absolute (served by the site), so the section
-   works in any repo; portfolio.pdf sits next to the README it lands in. */
-function readmeSection(list) {
-  const out = [START, '', '## Projects', '',
-    'The short version. Each title links to the full write-up on [my site](' + SITE + '). ' +
-    'Printable: **[portfolio.pdf](portfolio.pdf)**.', ''];
-  for (const p of list) {
-    const title = p.url ? `[${p.title}](${p.url})` : p.title;
-    out.push(`### ${title}`, '',
-      `<img src="${p.imageUrl}" alt="${p.alt.replace(/"/g, '&quot;')}" width="720">`, '',
-      `**${p.statusLabel}** · ${p.year} · ${p.spec}`, '',
-      p.summary, '');
-  }
-  out.push(END);
-  return out.join('\n');
-}
-
-const TLDR = path.join(ROOT, 'dusk', 'tldr.md');
 const PDF = path.join(ROOT, 'dusk', 'portfolio.pdf');
-function writeTldr(list) { fs.writeFileSync(TLDR, readmeSection(list) + '\n'); }
 
 /* ---------------- PDF ---------------- */
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -135,9 +109,8 @@ async function writePdf(list) {
 
 if (require.main === module) {
   const list = projects();
-  writeTldr(list);
-  writePdf(list).then(() => console.log(`dusk/tldr.md and dusk/portfolio.pdf: ${list.length} projects`))
+  writePdf(list).then(() => console.log(`dusk/portfolio.pdf: ${list.length} projects`))
     .catch(e => { console.error(e); process.exit(1); });
 }
 
-module.exports = { projects, readmeSection, html, START, END, TLDR, PDF };
+module.exports = { projects, html, PDF };
