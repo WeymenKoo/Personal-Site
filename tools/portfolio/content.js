@@ -19,7 +19,7 @@ module.exports = ({ fig, scope, text, table, stats, key, kicker, grid, hero, pag
     ['02', '<b>Flight controller SoM</b><br>STM32H757, 8 layers. Design complete.'],
     ['03', '<b>FOC motor controller</b><br>12S, 10 A rms. Built, running a motor.'],
     ['04', '<b>DC electronic load</b><br>Programmable load. Built, in use.'],
-    ['05', '<b>Other work</b><br>Shadow avionics, Micromouse, airframes.'],
+    ['05', '<b>Other work</b><br>Shadow avionics, Micromouse, SolidWorks airframe.'],
   ])}</div>
   <p class="muted" style="margin-top:.18in">Built boards are shown in one order: the board, its design and layout, its test results, then where it is used. Every scope plot is an unedited RIGOL DHO804 screenshot with call-outs drawn on top.</p>
   <div class="contact">kchweymen@gmail.com<br>github.com/WeymenKoo<br>weymenkoo.github.io/Personal-Site</div>
@@ -289,16 +289,16 @@ ${key([
   ]));
 
   /* ================= 05 other work ================= */
-  P.push(grid('<b>05</b> · Other work', 'Other work', 'Earlier boards and two seasons of airframes', [
-    fig('g-hub', 'Shadow wiring hub · 2024', 'The backbone of UBC AeroDesign\'s 2023–24 aircraft: carries the Cube Orange flight controller, sensor board and GNSS, and distributes power and signals. I was power and propulsion lead.'),
-    fig('g-hub-installed', 'Shadow, installed · 2024', 'The hub in the fuselage with the Cube Orange on top. Two 5 V 15 A power modules (ISL8117A) with hot-swappable dual batteries fed it. Flown at SAE Aero Design West 2024.'),
+  P.push(grid('<b>05</b> · Other work · Electronics', 'Other electronics', 'Shadow power distribution, 2023–24 · Micromouse, 2023–24', [
+    fig('g-hub', 'Shadow wiring hub · 2024', 'The carrier board of UBC AeroDesign\'s 2023–24 aircraft, Shadow: the Cube Orange flight controller, a sensor board and GNSS plug into it, and it distributes power and signals to the airframe.'),
+    fig('g-shadow-render', 'Hub and power module', 'The hub with the Cube Orange fitted, beside one of the two power modules I designed: 5 V, 15 A (ISL8117A), hot-swappable dual batteries, voltage and current sensing. Render from the Altium models.'),
+    fig('g-hub-installed', 'Installed and flown', 'The hub in Shadow\'s fuselage. I was power and propulsion lead that season. Flown at SAE Aero Design West 2024, Van Nuys, California.'),
     fig('g-micromouse', 'Micromouse V2 · 2023–24', 'A maze-solving robot on one board: STM32F411, DRV8833, four IR pairs, IMU and encoders. V1 put the motor inputs on pins with no timer; V2 fixed the pinout.'),
-    fig('g-spirit', 'Kyogre and Spirit · 2021–23', 'Before electronics: two seasons as mechanical lead for lifting surfaces on AeroDesign\'s airframes, from XFLR5 analysis to the build. Spirit, a blended wing body, in flight in April 2023.'),
     text(`${kicker('Tools I use')}${table([
       ['Design', 'Altium Designer, KiCad, LTspice'],
       ['Firmware', 'C on STM32, ArduPilot / ChibiOS'],
       ['Test', 'Python + PyVISA automation, scopes, e-loads, DMMs'],
-      ['Mechanical', 'SolidWorks'],
+      ['Mechanical', 'SolidWorks (CSWA), XFLR5'],
     ])}${kicker('<span style="display:block;margin-top:.1in">Industry</span>')}<p>Tesla, Test System Engineer co-op (2025): high-voltage PCBAs and end-of-line test.</p><p>Dometic Marine, Product Design co-op (2024–25): hot-swap protection, ESD testing, 2 kW PCBA bring-up.</p>`),
     text(`${kicker('Full write-ups and source')}<p>Every project here has a write-up with schematics, raw test data, scripts and every scope capture.</p>${table([
       ['Site', 'weymenkoo.github.io/Personal-Site'],
@@ -307,6 +307,15 @@ ${key([
       ['FOC', 'github.com/WeymenKoo/<br>FOC-Motor-Controller'],
       ['DC load', 'github.com/WeymenKoo/<br>DC-Electronic-Load'],
     ])}<p style="margin-top:.1in"><b>Weymen Koo</b> · kchweymen@gmail.com</p>`),
+  ]));
+
+  P.push(grid('<b>05</b> · Other work · Mechanical design', 'Mechanical design: an airframe in SolidWorks, from model to flight', 'Spirit · UBC AeroDesign 2022–23 Advanced Class · mechanical lead, lifting surfaces and aerodynamics', [
+    fig('m-cad', 'Full assembly in SolidWorks', 'Spirit, a blended wing body with a 120 in span: every rib, strap, spar, control surface and the tail modelled as parts and integrated in one assembly. I owned the integration assembly, flaps, tail and control surfaces.'),
+    fig('m-review', 'Design review', 'My review of a member\'s outer-wing CAD as lead: thinner straps inside the airfoil, tabs so the covering holds on the undercambered skin, lightening holes, spar holes aligned with the mid wing.'),
+    fig('m-parts', 'From CAD to parts', 'Ribs and straps nested from the model and laser-cut in balsa, plywood and carbon fibre, laid out with the carbon spar and the assembly open on the laptop. March 2023.'),
+    fig('m-build', 'Assembly', 'Ribs slotted onto their straps (left, the 2021–22 wing), and Spirit\'s outer wings covered, with servos going in (right).'),
+    fig('m-built', 'Built', 'Spirit, second airframe, April 2023. The first came out at 22.9 lb against a 20 lb target with the CG too far aft, so it was built again.'),
+    fig('m-flight', 'Flown', 'Spirit just after take-off, 15 April 2023. Wing: 4.96 lb built against 5.96 lb in CAD and a 4.5 lb target.'),
   ]));
 
   return P;
