@@ -1,0 +1,547 @@
+{
+ "pb-startup": {
+  "src": "scope-pb-startup.png",
+  "w": 854,
+  "h": 412,
+  "title": "Start-up at 12 V, no load",
+  "legend": [
+   [
+    1,
+    "VIN",
+    "10 V/div"
+   ],
+   [
+    2,
+    "VBUCK_OUT",
+    "2 V/div"
+   ],
+   [
+    3,
+    "5V_PROT",
+    "2 V/div"
+   ],
+   [
+    4,
+    "OPGD",
+    "5 V/div"
+   ]
+  ],
+  "note": "2 ms/div · + lead touched on by hand, as a battery plug-in",
+  "marks": [
+   {
+    "t": "vline",
+    "x": 100.0,
+    "text": "power applied",
+    "c": "mark",
+    "at": 0.45,
+    "al": null
+   },
+   {
+    "t": "span",
+    "x0": 283.0,
+    "x1": 431.0,
+    "y": 288.8,
+    "text": "buck soft-start 2.95 ms (10–90 %)",
+    "c": "mark"
+   },
+   {
+    "t": "call",
+    "x": 505.0,
+    "y": 141.3,
+    "lx": 490.0,
+    "ly": 350.9,
+    "text": "5V_PROT on, after the buck",
+    "c": "mark",
+    "al": "end"
+   },
+   {
+    "t": "call",
+    "x": 647.5,
+    "y": 179.1,
+    "lx": 780.0,
+    "ly": 107.7,
+    "text": "OPGD high at 10.95 ms",
+    "c": "mark",
+    "al": "end"
+   }
+  ]
+ },
+ "pb-loadstep": {
+  "src": "scope-pb-loadstep.png",
+  "w": 854,
+  "h": 412,
+  "title": "Load step 0.1 → 1.8 A at 7.4 V in",
+  "legend": [
+   [
+    2,
+    "VBUCK_OUT",
+    "50 mV/div AC"
+   ],
+   [
+    3,
+    "5V_PROT",
+    "50 mV/div AC"
+   ],
+   [
+    4,
+    "SRV_Isns",
+    "100 mV/div AC"
+   ]
+  ],
+  "note": "100 µs/div · 16 averages · the DC load's square wave as the step",
+  "marks": [
+   {
+    "t": "call",
+    "x": 117.0,
+    "y": 387.0,
+    "lx": 230.0,
+    "ly": 361.2,
+    "text": "5V_PROT dip 172 mV, no ringing",
+    "c": "mark",
+    "al": null
+   },
+   {
+    "t": "hline",
+    "y": 222.0,
+    "text": "37 mV steady drop: 23.5 mΩ after the feedback point",
+    "side": "r",
+    "dash": true,
+    "c": "dim"
+   },
+   {
+    "t": "call",
+    "x": 102.0,
+    "y": 180.1,
+    "lx": 160.0,
+    "ly": 96.5,
+    "text": "current step, 1.54 A (SRV_Isns)",
+    "c": "mark",
+    "al": null
+   },
+   {
+    "t": "span",
+    "x0": 100.0,
+    "x1": 298.0,
+    "y": -94.1,
+    "text": "back within 10 mV in 198 µs",
+    "c": "mark"
+   }
+  ]
+ },
+ "pb-hotplug": {
+  "src": "scope-pb-hotplug.png",
+  "w": 854,
+  "h": 412,
+  "title": "Hot-plug at 16.8 V (4S, full charge)",
+  "legend": [
+   [
+    1,
+    "VIN",
+    "10 V/div, full bandwidth"
+   ]
+  ],
+  "note": "2 µs/div · live supply lead touched on, no load",
+  "marks": [
+   {
+    "t": "hline",
+    "y": 50.8,
+    "text": "30 V: absolute max of U4 and the input FETs",
+    "side": "r",
+    "dash": true,
+    "c": "mark"
+   },
+   {
+    "t": "call",
+    "x": 301.0,
+    "y": 55.0,
+    "lx": 100.0,
+    "ly": 76.6,
+    "text": "30.5 V peak, 1.8 × VIN",
+    "c": "bad",
+    "al": "start"
+   },
+   {
+    "t": "label",
+    "x": 450.0,
+    "y": 237.1,
+    "text": "leads (≈ 0.9 µH) ring against 1 µF of ceramics at ≈ 2 MHz",
+    "c": "mark",
+    "anchor": "start"
+   }
+  ]
+ },
+ "pb-short": {
+  "src": "scope-pb-short.png",
+  "w": 854,
+  "h": 412,
+  "title": "Servo rail shorted at 22 V in",
+  "legend": [
+   [
+    1,
+    "VIN",
+    "10 V/div"
+   ],
+   [
+    2,
+    "VBUCK_OUT",
+    "5 V/div"
+   ],
+   [
+    3,
+    "5V_PROT",
+    "2 V/div"
+   ],
+   [
+    4,
+    "OPGD",
+    "2 V/div"
+   ]
+  ],
+  "note": "100 ms/div · hard short across a servo header · peaks read off the screen (±0.3 V)",
+  "marks": [
+   {
+    "t": "hline",
+    "y": 102.5,
+    "text": "10 V rating of C17–C21",
+    "side": "r",
+    "dash": true,
+    "c": "bad"
+   },
+   {
+    "t": "hline",
+    "y": 123.9,
+    "text": "7.93 V: U1 over-voltage",
+    "side": "r",
+    "dash": true,
+    "c": "dim"
+   },
+   {
+    "t": "call",
+    "x": 102.0,
+    "y": 109.7,
+    "lx": 114.0,
+    "ly": 34.2,
+    "text": "first trip: VBUCK_OUT to ≈ 9.3 V",
+    "c": "mark",
+    "al": null
+   },
+   {
+    "t": "label",
+    "x": 195.0,
+    "y": 67.3,
+    "text": "5 retries: 11.3 / 11.0 / 10.4 / 9.6 / 10.7 V, then latched off",
+    "c": "mark",
+    "anchor": "start"
+   },
+   {
+    "t": "call",
+    "x": 620.0,
+    "y": 153.2,
+    "lx": 660.0,
+    "ly": 182.2,
+    "text": "bleeds back to 5.07 V",
+    "c": "mark",
+    "al": null
+   }
+  ]
+ },
+ "pb-sw": {
+  "src": "scope-pb-sw.png",
+  "w": 854,
+  "h": 412,
+  "title": "Switch node, rising edge, 22 V in / 1.9 A",
+  "legend": [
+   [
+    2,
+    "SW",
+    "10 V/div"
+   ]
+  ],
+  "note": "10 ns/div · 1.25 GSa/s · 70 MHz scope, so the peak is a minimum",
+  "marks": [
+   {
+    "t": "hline",
+    "y": 50.8,
+    "text": "30 V FET rating",
+    "side": "r",
+    "dash": true,
+    "c": "dim"
+   },
+   {
+    "t": "call",
+    "x": 531.0,
+    "y": 85.0,
+    "lx": 491.0,
+    "ly": 115.0,
+    "text": "23.4 V peak: 22 % margin",
+    "c": "mark",
+    "al": "end"
+   }
+  ]
+ },
+ "foc-id15": {
+  "src": "scope-foc-id15.png",
+  "w": 1000,
+  "h": 412,
+  "title": "Low-side turn-on, gate drive 1000 / 2000 mA (driver default)",
+  "legend": [
+   [
+    1,
+    "Phase A switch node",
+    "10 V/div"
+   ],
+   [
+    2,
+    "Phase A current sense",
+    "200 mV/div"
+   ]
+  ],
+  "note": "50 ns/div · 30 V bus · phase A sinking 3 A",
+  "marks": [
+   {
+    "t": "hline",
+    "y": 294.0,
+    "text": "−7 V: DRV8323 SHx abs max",
+    "side": "l",
+    "dash": true,
+    "c": "bad"
+   },
+   {
+    "t": "call",
+    "x": 510.0,
+    "y": 309.0,
+    "lx": 620.0,
+    "ly": 348.3,
+    "text": "−10.0 V",
+    "c": "bad",
+    "al": null
+   },
+   {
+    "t": "label",
+    "x": 80.0,
+    "y": 68.9,
+    "text": "edge 7.1 ns (10–90 %)",
+    "c": "mark",
+    "anchor": "start"
+   }
+  ]
+ },
+ "foc-id7": {
+  "src": "scope-foc-id7.png",
+  "w": 1000,
+  "h": 412,
+  "title": "Low-side turn-on, gate drive 190 / 380 mA (now the default)",
+  "legend": [
+   [
+    1,
+    "Phase A switch node",
+    "10 V/div"
+   ],
+   [
+    2,
+    "Phase A current sense",
+    "200 mV/div"
+   ]
+  ],
+  "note": "50 ns/div · 30 V bus · phase A sinking 3 A",
+  "marks": [
+   {
+    "t": "hline",
+    "y": 294.0,
+    "text": "−7 V: DRV8323 SHx abs max",
+    "side": "l",
+    "dash": true,
+    "c": "bad"
+   },
+   {
+    "t": "call",
+    "x": 572.0,
+    "y": 262.0,
+    "lx": 682.0,
+    "ly": 348.3,
+    "text": "−0.76 V",
+    "c": "good",
+    "al": null
+   },
+   {
+    "t": "label",
+    "x": 80.0,
+    "y": 68.9,
+    "text": "edge 18.4 ns (10–90 %)",
+    "c": "mark",
+    "anchor": "start"
+   }
+  ]
+ },
+ "foc-vds": {
+  "src": "scope-foc-vds.png",
+  "w": 1000,
+  "h": 412,
+  "title": "Short-circuit protection: DRV8323 VDS trip",
+  "legend": [
+   [
+    1,
+    "Phase A switch node",
+    "10 V/div"
+   ],
+   [
+    2,
+    "Phase A current sense",
+    "500 mV/div, 60 mV/A"
+   ]
+  ],
+  "note": "200 µs/div · 30 V bus · VDS_LVL 0.06 V · firmware ceiling set to 22 A",
+  "marks": [
+   {
+    "t": "call",
+    "x": 479.0,
+    "y": 42.0,
+    "lx": 50.0,
+    "ly": 61.1,
+    "text": "current ramps ≈ 1.8 A per PWM period",
+    "c": "mark",
+    "al": "start"
+   },
+   {
+    "t": "vline",
+    "x": 490.0,
+    "text": "driver trips first: 21.75 A",
+    "c": "mark",
+    "at": 0.75,
+    "al": "end"
+   }
+  ]
+ },
+ "foc-hotplug": {
+  "src": "scope-foc-hotplug.png",
+  "w": 1000,
+  "h": 412,
+  "title": "Hot-plug into a live 30 V supply",
+  "legend": [
+   [
+    1,
+    "Bus (C34)",
+    "5 V/div"
+   ]
+  ],
+  "note": "50 ms/div · XT60 plugged in by hand · ≈ 360 µF bus",
+  "marks": [
+   {
+    "t": "call",
+    "x": 540.0,
+    "y": 101.2,
+    "lx": 600.0,
+    "ly": 180.1,
+    "text": "30.13 V peak, no overshoot",
+    "c": "mark",
+    "al": null
+   },
+   {
+    "t": "call",
+    "x": 102.0,
+    "y": 171.8,
+    "lx": 180.0,
+    "ly": 278.4,
+    "text": "23.3 V at 1 ms, then τ = 6.2 ms to 29.9 V",
+    "c": "mark",
+    "al": null
+   }
+  ]
+ },
+ "el-step": {
+  "src": "scope-el-step.png",
+  "w": 854,
+  "h": 412,
+  "title": "Load step 0.1 → 1.8 A, 5 V source",
+  "legend": [
+   [
+    1,
+    "Source 2 (FET Q2)",
+    "50 mV/div"
+   ],
+   [
+    2,
+    "Source 1 (FET Q1)",
+    "50 mV/div"
+   ],
+   [
+    3,
+    "Gate 1",
+    "500 mV/div"
+   ],
+   [
+    4,
+    "Gate 2",
+    "500 mV/div"
+   ]
+  ],
+  "note": "20 µs/div · 16 averages · each FET's current through its own 0.2 Ω pair",
+  "marks": [
+   {
+    "t": "span",
+    "x0": 186.0,
+    "x1": 243.0,
+    "y": 121.0,
+    "text": "11.6 µs (10–90 %)",
+    "c": "mark"
+   },
+   {
+    "t": "label",
+    "x": 310.0,
+    "y": 199.0,
+    "text": "0.4 % overshoot, no ringing",
+    "c": "mark",
+    "anchor": "start"
+   }
+  ]
+ },
+ "el-vsen": {
+  "src": "scope-el-vsen.png",
+  "w": 854,
+  "h": 412,
+  "title": "Voltage readback, source at 20 V",
+  "legend": [
+   [
+    1,
+    "4.096 V reference",
+    "2 V/div"
+   ],
+   [
+    2,
+    "DUT_VSEN",
+    "2 V/div"
+   ],
+   [
+    3,
+    "Gate 1",
+    "2 V/div"
+   ],
+   [
+    4,
+    "Gate 2",
+    "2 V/div"
+   ]
+  ],
+  "note": "1 ms/div · load off",
+  "marks": [
+   {
+    "t": "call",
+    "x": 180.0,
+    "y": 102.0,
+    "lx": 210.0,
+    "ly": 61.1,
+    "text": "DUT_VSEN latched at 3.96 V",
+    "c": "bad",
+    "al": null
+   },
+   {
+    "t": "hline",
+    "y": 154.2,
+    "text": "should read 0.1 × 20 V = 2.0 V",
+    "side": "r",
+    "dash": true,
+    "c": "good"
+   }
+  ]
+ }
+}

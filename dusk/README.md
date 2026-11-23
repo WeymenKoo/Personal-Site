@@ -99,11 +99,11 @@ them by name in step 3.
 | `spec` | the one-line spec in accent colour; separate items with ` · ` |
 | `cover.fit` | `cover` crops to fill the frame; `contain` shows the whole image (use for renders on white) |
 | `strip` | optional row of thumbnails under the spec; `[]` hides it |
-| `tldr` | optional: `{ "src", "alt" }`, a 4:3 photo of the real board for `portfolio.pdf` (`npm run tldr`, then commit `dusk/portfolio.pdf`); without it they use `cover` |
-| `portfolio` | optional: `false` keeps the project on the site but out of `portfolio.pdf` (used for the high-school projects) |
+| `tldr` | optional: `{ "src", "alt" }`, a 4:3 photo of the real board for the card; without it the card uses `cover` |
+| `portfolio` | optional: `false` marks a project as site-only (the high-school ones). `portfolio.pdf` itself is written by hand in `tools/portfolio/content.js` |
 | `link` | where "Read →" goes: `"content/projects/<slug>/index.html"` for the write-up in this folder (see "Writing an article"), or any URL; `""` hides the link |
 
-The card shows the `tldr` picture (the one in the PDF)
+The card shows the `tldr` picture
 when there is one, otherwise the `cover`, at 4:3, about 600 px wide. Give it
 its own 1200 × 900 copy, centred on the subject, and keep the full-size
 images for the article: big images in the cards make scrolling stutter.
