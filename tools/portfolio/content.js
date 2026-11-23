@@ -19,7 +19,7 @@ module.exports = ({ fig, scope, text, table, stats, key, kicker, grid, hero, pag
     ['02', '<b>Flight controller SoM</b><br>STM32H757, 8 layers. Design complete.'],
     ['03', '<b>FOC motor controller</b><br>12S, 10 A rms. Built, running a motor.'],
     ['04', '<b>DC electronic load</b><br>Programmable load. Built, in use.'],
-    ['05', '<b>Other work</b><br>Shadow avionics, Micromouse, SolidWorks airframe.'],
+    ['05', '<b>Other work</b><br>Shadow power distribution, SolidWorks airframe.'],
   ])}</div>
   <p class="muted" style="margin-top:.18in">Built boards are shown in one order: the board, its design and layout, its test results, then where it is used. Every scope plot is an unedited RIGOL DHO804 screenshot with call-outs drawn on top.</p>
   <div class="contact">kchweymen@gmail.com<br>github.com/WeymenKoo<br>weymenkoo.github.io/Personal-Site</div>
@@ -289,18 +289,24 @@ ${key([
   ]));
 
   /* ================= 05 other work ================= */
-  P.push(grid('<b>05</b> · Other work · Electronics', 'Other electronics', 'Shadow power distribution, 2023–24 · Micromouse, 2023–24', [
+  P.push(grid('<b>05</b> · Other work · Electronics', 'Shadow power distribution', 'UBC AeroDesign 2023–24 · power and propulsion lead', [
     fig('g-hub', 'Shadow wiring hub · 2024', 'The carrier board of UBC AeroDesign\'s 2023–24 aircraft, Shadow: the Cube Orange flight controller, a sensor board and GNSS plug into it, and it distributes power and signals to the airframe.'),
     fig('g-shadow-render', 'Hub and power module', 'The hub with the Cube Orange fitted, beside one of the two power modules I designed: 5 V, 15 A (ISL8117A), hot-swappable dual batteries, voltage and current sensing. Render from the Altium models.'),
     fig('g-hub-installed', 'Installed', 'The hub in Shadow\'s fuselage with the Cube Orange and GNSS on top. I was power and propulsion lead that season.'),
     fig('g-shadow', 'Shadow, the aircraft it flew in', 'Shadow on a test day, 16 March 2024. It flew with this hub and both power modules at SAE Aero Design West 2024, Van Nuys, California.'),
-    fig('g-micromouse', 'Micromouse V2 · 2023–24', 'A maze-solving robot on one board: STM32F411, DRV8833, four IR pairs, IMU and encoders. V1 put the motor inputs on pins with no timer; V2 fixed the pinout.'),
     text(`${kicker('Tools I use')}${table([
       ['Design', 'Altium Designer, KiCad, LTspice'],
       ['Firmware', 'C on STM32, ArduPilot / ChibiOS'],
       ['Test', 'Python + PyVISA, scopes, e-loads'],
       ['Mechanical', 'SolidWorks (CSWA), XFLR5'],
-    ])}${kicker('<span style="display:block;margin-top:.08in">Industry</span>')}<p>Tesla, Test System Engineer co-op (2025): high-voltage PCBAs and end-of-line test.</p><p>Dometic Marine, Product Design co-op (2024–25): hot-swap protection, ESD testing.</p>${kicker('<span style="display:block;margin-top:.08in">Write-ups, data and source</span>')}<p>weymenkoo.github.io/Personal-Site<br>github.com/WeymenKoo<br>kchweymen@gmail.com</p>`),
+    ])}${kicker('<span style="display:block;margin-top:.1in">Industry</span>')}<p>Tesla, Test System Engineer co-op (2025): high-voltage PCBAs and end-of-line test.</p><p>Dometic Marine, Product Design co-op (2024–25): hot-swap protection, ESD testing, 2 kW PCBA bring-up.</p>`),
+    text(`${kicker('Full write-ups and source')}<p>Every project here has a write-up with schematics, raw test data, scripts and every scope capture.</p>${table([
+      ['Site', 'weymenkoo.github.io/Personal-Site'],
+      ['Power board', 'github.com/WeymenKoo/<br>AeroDesign-Power-Board'],
+      ['SoM', 'github.com/WeymenKoo/<br>AeroDesign-Flight-Controller-SoM'],
+      ['FOC', 'github.com/WeymenKoo/<br>FOC-Motor-Controller'],
+      ['DC load', 'github.com/WeymenKoo/<br>DC-Electronic-Load'],
+    ])}<p style="margin-top:.1in"><b>Weymen Koo</b> · kchweymen@gmail.com</p>`),
   ]));
 
   P.push(grid('<b>05</b> · Other work · Mechanical design', 'Mechanical design: an airframe in SolidWorks, from model to flight', 'Spirit · UBC AeroDesign 2022–23 Advanced Class · mechanical lead, lifting surfaces and aerodynamics', [

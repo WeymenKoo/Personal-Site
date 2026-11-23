@@ -36,7 +36,7 @@ LIST = {
     'pb-installed': (P / 'power-board/installed-2025.jpg', crop(0, 0.10, 1.0), CELL),
     'pb-bench': (P / 'power-board/bench-setup.jpg', full, CELL),
     # flight controller SoM (renders only: Rev A is not built yet)
-    'fc-hero': (P / 'fc-som/cover.jpg', crop(0.125, 0, 0.75), HERO),
+    'fc-hero': (P / 'fc-som/tldr.jpg', full, HERO),   # the site's card picture
     'fc-bottom': (P / 'fc-som/bottom-angle.jpg', crop(0.125, 0, 0.75), CELL),
     'fc-signal': (P / 'fc-som/all-signal-layers.jpg', pad, HERO),
     'fc-stack': (P / 'fc-som/layer-stack.jpg', pad, CELL),
@@ -57,7 +57,6 @@ LIST = {
     'g-hub-installed': (P / 'avionics-2024/tldr.jpg', full, CELL),
     'g-shadow-render': (P / 'avionics-2024/render-table.jpg', edge, CELL),
     'g-shadow': (P / 'avionics-2024/test-day-plane.jpg', crop(0.04, 0.0, 0.8889), CELL),
-    'g-micromouse': (P / 'micromouse/v2-built.jpg', full, CELL),
     # mechanical design
     'm-cad': (P / 'kyogre-spirit/spirit-cad.jpg', edge, CELL),
     'm-review': (P / 'kyogre-spirit/review-outer-wing.jpg', pad, CELL),
