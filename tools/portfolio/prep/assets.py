@@ -56,6 +56,7 @@ LIST = {
     'g-hub': (P / 'avionics-2024/hub-assembled.jpg', full, CELL),
     'g-hub-installed': (P / 'avionics-2024/tldr.jpg', full, CELL),
     'g-shadow-render': (P / 'avionics-2024/render-table.jpg', edge, CELL),
+    'g-shadow': (P / 'avionics-2024/test-day-plane.jpg', crop(0.04, 0.0, 0.8889), CELL),
     'g-micromouse': (P / 'micromouse/v2-built.jpg', full, CELL),
     # mechanical design
     'm-cad': (P / 'kyogre-spirit/spirit-cad.jpg', edge, CELL),
