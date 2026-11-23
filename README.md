@@ -13,10 +13,10 @@ tools/       scroll-profile.js, a frame-time profiler (npm run profile)
 
 ## Projects
 
-The printable **[portfolio.pdf](https://weymenkoo.github.io/Personal-Site/portfolio.pdf)** (the power board in
-depth, the SoM, FOC controller and DC load as headliners, the rest as a gallery) is written in
-`tools/portfolio/content.js` and printed by `npm run portfolio` into `dusk/portfolio.pdf`, published with the
-site. See [tools/portfolio/README.md](tools/portfolio/README.md). The GitHub profile
+The **[portfolio.pdf](https://weymenkoo.github.io/Personal-Site/portfolio.pdf)** is a work sample for job
+applications: four projects, each as board, design and layout, test results and use, on one fixed grid. It is
+written in `tools/portfolio/content.js` and printed by `npm run portfolio` into `dusk/portfolio.pdf`, published with
+the site. See [tools/portfolio/README.md](tools/portfolio/README.md). The GitHub profile
 README is hand-written and just links here.
 
 ## Editing

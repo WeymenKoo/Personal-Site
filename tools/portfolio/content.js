@@ -1,331 +1,313 @@
-// The portfolio's pages, in order. Numbers come from the projects' test reports:
+// The portfolio's pages, in order. Built projects follow one sequence: the real board with its specs
+// and purpose, then design and layout, then testing, then use. Numbers come from the projects' reports:
 //   power board  github.com/WeymenKoo/AeroDesign-Power-Board (README, bench_test/results/*/notes.txt)
 //   FOC          github.com/WeymenKoo/FOC-Motor-Controller (Testing/README.md, Testing/Bench/CHAR_LOG.md)
-//   DC load      github.com/WeymenKoo/DC-Electronic-Load (bench_test/REPORT.md)
+//   DC load      github.com/WeymenKoo/DC-Electronic-Load (bench_test/REPORT.md, RevB/README.md)
 //   SoM          github.com/WeymenKoo/AeroDesign-Flight-Controller-SoM (README.md)
-module.exports = ({ fig, scope, stats, table, page }) => {
+module.exports = ({ fig, scope, text, table, stats, key, kicker, grid, hero, page, layoutMarks, LEGEND, frame, cap }) => {
   const P = [];
-  const PB = n => `<b>01</b> · AeroDesign power board · ${n}`;
+  const sec = (n, name, part) => `<b>${n}</b> · ${name} · ${part}`;
 
-  /* ---------------- cover ---------------- */
-  P.push(`<section class="page cover">
-  <h1>Weymen Koo</h1>
-  <p class="cjk">许梣焕</p>
-  <p class="lede">Hardware portfolio: power electronics, motor control and flight avionics.</p>
-  <div class="toc">
-    <div><h4>Featured</h4><ul>
-      <li>01 · AeroDesign power board<span>Concept · layout · bench test · flown 2025</span></li></ul></div>
-    <div><h4>Headline</h4><ul>
-      <li>02 · Flight controller SoM<span>Render · 8-layer layout</span></li>
-      <li>03 · FOC motor controller<span>Layout · power-stage tests</span></li>
-      <li>04 · DC electronic load<span>Layout · bench tests</span></li></ul></div>
-    <div><h4>Gallery</h4><ul>
-      <li>Shadow power distribution<span>2024 · flown</span></li>
-      <li>Carrier board v1<span>2026 · for the SoM</span></li>
-      <li>Micromouse V2<span>2023–24</span></li>
-      <li>Kyogre and Spirit<span>2021–23 · airframes</span></li></ul></div>
-  </div>
-  <div class="strip">${fig('pb-hero', '', { h: '1.55in' })}${fig('fc-hero', '', { h: '1.55in' })}${fig('foc-hero', '', { h: '1.55in' })}${fig('el-heatsink', '', { h: '1.55in' })}</div>
-  <p class="meta">kchweymen@gmail.com · github.com/WeymenKoo<br>weymenkoo.github.io/Personal-Site · scope captures are unedited RIGOL screenshots; call-outs added on top</p>
-</section>`);
-
-  /* ---------------- 01 power board: overview ---------------- */
-  P.push(page(PB('Overview'), 'AeroDesign power board', `
-<div class="cols" style="grid-template-columns:6.6in 1fr">
-  <div class="stack">
-    ${fig('pb-hero', 'Rev 3, rendered in Blender from the Altium STEP and Gerbers. Battery in on the left edge, 5 V out on the right.', { h: '4.75in' })}
-    ${stats([['15 A', 'design load on one protected 5 V rail'], ['91–94 %', 'efficiency at 1.9 A, 7.4–22 V in'], ['≈ 1 %', 'every protection threshold vs. design'], ['2025', 'flown at SAE Aero Design, Advanced Class']])}
-  </div>
-  <div class="stack small">
-    <div><div class="kicker">What it is</div>
-    <p>The power board for UBC AeroDesign's 2025 aircraft. It takes the 2S–4S flight battery and makes one protected 5 V rail for nine servos, the receiver, telemetry, camera and the flight controller, which plugs in on top.</p></div>
-    <div><div class="kicker">My role</div>
-    <p>Lead designer: requirements, schematic, layout, bring-up and the 2026 bench campaign. A clean-sheet redesign after the previous revision did not work.</p></div>
-    <div><div class="kicker">The path</div>
-    <p>Battery → input eFuse (TPS25983 + reverse-polarity FET) → LM5146 synchronous buck → servo-output eFuse (second TPS25983) with a 5 mΩ / INA240 current sense → every connector.</p></div>
-    <div><div class="kicker">Status</div>
-    <p>Flown all season in aircraft 221. It flew with no bench data, so in November 2026 I characterised it to 1.9 A: the design holds, and the tests found three faults that go into Rev B.</p></div>
-    <p class="muted">Next pages: concept, layout, test, deployment.</p>
-  </div>
-</div>`, { spec: '2S–4S in · 5 V 15 A · LM5146 buck · 2 × TPS25983 eFuse · INA240 · 110 × 60 mm, 6 layers · Altium' }));
-
-  /* ---------------- 01 concept ---------------- */
-  P.push(page(PB('Concept'), 'One protected 5 V rail, from the battery to every servo', `
-<div class="cols" style="grid-template-columns:3.55in 1fr">
-  <div class="stack small">
-    <div><h3>Requirements</h3><ul>
-      <li>2S–4S LiPo in: 7–22 V.</li>
-      <li>5 V at up to 15 A for nine servos, the receiver, telemetry, camera and the flight controller.</li>
-      <li>Survive a reversed battery, a live plug-in and a shorted servo.</li>
-      <li>Tell the flight controller how much current the servos draw.</li></ul></div>
-    <div><h3>Decisions</h3>
-    ${table([
-      ['Input', 'TPS25983 eFuse: on 5.97 V, off 24.86 V, 17.81 A limit, latches. P-FET Q4 for reverse polarity, 1.5 kW TVS.'],
-      ['Buck', 'LM5146 + 2 × AON7534, 300 kHz. 3.3 µH inductor picked to saturate (37 A) above the eFuse limit, so the eFuse trips first. Type III loop for a 50 kHz crossover.'],
-      ['Output', 'A second TPS25983 with a back-to-back FET: a short on the 5 V side is cut off and retried 4 times, then latched, instead of loading the buck.'],
-      ['Sensing', '5 mΩ shunt, INA240 to the flight controller\'s ADC; power-good from every stage to a test pad.'],
-      ['Cut', 'A second battery with ideal-diode OR-ing, per-battery sensing and a second 5 A buck: one path from battery to connectors.'],
-    ])}</div>
-  </div>
-  <div class="stack">
-    ${fig('pb-blocks', 'The block diagram on the top schematic sheet. Crossed out: what the design started with and dropped.')}
-    <div class="grid2">
-      ${fig('pb-chalkboard', 'The 2024–25 avionics planned on a chalkboard, October 2024: radios, camera, power budget.', { h: '2.6in' })}
-      ${fig('pb-sketch', 'The stack on paper: flight controller on 2.54 mm headers above the power board.', { h: '2.6in', pos: 'center 35%' })}
-    </div>
-  </div>
-</div>`));
-
-  /* ---------------- 01 layout ---------------- */
-  const S = 1.6; // pb-layout.jpg is the 1500-px working view scaled by 1.6
-  const bx = (x0, y0, x1, y1, text, pos) => ({ t: 'box', x0: x0 * S, y0: y0 * S, x1: x1 * S, y1: y1 * S, text, pos });
-  P.push(page(PB('Layout'), 'Six layers: power on top, three ground planes under it', `
-<div class="cols" style="grid-template-columns:6.9in 1fr">
-  <div class="stack">
-    ${fig('pb-layout', 'L1, the power layer, plotted from the fabrication data (40 px/mm). Current flows one way: battery in on the left, 5 V out on the right.', {
-      marks: [
-        bx(25, 140, 212, 420, 'battery in', 'tl'),
-        bx(222, 100, 600, 340, 'input eFuse U4 + Q4', 'tl'),
-        bx(88, 430, 648, 752, 'LM5146 buck + 3.3 µH', 'tr'),
-        bx(880, 245, 1292, 592, 'servo eFuse U1, shunt, INA240', 'bl'),
-        bx(712, 75, 1405, 200, '9 servo + radio connectors', 'tr'),
-        bx(712, 640, 1405, 752, '', 'tl'),
-        bx(1338, 210, 1475, 620, '5 V / GND out', 'tr'),
-        bx(170, 755, 650, 790, 'J13 (J12 above): flight controller', 'tr'),
-      ] })}
-    <div class="grid2" style="grid-template-columns:3.6in 1fr">
-      ${fig('pb-exploded', 'The six copper layers, exploded, in Altium\'s layer colours.', { h: '1.95in' })}
-      <div class="small">${table([['L1', 'Power, top', '52.9 %'], ['L2', 'Ground', '91.6 %'], ['L3', 'Ground', '91.6 %'], ['L4', 'Signal', '6.4 %'], ['L5', 'Ground', '91.6 %'], ['L6', 'Signal, bottom', '10.2 %']], ['Layer', 'Use', 'Copper'])}</div>
-    </div>
-  </div>
-  <div class="stack small">
-    <ul>
-      <li><b>Power stays on L1</b> in wide pours that run one way, from the battery edge to the output edge.</li>
-      <li><b>Three solid ground planes</b> (L2, L3, L5), signals on L4 and L6.</li>
-      <li><b>The buck in one corner:</b> controller, FETs and inductor together; analog and power ground meet at one net tie.</li>
-      <li><b>Kelvin sense:</b> the INA240 reads the shunt through two 0 Ω links, not through the pour.</li>
-      <li>ESD array and 100 nF on every connector.</li>
-    </ul>
-    ${fig('pb-built', 'As built: Rev 3 on the bench.', { h: '2.2in' })}
-  </div>
-</div>`));
-
-  /* ---------------- 01 test: regulation ---------------- */
-  P.push(page(PB('Test'), 'Bench test 1: does it regulate?', `
-<div class="cols" style="grid-template-columns:1fr 1fr 2.35in">
-  <div class="stack">${scope('pb-startup')}${scope('pb-sw')}</div>
-  <div class="stack">${scope('pb-loadstep')}${fig('pb-eff', '<b>Efficiency</b> 4 input voltages × 11 loads, measured to the servo headers (eFuse and shunt included).')}</div>
-  <div class="stack small">
-    <div><div class="kicker">Bench</div>
-    <p>KORAD KA3005P supply, RIGOL DHO804 scope, Brymen BM235, and my own DC load (04) as the load. Every test is a Python script that sets limits, runs, logs the data and saves the screen.</p>
-    <p class="muted">The load tops out at 1.9 A, so these cover 0–1.9 A of the 15 A rating.</p></div>
-    <div><div class="kicker">Result</div>
-    ${table([
-      ['Output', '5.055–5.063 V; 5 mV over 7.4–22 V in'],
-      ['Soft-start', '2.95 ms, 9 mV overshoot'],
-      ['Sequencing', 'buck → 5V_PROT → OPGD, no restart into 1.9 A'],
-      ['Switching', '308.8 kHz at every load'],
-      ['Load step', '67–172 mV dip, settles in 160–430 µs'],
-      ['Ripple', '14–15 mVpp vs 8 mV target'],
-      ['Efficiency', '94.4 / 93.8 / 92.4 / 91.0 %'],
-    ])}</div>
-    <p>The loop is stable and well damped at every input voltage. The ripple miss is the 100 µF output capacitors losing half their capacitance at 5 V of DC bias.</p>
-    ${fig('pb-bench', 'The bench, with the probe wires soldered to the board.', { h: '1.5in' })}
-  </div>
-</div>`));
-
-  /* ---------------- 01 test: protection ---------------- */
-  P.push(page(PB('Test'), 'Bench test 2: does it protect?', `
-<div class="cols" style="grid-template-columns:5.05in 1fr">
-  <div class="stack">${scope('pb-hotplug')}${scope('pb-short')}</div>
-  <div class="stack small">
-    ${table([
-      ['UVLO on / off', '5.97 / 5.48 V', '5.97–5.995 / 5.53–5.55 V'],
-      ['OVP off / on', '24.86 / 22.79 V', '24.92–24.95 / 23.03–23.05 V'],
-      ['Reverse, −22 V', 'blocked', '< 10 µA'],
-      ['Servo short', 'limit, 4 retries, latch', '< 0.1 ms trip, 5 retries, latch'],
-      ['Current sense', '0.10 V/A', '0.251 V/A'],
-    ], ['', 'Design', 'Measured'])}
-    <p>Every threshold lands within about 1 % of its design value, reverse polarity is blocked, and a hard short at 22 V in trips, retries and latches with no damage. Three things did not pass:</p>
-    ${table([
-      ['<span class="tag">F1</span>', '<b>Hot-plug.</b> The battery leads ring the input to 1.8 × VIN: a full 4S pack puts 30.5 V on 30 V parts. The TVS clamps too high to help.'],
-      ['<span class="tag">F2</span>', '<b>Load dump.</b> Each eFuse trip dumps the inductor\'s energy into 5 × 4.7 µF: up to ≈ 11.3 V on 10 V capacitors.'],
-      ['<span class="tag">F3</span>', '<b>Sense gain.</b> The INA240A2 is 50 V/V; the schematic assumed 20. The flight controller\'s ADC clips at ≈ 3.2 A.'],
-    ])}
-    <p class="muted">Not tested yet (needs more than 1.9 A): 2–15 A regulation, the 17.8 A limit, a 15 A thermal soak, a real LiPo plug-in.</p>
-  </div>
-</div>`));
-
-  /* ---------------- 01 deployment ---------------- */
-  P.push(page(PB('Deployment'), 'Flown in 2025; what Rev B changes', `
-<div class="cols" style="grid-template-columns:2.75in 1fr">
-  <div class="stack">${fig('pb-installed', 'In the fuselage, May 2025, with the flight controller and GNSS board on top.', { h: '5.35in' })}</div>
-  <div class="stack">
-  ${fig('pb-flight', '<b>Aircraft 221</b> at SAE Aero Design 2025, Advanced Class. The board flew the whole season.', { h: '2.7in', pos: 'center 38%' })}
-  <div class="grid2 small">
-    <div><div class="kicker">Integration miss</div>
-    <p>The flight controller (another member's design) came back with its header rows narrower than J12/J13. Checking that the two boards mated was my job as avionics lead, and I missed it. Fixed by rework: a perfboard strip with a header along one edge, and jumper wires.</p>
-    <div class="kicker" style="margin-top:.12in">Flown board</div>
-    <p>Planned: use the measured 0.25 V/A in firmware, and add a divider so the sense output can't exceed 3.3 V at the ADC.</p></div>
-    <div><div class="kicker">Rev B, from the bench findings</div>
-    ${table([
-      ['F1', '≥ 100 µF low-ESR bulk across the input; lower-clamp TVS and/or 40 V eFuse and FETs'],
-      ['F2', '≥ 47 µF bulk next to L1; 16–25 V capacitors on VBUCK_OUT'],
-      ['F3', 'INA240A1 (20 V/V) referenced to ground: 0–15 A → 0–1.5 V'],
-      ['F4', 'Sense the buck at 5V_PROT: the 23.5 mΩ after the feedback point costs 0.35 V and 5 W at 15 A'],
-      ['Test', 'A bigger load to finish 2–15 A, the current limit and a thermal soak'],
-    ])}</div>
-  </div></div>
-</div>`));
-
-  /* ---------------- 02 SoM ---------------- */
-  const SOM = n => `<b>02</b> · Flight controller SoM · ${n}`;
-  P.push(page(SOM('Render'), 'Flight controller SoM', `
-<div class="cols" style="grid-template-columns:6.7in 1fr">
-  <div class="stack">
-    ${fig('fc-hero', 'Rev A, top side. Rendered from the Altium STEP and Gerbers.', { h: '3.75in' })}
-    <div class="grid2">${fig('fc-bottom', 'Bottom: the two Hirose DF17 board-to-board connectors and the microSD.', { h: '1.75in' })}${fig('g-carrier-top', 'The carrier it plugs into (gallery).', { h: '1.75in' })}</div>
-  </div>
-  <div class="stack small">
-    <p>A flight-controller module for UBC AeroDesign: the processor, sensors, storage and power path on one 55 × 40 mm board that plugs into a carrier through two DF17 connectors and a payload board. I led the design and trained a newer member on the power path.</p>
-    ${table([
-      ['MCU', 'STM32H757XIH6, 400 MHz, ArduPilot'],
-      ['IMUs', 'LSM6DSV32X + ICM-42688-P'],
-      ['Baros', 'DPS368 + MS5611'],
-      ['Mag', 'LIS2MDL'],
-      ['Storage', '32 KB FRAM, microSD, ID EEPROM'],
-      ['Power', '5 V carrier or USB-C, TPS2116 mux, 1.1 A eFuse, buck + sensor LDO'],
-      ['I/O', '16 PWM, 8 UART + USB, 4 I²C, 2 CAN, 5 ADC'],
-      ['Board', '8 layers, 150 parts, 22 test pads'],
-    ])}
-    <p>Each SPI bus carries one IMU and one barometer, so losing a bus still leaves a full pair.</p>
-    <p class="muted">Status: Rev A design-complete, not yet fabricated.</p>
-  </div>
-</div>`, { spec: 'STM32H757 · 55 × 40 mm · 8 layers · 2 IMU · 2 baro · ArduPilot · Altium' }));
-
-  P.push(page(SOM('Layout'), 'Eight layers around a 265-ball BGA', `
-<div class="cols" style="grid-template-columns:4.3in 1fr">
-  <div class="stack">${fig('fc-layers', 'Every layer on its own, in Altium\'s layer colours.')}</div>
-  <div class="stack">
-    ${fig('fc-signal', '<b>All signal layers</b> (L1, L3, L6, L8) seen from above, ground planes hidden. ')}
-    <div class="grid2">
-      ${fig('fc-stack', 'The stack-up, exploded.')}
-      <div class="small"><ul>
-        <li>Every signal layer is next to a ground plane (L2, L5, L7); L4 is the power plane.</li>
-        <li>Sensors on their own 3.3 V LDO rail, separate from the main buck.</li>
-        <li>Both DF17 connectors and the microSD on the bottom.</li>
-        <li>22 test pads for bring-up: rails, debug, buses.</li></ul></div>
-    </div>
-  </div>
-</div>`));
-
-  /* ---------------- 03 FOC ---------------- */
-  const FOC = n => `<b>03</b> · FOC motor controller · ${n}`;
-  P.push(page(FOC('Layout'), 'FOC motor controller', `
-<div class="cols" style="grid-template-columns:6.4in 1fr">
-  <div class="stack">
-    ${fig('foc-layers', 'Each layer: L1, L3, L4 and L6 carry signal and power; L2 (and L5, the same) are ground.')}
-    <div class="grid2">${fig('foc-signal', 'Signal layers L1, L3, L4, L6 together (red, cyan, green, blue), ground hidden.', { h: '2.7in' })}${fig('foc-hero', 'Rev 1, rendered.', { h: '2.7in' })}</div>
-  </div>
-  <div class="stack small">
-    <p>A single-axis field-oriented-control drive for one joint of a cat-sized walking robot, designed for a 12S bus (56 V max) and 10 A rms per phase.</p>
-    ${table([
-      ['MCU', 'STM32G431, CAN-FD'],
-      ['Gate driver', 'DRV8323S, SPI'],
-      ['FETs', '6 × ISC030N10NM6, 100 V'],
-      ['Sense', '3 low-side 3 mΩ shunts'],
-      ['Bus', '≈ 350 µF, 25 kHz PWM'],
-      ['Board', '70 × 70 mm, 6 layers'],
-    ])}
-    ${fig('foc-photo', 'Rev 1, built.', { h: '1.7in' })}
-    <p>Rev 1 is built and runs a motor sensorless to 3000 rpm on a 30 V bench supply. The 56 V design point is not tested yet.</p>
-  </div>
-</div>`, { spec: '12S bus · 10 A rms · STM32G431 + DRV8323S · 70 × 70 mm, 6 layers · Altium' }));
-
-  P.push(page(FOC('Test'), 'Power stage on the bench: what firmware has to respect', `
-<div class="grid2" style="gap:.08in .22in;width:9.4in;margin:0 auto">
-  ${scope('foc-id15')}${scope('foc-id7')}${scope('foc-vds')}${scope('foc-hotplug')}
+  /* ================= cover ================= */
+  P.push(page('Hardware portfolio', '', '', `
+<div class="cell text">
+  <div class="name">Weymen Koo</div>
+  <div class="cjk">许梣焕</div>
+  <p class="lede">Electrical engineering, UBC (B.A.Sc. 2027). I design, lay out, build and test circuit boards: power electronics, motor control and flight avionics.</p>
+  <div class="toc">${table([
+    ['01', '<b>AeroDesign power board</b><br>5 V 15 A power distribution. Flown 2025.'],
+    ['02', '<b>Flight controller SoM</b><br>STM32H757, 8 layers. Design complete.'],
+    ['03', '<b>FOC motor controller</b><br>12S, 10 A rms. Built, running a motor.'],
+    ['04', '<b>DC electronic load</b><br>Programmable load. Built, in use.'],
+    ['05', '<b>Other work</b><br>Shadow avionics, Micromouse, airframes.'],
+  ])}</div>
+  <p class="muted" style="margin-top:.18in">Built boards are shown in one order: the board, its design and layout, its test results, then where it is used. Every scope plot is an unedited RIGOL DHO804 screenshot with call-outs drawn on top.</p>
+  <div class="contact">kchweymen@gmail.com<br>github.com/WeymenKoo<br>weymenkoo.github.io/Personal-Site</div>
 </div>
-<div style="display:grid;grid-template-columns:1fr 1fr 2.9in;gap:.22in;margin-top:.1in" class="small">
-  <div><h3>−10 V on a −7 V pin</h3>
-  <p>A day of characterisation at 30 V, with a parked rotor as the load. With current flowing into the phase, the low-side turn-on rings the switch node to −10 V at the gate driver's default gate current. Slowing it to 190 / 380 mA costs 11 ns of edge and removes it (−0.76 V); firmware now starts there and refuses anything faster than 440 / 880 mA.</p></div>
-  <div><h3>Short-circuit trip at ≈ 280 A</h3>
-  <p>At the lowest VDS threshold (0.06 V) the driver tripped at 22 A, so the threshold is just V / 2.7 mΩ, and the default 0.75 V means ≈ 280 A: no real protection. Now 0.13 V (≈ 48 A cold, 30 A hot). </p>
-  <p class="muted">Rev B: a lower-inductance shunt return, a braking clamp, phase-C sense on its own ADC.</p></div>
-  <div>${table([
-      ['Current sense', 'within 1–2 %, 20–27 mA rms noise'],
-      ['Firmware OC trip', '9.5 µs, ADC sample to outputs off'],
-      ['Sensorless', '3000 rpm, 50 of 50 starts'],
-      ['Thermal', '+10 °C FET case, 10 min at 5 A'],
-    ])}</div>
-</div>`));
+${fig('pb-photo', '01 · AeroDesign power board', 'Battery to a protected 5 V rail for every servo and radio on a competition aircraft.')}
+${fig('fc-hero', '02 · Flight controller SoM', 'Processor, sensors and storage on a 55 × 40 mm module that runs ArduPilot.')}
+${fig('foc-photo', '03 · FOC motor controller', 'Three-phase drive for one joint of a walking robot.')}
+${fig('el-photo', '04 · DC electronic load', 'A bench instrument I built, then used to test the power board.')}`, 'cover'));
 
-  /* ---------------- 04 DC load ---------------- */
-  const EL = n => `<b>04</b> · DC electronic load · ${n}`;
-  const g = 24; // px per mm in the Gerber plots
-  const pw = (x, y) => [(x - 9.9873) * g, (109.0127 - y) * g];   // power board, pick-and-place mm -> px
-  const cw = (x, y) => [(x - 18.9873) * g, (91.0127 - y) * g];   // control board
-  const around = (f, x, y, hw, hh, text, pos) => { const [cx, cy] = f(x, y); return { t: 'box', x0: cx - hw, y0: cy - hh, x1: cx + hw, y1: cy + hh, text, pos }; };
-  P.push(page(EL('Layout'), 'DC electronic load', `
-<div class="cols" style="grid-template-columns:1fr 1fr 2.6in">
-  <div class="stack">${fig('el-power-layout', '<b>Power board</b>, top copper (red) over bottom (blue), plotted from the Gerbers; part positions from the pick-and-place file.', {
-      marks: [
-        { t: 'box', x0: 500, y0: 400, x1: 1480, y1: 770, text: 'Q1, Q2 IRF530 + 0.2 Ω pairs', pos: 'tl' },
-        around(pw, 82.25, 74, 80, 90, 'U3: two loops', 'br'),
-        around(pw, 56.25, 39.925, 80, 90, 'U1: V sense', 'tl'),
-        around(pw, 75.4, 30, 220, 75, 'shunt + INA240', 'br'),
-        around(pw, 85.5, 55, 70, 240, 'P1', 'bl'),
-      ] })}</div>
-  <div class="stack">${fig('el-control-layout', '<b>Control board</b>, stacked on the power board through P3.', {
-      marks: [
-        around(cw, 61, 61.25, 150, 150, 'STM32F103', 'tl'),
-        { t: 'box', x0: 810, y0: 1090, x1: 1360, y1: 1250, text: 'REF5040 + 12-bit DAC', pos: 'bl' },
-        { t: 'box', x0: 40, y0: 1060, x1: 500, y1: 1480, text: '12 → 5 V buck', pos: 'tl' },
-        { t: 'box', x0: 960, y0: 1420, x1: 1560, y1: 1790, text: 'USB-C, CH340E', pos: 'tl' },
-        around(cw, 85.5, 55, 65, 230, 'P3', 'bl'),
-      ] })}</div>
-  <div class="stack small">
-    <p>A programmable load for testing power supplies and batteries: set a current, and it sinks it. It is the load on the power board's bench tests (01).</p>
-    <p>Two boards, stacked. The power board has one op-amp loop per MOSFET, each forcing the voltage on its own 0.2 Ω pair to follow the DAC, so the two FETs share current to 0.1 %. The control board sets the DAC from a 4.096 V reference and reads current back through the INA240.</p>
-    ${fig('el-sch', 'The power stage: one loop per MOSFET into a shared 5 mΩ shunt.', { fit: 'contain', style: '' })}
-    ${fig('el-heatsink', 'Rev A on its heat-pipe tower.', { h: '1.45in' })}
-  </div>
-</div>`, { spec: 'Rev A: 2 × IRF530 · STM32F103 · 12-bit DAC · USB-C · 2 boards, 4 layers each · Altium' }));
+  /* ================= 01 power board ================= */
+  const PB = 'AeroDesign power board';
+  P.push(hero(sec('01', PB, 'Overview'), PB, '2S–4S in · 5 V 15 A · LM5146 buck · 2 × TPS25983 eFuse · 110 × 60 mm, 6 layers', 'pb-photo', {}, `
+${stats([['5 V 15 A', 'one protected rail, design rating'], ['91–94 %', 'efficiency at 1.9 A, 7.4–22 V in'], ['≈ 1 %', 'protection thresholds vs. design'], ['2025', 'flown, SAE Aero Design Advanced Class']])}
+<div>${kicker('What it is for')}<p>The power board of UBC AeroDesign's 2025 aircraft. It takes the 2S–4S flight battery and feeds nine servos, the receiver, telemetry, camera and the flight controller, which plugs in on top.</p></div>
+<div>${kicker('My role')}<p>Lead designer: requirements, schematic, layout, bring-up and bench characterisation. A clean-sheet redesign after the previous revision did not work.</p></div>`, [
+    text(`${kicker('Specifications')}${table([
+      ['Input', '2S–4S LiPo, 7–22 V'],
+      ['Output', '5 V, 15 A max (design)'],
+      ['Buck', 'TI LM5146, 2 × AON7534, 3.3 µH, 300 kHz'],
+      ['Input protection', 'TPS25983 eFuse: UVLO 5.97 V, OVP 24.86 V, 17.8 A; reverse-polarity P-FET; TVS'],
+      ['Output protection', 'second TPS25983: 17.8 A, retries then latches'],
+      ['Sensing', 'servo current: 5 mΩ shunt + INA240'],
+      ['Outputs', '9 servo, ELRS, telemetry, CAN, camera'],
+      ['Board', '110 × 60 mm, 6 layers'],
+      ['Tool', 'Altium Designer'],
+    ])}`),
+    text(`${kicker('Status')}<p>Built in March 2025 and flown for the whole 2025 season in aircraft 221.</p><p>Characterised on the bench in November 2026 from 0 to 1.9 A: regulation, start-up, transient response and every protection threshold match the design. The same tests exposed three weaknesses, which are designed out in Rev B (page 6).</p>${kicker('In this section')}${table([['p. 3', 'Design: from plan to architecture'], ['p. 4', 'Layout'], ['p. 5', 'Test results'], ['p. 6', 'In the aircraft']])}`),
+  ]));
 
-  P.push(page(EL('Test'), 'Rev A measured: 1.93 A, 36 W, and two predicted faults confirmed', `
-<div class="cols" style="grid-template-columns:1fr 1fr 2.45in">
-  <div class="stack">${scope('el-step')}${fig('el-envelope', '<b>Operating envelope, measured.</b> On-resistance at low voltage, the gate-drive ceiling at 1.93 A, then the 36 W thermal limit (no fan).')}</div>
-  <div class="stack">${scope('el-vsen')}
-    <div class="small">${table([
-      ['Current', '0–1.93 A (2.04 A hot)'],
+  P.push(grid(sec('01', PB, 'Design'), 'From a chalkboard to one protected power path', 'Requirements → architecture → settings', [
+    fig('pb-chalkboard', 'System plan', 'The 2024–25 avionics planned on a chalkboard: flight controller, receiver, radios, camera, and the power budget this board had to meet.'),
+    fig('pb-sketch', 'Mechanical concept', 'The stack on paper: flight controller on 2.54 mm headers above the power board, buck converter underneath it.'),
+    fig('pb-blocks', 'Architecture', 'Block diagram from the top schematic sheet. Crossed out in red: a second battery with ideal-diode OR-ing and a second buck were dropped. The board as built has one path.'),
+    text(`${kicker('Requirements')}<ul>
+      <li>2S–4S LiPo input: 7 to 22 V.</li>
+      <li>5 V at up to 15 A for nine servos, the receiver, telemetry, camera and flight controller.</li>
+      <li>Survive a reversed battery, a live plug-in and a shorted servo lead.</li>
+      <li>Report servo current to the flight controller.</li>
+      <li>Carry the flight controller on two 1 × 14 headers.</li></ul>`),
+    text(`${kicker('Design decisions')}${table([
+      ['Buck', 'LM5146 controller, 2 × AON7534 FETs, 300 kHz, type III loop for a 50 kHz crossover.'],
+      ['Inductor', '3.3 µH, saturates at 37 A: above the 17.8 A eFuse limit, so the eFuse always acts first.'],
+      ['Two eFuses', 'One at the battery, one at the 5 V output: a short there is cut off, retried 4 times, then latched.'],
+      ['Sense', '5 mΩ shunt, Kelvin-connected to an INA240.'],
+    ])}`),
+    text(`${kicker('Protection settings')}${table([
+      ['Input UVLO', 'on 5.97 V, off 5.48 V'],
+      ['Input OVP', 'off 24.86 V, on 22.79 V'],
+      ['Current limit', '17.81 A, 2 ms blanking'],
+      ['Input fault', 'latches off'],
+      ['Servo fault', '4 retries, 94 ms apart'],
+      ['Soft-start', '4 ms'],
+      ['Power-good', 'input, buck and output, each to a test pad'],
+    ])}`),
+  ]));
+
+  P.push(hero(sec('01', PB, 'Layout'), 'Layout: power flows left to right on the top layer', 'Plotted from the fabrication Gerbers · inner layers: L2, L3, L5 solid ground, L4 signal', 'layout-pb', {
+    marks: layoutMarks('layout-pb', [
+      [1, 'pb', 45.2, 82.9, -30, -230], [2, 'pb', 52.3, 81.8, 30, -210], [3, 'pb', 66.1, 78.8, 60, -260],
+      [4, 'pb', 53.2, 53.7, -250, 60], [5, 'pb', 73.5, 53.5, 60, 330], [6, 'pb', 114.5, 64.6, -150, 110],
+      [7, 'pb', 132.6, 71.5, 60, -100], [8, 'pb', 73.0, 91.7, 0, -100], [9, 'pb', 120.6, 86.3, 0, -200], [10, 'pb', 144.5, 77.3, 60, -150],
+    ]), extra: LEGEND }, `
+${key([
+  'Battery input pads, V+ and V−',
+  'Q4 reverse-polarity P-FET and D23 TVS, right at the entry',
+  'U4 input eFuse: UVLO, OVP and the 17.8 A limit',
+  'U3 LM5146 with its FETs Q2 / Q3 next to it',
+  'L1 3.3 µH and the buck output capacitors',
+  'U1 servo-rail eFuse with Q1 as a blocking FET',
+  'R1 5 mΩ shunt, Kelvin-routed to the INA240 (U2)',
+  'J12 / J13: the flight controller plugs in here',
+  'Servo and radio connectors, each with an ESD array',
+  '5 V and ground output pads',
+])}`, [
+    fig('pb-exploded', 'Six-layer stack', 'L1 carries power; L2, L3 and L5 are the same solid ground pour; L4 and L6 carry signals. Copper: 53 % on L1, 92 % on each ground layer.'),
+    text(`${kicker('Layout decisions')}<ul>
+      <li>High current runs on L1 in wide pours, from the battery pads to the output pads.</li>
+      <li>L2, directly under it, is a solid ground plane.</li>
+      <li>The buck sits in one corner: controller, FETs, inductor and capacitors together. Analog and power ground meet at one net tie.</li>
+      <li>The shunt is sensed through two 0 Ω Kelvin links, not through the pour.</li>
+      <li>Each stage has a power-good test pad on the top side for bring-up.</li></ul>`),
+  ]));
+
+  P.push(grid(sec('01', PB, 'Test'), 'Test results: start-up, transient response, ripple, switching', 'KORAD KA3005P · RIGOL DHO804 · Brymen BM235 · my DC load (04) · every test scripted in Python and logged', [
+    scope('pb-startup', 'The buck ramps in 2.95 ms with 9 mV of overshoot; the servo eFuse then connects the rail, and power-good follows. No restart, also into a 1.9 A load at 7.4 V.'),
+    scope('pb-loadstep', 'A 1.54 A step at the lowest input voltage: one 172 mV dip and a smooth recovery. At 22 V in the dip is 67 mV. The loop is stable and well damped.'),
+    scope('pb-ripple', '14.0 mVpp on the servo rail at the 308 kHz switching frequency (target: 8 mV; the output capacitors lose capacitance under DC bias).'),
+    scope('pb-swfreq', 'The converter holds 308.8 kHz from no load to 1.9 A: discontinuous with diode emulation up to 1 A, continuous at 1.9 A.'),
+    scope('pb-swedge', 'At the highest input voltage the switch node peaks at 23.4 V on 30 V FETs. Measured with a 70 MHz scope, so a lower bound.'),
+    text(`${kicker('Measured against design')}${table([
+      ['Output, no load', '4.994 V', '5.055–5.063 V'],
+      ['Line regulation', '–', '5 mV, 7.4–22 V'],
+      ['Load regulation', '–', '3–6 mV at the buck'],
+      ['Efficiency, 1.9 A', '–', '94.4 % at 7.4 V<br>91.0 % at 22 V'],
+      ['Switching', '300 kHz', '308.8 kHz'],
+      ['Soft-start', '4 ms', '2.95 ms'],
+      ['UVLO on / off', '5.97 / 5.48 V', '≈ 5.98 / 5.54 V'],
+      ['OVP off / on', '24.86 / 22.79 V', '≈ 24.9 / 23.0 V'],
+      ['Reverse, −22 V', 'blocked', '< 10 µA'],
+    ], ['', 'Design', 'Measured'])}<p class="muted">Tested from 0 to 1.9 A, the limit of my load. 2–15 A is the next campaign.</p>`),
+  ]));
+
+  P.push(grid(sec('01', PB, 'In use'), 'In use: a full competition season', 'SAE Aero Design 2025, Advanced Class · aircraft 221', [
+    fig('pb-stack', 'As a stack', 'How it is used: Flight Controller v2 (a teammate\'s design) plugs into J12 / J13 and takes its 5 V and every servo, radio and camera signal through them. Render from the STEP models.'),
+    fig('pb-installed', 'Installed', 'In the fuselage, May 2025: the power board at the bottom of the stack, the flight controller and GNSS board above it, the telemetry radio beside it.'),
+    fig('pb-flight', 'Flown', 'Aircraft 221 in the air at SAE Aero Design 2025. The board powered every servo, the receiver, telemetry, camera and flight controller for the whole season.'),
+    text(`${kicker('What testing changed for Rev B')}${table([
+      ['Input', 'Bulk damping at the input: a live 4S plug-in rings the supply leads to 1.8 × VIN.'],
+      ['Buck output', '≥ 47 µF more, and 16 V capacitors: an eFuse trip dumps the inductor\'s energy into too little capacitance.'],
+      ['Current sense', 'INA240A1 (20 V/V), ground-referenced: 0–15 A maps to 0–1.5 V. Rev 3 reads 0.25 V/A.'],
+      ['Regulation', 'Sense at the servo rail: 23.5 mΩ after the feedback point costs 50 mV at 1.9 A.'],
+    ])}`),
+    text(`${kicker('What I would do differently')}<p>The flight controller came back with its header rows narrower than J12 / J13, so the two boards did not plug together. Checking that they mated was my job as avionics lead, and I missed it.</p><p>It was fixed by rework: a perfboard strip with a header along one edge, and jumper wires. It flew that way.</p>`),
+    text(`${kicker('Still to test')}<p>My load stops at 1.9 A, so these need a bigger one:</p><ul>
+      <li>Regulation, efficiency and ripple from 2 to 15 A.</li>
+      <li>The 17.8 A current limit and its 2 ms blanking.</li>
+      <li>A 15 A thermal soak.</li>
+      <li>A real LiPo plug-in through the flight harness.</li></ul>`),
+  ]));
+
+  /* ================= 02 flight controller SoM ================= */
+  const SOM = 'Flight controller SoM';
+  P.push(hero(sec('02', SOM, 'Overview'), SOM, 'STM32H757 · 55 × 40 mm · 8 layers · 2 IMUs · 2 barometers · ArduPilot · design complete, not yet built', 'fc-hero', {}, `
+${stats([['55 × 40', 'mm, 8 layers'], ['150', 'parts: 59 top, 91 bottom'], ['2 + 2', 'IMUs and barometers on separate buses'], ['140', 'pins to the carrier, two DF17 connectors']])}
+<div>${kicker('What it is for')}<p>A flight computer for UBC AeroDesign, built as a module: processor, sensors, storage and power path on one board that plugs into a carrier board and a payload board.</p></div>
+<div>${kicker('My role')}<p>Lead designer: architecture, schematic, layout and manufacturing release. I trained a newer member on the power path. Rev A is design-complete and not yet fabricated, so these are renders from the Altium STEP and Gerbers.</p></div>`, [
+    text(`${kicker('Specifications')}${table([
+      ['Processor', 'STM32H757XIH6, Cortex-M7, 400 MHz'],
+      ['Firmware', 'ArduPilot (ChibiOS)'],
+      ['IMUs', 'LSM6DSV32X (SPI1), ICM-42688-P (SPI5)'],
+      ['Barometers', 'DPS368 (SPI1), MS5611 (SPI5)'],
+      ['Magnetometer', 'LIS2MDL'],
+      ['Storage', '32 KB FRAM, microSD, ID EEPROM'],
+      ['Power', '5 V from carrier or USB-C, priority mux, 1.1 A eFuse, 3.3 V buck, sensor LDO'],
+      ['I/O', '16 PWM, 8 UART + USB, 4 I²C, 2 CAN, 5 ADC'],
+      ['Test', '22 test pads'],
+      ['Tool', 'Altium Designer'],
+    ])}`),
+    fig('fc-bottom', 'Bottom side', 'Two Hirose DF17 board-to-board connectors (80 and 60 pins) and the microSD socket. 91 of the 150 parts are on this side.'),
+  ]));
+
+  P.push(hero(sec('02', SOM, 'Layout'), 'Layout: eight layers around a 265-ball BGA', 'Layer colours as in Altium · ground planes hidden in the main view', 'fc-signal', {}, `
+<div>${kicker('Routing')}<ul>
+  <li>Four signal layers: L1, L3, L6, L8. Each one is next to a ground plane (L2, L5, L7); L4 is the power plane.</li>
+  <li>The BGA escapes through about 200 vias in pads, epoxy-filled and capped.</li></ul></div>
+<div>${kicker('Partitioning')}<ul>
+  <li>One IMU and one barometer per SPI bus: losing a bus still leaves a complete pair.</li>
+  <li>Sensors run from their own 3.3 V LDO, separate from the main buck rail.</li></ul></div>`, [
+    fig('fc-stack', 'Stack-up', 'L1 signal · L2 ground · L3 signal · L4 power · L5 ground · L6 signal · L7 ground · L8 signal. Copper: 86 % on the ground planes, 82 % on the power plane.'),
+    fig('fc-carrier', 'How it will be used', 'Mated to the 2026–27 carrier board through the two DF17 connectors, 8 mm apart. The carrier is not my design; it is shown for context.'),
+  ]));
+
+  /* ================= 03 FOC motor controller ================= */
+  const FOC = 'FOC motor controller';
+  P.push(hero(sec('03', FOC, 'Overview'), FOC, '12S bus, 56 V max · 10 A rms per phase · STM32G431 + DRV8323S · CAN-FD · 70 × 70 mm, 6 layers', 'foc-photo', {}, `
+${stats([['3000 rpm', 'sensorless closed loop, 30 V bench supply'], ['50 / 50', 'sensorless starts reached closed loop'], ['1–2 %', 'phase-current accuracy vs. a floating DMM'], ['+10 °C', 'FET case, 10 min at 5 A, still air']])}
+<div>${kicker('What it is for')}<p>A field-oriented-control drive for one joint of a cat-sized walking robot. Six boards are planned, one per joint, sharing a 12S bus and talking over CAN-FD.</p></div>
+<div>${kicker('My role')}<p>Everything on the board: schematic, layout, LTspice models, firmware bring-up and the test campaign. Rev 1 is built and tested to 30 V and 10 A; the 56 V design point is not tested yet.</p></div>`, [
+    text(`${kicker('Specifications')}${table([
+      ['Bus', '12S LiPo: 44.4 V nominal, 56 V max'],
+      ['Phase current', '10 A rms (design target)'],
+      ['MCU', 'STM32G431RB, 170 MHz'],
+      ['Gate driver', 'TI DRV8323S, SPI, 3 sense amplifiers'],
+      ['Power stage', '6 × ISC030N10NM6, 100 V'],
+      ['Current sense', '3 × 3 mΩ low-side shunts'],
+      ['PWM', '25 kHz, 200 ns dead time'],
+      ['Position', 'AS5047P 14-bit magnetic encoder'],
+      ['Comms', 'CAN-FD, UART, SWD'],
+      ['Tool', 'KiCad, assembled by JLCPCB'],
+    ])}`),
+    fig('foc-render', 'Top and bottom', 'Render of both sides on standoffs. The encoder sits on the bottom at the board\'s centre, under the motor shaft.'),
+  ]));
+
+  P.push(hero(sec('03', FOC, 'Layout'), 'Layout: power stage on one edge, logic on the other', 'Plotted from the fabrication Gerbers · inner layers: L2 and L5 solid ground, L3 and L4 signal and power', 'layout-foc', {
+    marks: layoutMarks('layout-foc', [
+      [1, 'top', 29.2, 62.5, -150, 175], [2, 'top', 41.4, 70.3, 0, -120], [3, 'top', 32.75, 54.75, 120, 120],
+      [4, 'top', 62, 60.5, 110, -150], [5, 'top', 21.75, 44.75, -150, 60], [6, 'top', 48.25, 27.5, 130, -120],
+      [7, 'top', 68, 43.5, 60, -110], [8, 'top', 44.75, 11, 150, 95], [9, 'bottom', 40, 40, -120, -120],
+    ], [['top', 'L1, top'], ['bottom', 'L6, bottom']]), extra: LEGEND }, `
+${key([
+  'Three half-bridges: 6 × 100 V FETs in a row',
+  'Phase outputs A, B, C and the bus terminals on one edge',
+  '3 mΩ low-side shunts directly under each bridge leg',
+  'Bulk capacitors, about 350 µF, beside the bridges',
+  'DRV8323S next to the bridge: short gate loops',
+  'STM32G431, away from the switching edge',
+  'LMR36520 buck: bus to 5 V, then an LDO to 3.3 V',
+  'CAN-FD, UART, encoder and SWD along the far edge',
+  'AS5047P encoder on the bottom, at the centre',
+])}`, [
+    fig('foc-stack', 'Six-layer stack', 'L1, L3, L4 and L6 carry signal and power; L2 and L5 are identical ground planes. Phase and bus current run in outer-layer pours.'),
+    text(`${kicker('What the layout taught me')}<ul>
+      <li>At the gate driver's default drive strength the low-side turn-on rang the switch node past the driver's rating. Slowing the edge from 7 ns to 18 ns fixed it; firmware now enforces that setting.</li>
+      <li>Phase C has the largest commutation loop and rings most. Rev B gets a lower-inductance shunt return.</li>
+      <li>Phase C's current is sampled second on its ADC, which costs 5 % of usable duty. Rev B routes the three so none waits behind another.</li></ul>`),
+  ]));
+
+  P.push(grid(sec('03', FOC, 'Test and use'), 'Test results, and the board driving a motor', 'KORAD KA3005P 30 V · RIGOL DHO804 · T-Motor MN601-S as the load', [
+    scope('foc-edge', 'High-side turn-on at the gate-drive setting the firmware ships with: a 25.5 ns edge with 0.11 V of overshoot on a 30 V bus.'),
+    scope('foc-pwm', 'One 25 kHz period. The sense amplifier settles well inside the low-side window, where the ADC samples; measured current is within 1–2 % of a DMM.'),
+    scope('foc-ripple', 'The motor running closed-loop at 2000 rpm: 67 mV p-p of bus ripple between edges, 58–79 mV from 1000 to 3000 rpm.'),
+    scope('foc-bemf', 'Motor identification: the flux constant from the coasting back-EMF agrees within 0.5 % with the value stored in the firmware (KV 282).'),
+    fig('foc-bench', 'In use: on the bench', 'Rev 1 driving a T-Motor MN601-S: sensorless speed control to 3000 rpm, 50 of 50 starts, and a current-vector position hold.'),
+    fig('foc-gui', 'In use: FOCLINK', 'The bench console for bring-up, a PySide6 app over UART: arming, motor identification, spin control and live plots. Safety logic stays in the firmware.'),
+  ]));
+
+  /* ================= 04 DC electronic load ================= */
+  const EL = 'DC electronic load';
+  P.push(hero(sec('04', EL, 'Overview'), EL, 'Rev A · 2 × IRF530 linear stage · STM32F103 · 12-bit DAC, 4.096 V reference · USB-C · two 4-layer boards', 'el-photo', {}, `
+${stats([['1.93 A', 'maximum current, Rev A'], ['36 W', 'continuous, no fan'], ['12 µs', 'load-step rise time, ≤ 0.6 % overshoot'], ['±10 mA', 'current readback to 1.9 A']])}
+<div>${kicker('What it is for')}<p>A programmable load for testing power supplies and batteries: set a current over USB and it sinks it, steady or as a square wave. It was the load in the power board's bench tests in section 01.</p></div>
+<div>${kicker('My role')}<p>A personal project: schematic, layout, firmware, a Python test suite and the characterisation. Rev A is built and in use. Rev B (10 A, 150 W) is designed and simulated; its PCB is placed, not yet routed.</p></div>`, [
+    text(`${kicker('Specifications, Rev A')}${table([
+      ['Power board', '2 × IRF530, one op-amp current loop per FET, 0.2 Ω source resistors'],
+      ['Control board', 'STM32F103, MCP4725 12-bit DAC, REF5040 4.096 V reference'],
+      ['Readback', '5 mΩ shunt + INA240'],
       ['Setpoint', '2.5 mA steps, ±7 mA calibrated'],
-      ['Readback', '±10 mA of the supply to 1.9 A'],
-      ['Sharing', '0.1 % between the FETs'],
-      ['Steps', '11–16 µs edges, ≤ 1.5 % overshoot'],
-      ['Power', '≈ 36 W continuous, no fan'],
-    ], ['', 'Rev A, measured'])}</div>
-    ${fig('el-boards', 'Rev A: power board (top) and control board.', { h: '1.75in' })}</div>
-  <div class="stack small">
-    <p>A schematic review (netlists rebuilt from the Altium files, the power-board errors reproduced in LTspice) predicted the main faults; the bench confirmed them:</p>
-    <div><h3>Gate drive capped at 4.1 V</h3>
-    <p>The loops run from the 4.096 V reference, so a gate can never pass ≈ 4.1 V. Two IRF530s at that drive top out at 1.93 A: the silkscreen says 10 A.</p></div>
-    <div><h3>Voltage readback stuck</h3>
-    <p>The difference amplifier's feedback goes to its + input, so the output latches at 3.96 V at any voltage, and drives an MCU pin above its 3.6 V maximum. Fix: swap two resistors.</p></div>
-    <div><h3>Rev B</h3>
-    <p>Op-amps on a 12 V rail, four TO-247 MOSFETs with a loop each, 4-wire voltage sense into an external ADC: 10 A and 150 W with a fan. Schematic done and simulated; placed, not yet routed.</p></div>
-  </div>
-</div>`));
+      ['Interface', 'USB-C (CH340E), Python and a GUI'],
+      ['Supply', 'USB, or 12 V through a TPS5430 buck'],
+      ['Tool', 'Altium Designer'],
+    ])}`),
+    text(`${kicker('Status')}<p>Rev A was built in late 2024 and characterised in November 2026. It is my working load up to 1.9 A.</p><p>In the photo: the control board stacked on the power board through a 16-pin header, with the two MOSFETs mounted on a heat-pipe cooler.</p>${kicker('In this section')}${table([['p. 13', 'Layout and the current loop'], ['p. 14', 'Test results, and the load in use']])}`),
+  ]));
 
-  /* ---------------- gallery ---------------- */
-  P.push(page('<b>Gallery</b> · Other boards', 'Other boards', `
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.18in .22in">
-  ${fig('g-shadow', '<b>Shadow power distribution, 2024.</b> The wiring hub carrying the Cube Orange flight controller, and a power module beside it. Flown at SAE Aero Design West 2024.', { h: '2.3in' })}
-  ${fig('g-module', '<b>Shadow power module.</b> One of two: 5 V, 15 A (ISL8117A), hot-swappable dual batteries, voltage and current sensing.', { h: '2.3in' })}
-  ${fig('g-shadow-installed', '<b>Shadow, installed.</b> The hub in the fuselage with the Cube Orange and GNSS.', { h: '2.3in' })}
-  ${fig('g-carrier', '<b>Carrier board v1, 2026–27.</b> 6 layers; the SoM (02) mates on two DF17 connectors, 8 mm stack height. XT30 in, JST-GH out.', { h: '2.3in' })}
-  ${fig('g-micromouse', '<b>Micromouse V2, 2023–24.</b> STM32F411, DRV8833, four IR pairs, IMU and encoders on one board. V1 put the motor inputs on pins with no timer; V2 fixed it.', { h: '2.3in' })}
-  ${fig('g-kyogre', '<b>Kyogre and Spirit, 2021–23.</b> Not a board: two seasons as lifting-surfaces lead on AeroDesign\'s airframes, from XFLR5 to the build.', { h: '2.3in' })}
-</div>`));
+  P.push(hero(sec('04', EL, 'Layout'), 'Layout: a power board and a control board that stack', 'Plotted from the fabrication Gerbers · part positions from the pick-and-place files', 'layout-el', {
+    marks: layoutMarks('layout-el', [
+      [1, 'power', 55, 81.2, 0, 130], [2, 'power', 37, 88, -150, -70], [3, 'power', 82.25, 74, 80, -110],
+      [4, 'power', 75.4, 30, 110, 110], [5, 'power', 85.5, 55, 105, 0],
+      [6, 'control', 61, 61.25, -130, -110], [7, 'control', 64, 42.5, -40, 150], [8, 'control', 29, 39, -60, 150], [9, 'control', 70.5, 19.4, 150, 30],
+    ], [['power', 'Power board, 88 × 88 mm'], ['control', 'Control board, 70 × 74.5 mm']]), extra: LEGEND }, `
+${key([
+  'Q1 and Q2 (IRF530), beside the cut-out for the cooler',
+  'Two 0.2 Ω source resistors per FET set each loop\'s gain',
+  'Dual op-amp: one current loop per MOSFET',
+  '5 mΩ shunt and INA240 for current readback',
+  '16-pin header: the two boards stack here',
+  'STM32F103 microcontroller',
+  '4.096 V reference and the 12-bit DAC it feeds',
+  '12 V to 5 V buck for standalone use',
+  'USB-C and the USB-UART bridge',
+])}`, [
+    fig('el-sch', 'One of two identical loops', 'The op-amp drives the gate until the voltage on the FET\'s source resistors equals the DAC setpoint. A loop per FET makes the two share current to 0.1 %.'),
+    text(`${kicker('Design notes')}<ul>
+      <li>The high-current path is one wide pour around the cut-out, with the solder mask opened over it.</li>
+      <li>Linear, not switched: the FETs burn the power, so the thermal path sets the rating. Measured: 0.99 K/W heatsink to ambient.</li>
+      <li>Rev A limit: the loops run from the 4.096 V reference, so gate drive stops at 4.1 V and current at 1.93 A.</li>
+      <li>Rev B: op-amps on a 12 V rail, four TO-247 FETs, 4-wire voltage sense. Target 10 A and 150 W.</li></ul>`),
+  ]));
+
+  P.push(grid(sec('04', EL, 'Test and use'), 'Test results, and the load at work', 'KORAD KA3005P as the source · RIGOL DHO804 · every test a Python script with a safety monitor', [
+    scope('el-rise', 'A 1.7 A step: the current rises in 11.6–11.8 µs (10–90 %) with at most 0.6 % overshoot, the same from a 5 V and a 12 V source.'),
+    scope('el-fall', 'The falling edge takes 15.7–16.2 µs. The yellow and cyan traces are the two MOSFETs: each loop regulates its own FET, and they share current to 0.1 %.'),
+    scope('el-settle', 'At a longer timebase the step is flat after the edge. Clean, repeatable edges are what make the load usable for transient tests on converters.'),
+    text(`${kicker('Measured, Rev A')}${table([
+      ['Current range', '0–1.93 A (2.04 A hot)'],
+      ['Setpoint', '2.5 mA steps, no dead zone'],
+      ['Accuracy', '±7 mA after calibration'],
+      ['Readback', '±10 mA of the supply'],
+      ['Sharing', '0.1 % between the FETs'],
+      ['Step, 10–90 %', '≈ 12 µs up, ≈ 16 µs down'],
+      ['Overshoot', '≤ 0.6 %, no ringing'],
+      ['Minimum voltage', '0.55 V at 1 A'],
+      ['Continuous power', '≈ 36 W, no fan'],
+    ])}`),
+    fig('el-probing', 'Test method', 'Each MOSFET\'s current is read across its own source resistors, with a DMM and the supply as references. Scripts set limits, run, log and save the screen.'),
+    fig('pb-bench', 'In use: testing the power board', 'The load (left, on its cooler) on the bench with the AeroDesign power board. Its square wave produced the load transients in section 01.'),
+  ]));
+
+  /* ================= 05 other work ================= */
+  P.push(grid('<b>05</b> · Other work', 'Other work', 'Earlier boards and two seasons of airframes', [
+    fig('g-hub', 'Shadow wiring hub · 2024', 'The backbone of UBC AeroDesign\'s 2023–24 aircraft: carries the Cube Orange flight controller, sensor board and GNSS, and distributes power and signals. I was power and propulsion lead.'),
+    fig('g-hub-installed', 'Shadow, installed · 2024', 'The hub in the fuselage with the Cube Orange on top. Two 5 V 15 A power modules (ISL8117A) with hot-swappable dual batteries fed it. Flown at SAE Aero Design West 2024.'),
+    fig('g-micromouse', 'Micromouse V2 · 2023–24', 'A maze-solving robot on one board: STM32F411, DRV8833, four IR pairs, IMU and encoders. V1 put the motor inputs on pins with no timer; V2 fixed the pinout.'),
+    fig('g-spirit', 'Kyogre and Spirit · 2021–23', 'Before electronics: two seasons as mechanical lead for lifting surfaces on AeroDesign\'s airframes, from XFLR5 analysis to the build. Spirit, a blended wing body, in flight in April 2023.'),
+    text(`${kicker('Tools I use')}${table([
+      ['Design', 'Altium Designer, KiCad, LTspice'],
+      ['Firmware', 'C on STM32, ArduPilot / ChibiOS'],
+      ['Test', 'Python + PyVISA automation, scopes, e-loads, DMMs'],
+      ['Mechanical', 'SolidWorks'],
+    ])}${kicker('<span style="display:block;margin-top:.1in">Industry</span>')}<p>Tesla, Test System Engineer co-op (2025): high-voltage PCBAs and end-of-line test.</p><p>Dometic Marine, Product Design co-op (2024–25): hot-swap protection, ESD testing, 2 kW PCBA bring-up.</p>`),
+    text(`${kicker('Full write-ups and source')}<p>Every project here has a write-up with schematics, raw test data, scripts and every scope capture.</p>${table([
+      ['Site', 'weymenkoo.github.io/Personal-Site'],
+      ['Power board', 'github.com/WeymenKoo/<br>AeroDesign-Power-Board'],
+      ['SoM', 'github.com/WeymenKoo/<br>AeroDesign-Flight-Controller-SoM'],
+      ['FOC', 'github.com/WeymenKoo/<br>FOC-Motor-Controller'],
+      ['DC load', 'github.com/WeymenKoo/<br>DC-Electronic-Load'],
+    ])}<p style="margin-top:.1in"><b>Weymen Koo</b> · kchweymen@gmail.com</p>`),
+  ]));
 
   return P;
 };
