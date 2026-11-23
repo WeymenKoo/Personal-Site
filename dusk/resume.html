@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<script src="assets/theme.js?v=c0aa626b"></script>
+<script src="assets/theme.js?v=31908eaa"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Résumé — Weymen Koo</title>
 <meta name="description" content="Weymen Koo's work history: education, skills and experience.">
@@ -24,8 +24,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300..800;1,300..800&family=Noto+Sans+SC:wght@400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=c0aa626b">
-<link rel="stylesheet" href="assets/resume.css?v=c0aa626b">
+<link rel="stylesheet" href="assets/site.css?v=31908eaa">
+<link rel="stylesheet" href="assets/resume.css?v=31908eaa">
 </head>
 <body class="resume">
 
@@ -39,22 +39,25 @@
   <section class="cv-head">
     <p class="kicker">Résumé</p>
     <h1>Weymen Koo</h1>
-    <p class="cv-contact"><a href="mailto:kchweymen@gmail.com">kchweymen@gmail.com</a> · Vancouver, Canada</p>
+    <p class="cv-contact"><a href="mailto:kchweymen@gmail.com">kchweymen@gmail.com</a> · Vancouver, Canada · <a href="https://github.com/WeymenKoo/WeymenKoo/blob/main/Weymen_Koo_Resume.pdf" target="_blank" rel="noopener">One-page PDF ↗</a></p>
   </section>
 
   <section class="cv-sec">
     <h2>Education</h2>
-    <div class="job">
-      <div class="job-top"><p class="org">The University of British Columbia<span class="where">Vancouver, Canada</span></p><h3>B.A.Sc., Electrical Engineering</h3><span class="when">09/2021 – 06/2027</span></div>
-    </div>
+    <article class="job">
+      <div class="job-top"><p class="org">The University of British Columbia<span class="where">Vancouver, Canada</span></p><h3>B.A.Sc., Electrical Engineering (Co-op Program)</h3><span class="when">09/2021 – 06/2027</span></div>
+      <ul>
+        <li>Eligible for a Canadian post-graduation work permit on graduation; no sponsorship required.</li>
+      </ul>
+    </article>
   </section>
 
   <section class="cv-sec">
     <h2>Skills</h2>
     <dl class="skills">
-      <div><dt>Hardware design</dt><dd>PCB design (Altium, KiCad), schematic capture, component selection and BOMs, power electronics, DC-DC converters, high-voltage systems, LTspice, hardware bring-up, DFM / DFT, SolidWorks CSWA, harness making</dd></div>
-      <div><dt>Embedded and controls</dt><dd>STM32, embedded systems integration, C / C++, Python automation, PyVISA, CAN bus and diagnostics, UART / SPI / I2C, Git</dd></div>
-      <div><dt>Test and validation</dt><dd>Test automation, oscilloscopes, logic analysers, e-loads, bi-directional PSUs, hi-pot and ground-bond testing, PCBA rework, soldering, prototyping and debugging</dd></div>
+      <div><dt>Hardware design</dt><dd>Altium, KiCad, LTspice · schematic capture, multi-layer layout to 8 layers and BGA · DC-DC converters, eFuse and hot-swap protection, isolated DC-DC, high voltage to 1 kV, gate drivers · component selection and BOMs · DFM / DFT</dd></div>
+      <div><dt>Test and validation</dt><dd>Python / PyVISA test automation · oscilloscopes, e-loads, bidirectional PSUs · IEC 61000-4-2 ESD, hi-pot and ground bond · CAN diagnostics · PCBA rework and soldering</dd></div>
+      <div><dt>Embedded</dt><dd>STM32 (C / C++) · CAN / CAN-FD, SPI / I2C / UART · ArduPilot and PX4 integration · Git · SolidWorks (CSWA)</dd></div>
     </dl>
   </section>
 
@@ -64,22 +67,20 @@
     <article class="job">
       <div class="job-top"><p class="org"><span class="egg" data-egg="tesla" role="button" tabindex="0" title="Go on, click it">Tesla, Inc.</span><span class="where">Palo Alto, USA</span></p><h3>Test System Engineer, Electrical Co-op</h3><span class="when">05/2025 – 12/2025</span></div>
       <ul>
-        <li>Designed and validated high-voltage PCBAs with power stages, e-fuse protection, isolated DC-DC converters and isolated CAN transceivers.</li>
-        <li>Supported development of internal HV charging platforms: selected <b>1 kV-rated</b> components, verified safety architectures, and delivered <b>10+ field-ready units</b>.</li>
-        <li>Ran CAN diagnostics and end-of-line (EOL) validation with Tesla test tools to verify system integrity.</li>
-        <li>Automated instrumentation and load testing with <b>Python / PyVISA</b>; built a thermal stress box to characterise PCBAs.</li>
-        <li>Performed <b>hi-pot and ground-bond</b> compliance testing on industrial electrical enclosures.</li>
-        <li>Configured and validated industrial safety controllers (Pilz PNOZmulti) for HV test systems.</li>
+        <li>Designed 2 <b>isolated CAN interface PCBAs</b> (24 V / 48 V) for HV test rigs: schematic, isolated DC-DC selection, thermal design, layout and bring-up; <b>20 units deployed</b>.</li>
+        <li>Owned the HV output schematic and BOM for a <b>1 kV prototype charger</b> (contactors, fuses, precharge, bleed); added a delayed shutdown sequence that suppressed output voltage spikes; <b>10 units shipped</b>.</li>
+        <li>Automated a thermal stress chamber (closed loop to 100 °C) and unattended <b>Python / PyVISA</b> stress tests; the logs traced contactor welding to contact material and drove a part change.</li>
+        <li>Wrote the test plan and led commissioning of the 400 V predecessor charger; <b>hi-pot and ground-bond</b> tested a power distribution cabinet; configured Pilz PNOZmulti safety controllers.</li>
       </ul>
     </article>
 
     <article class="job">
       <div class="job-top"><p class="org"><span class="egg" data-egg="gyro" role="button" tabindex="0" title="Spin it up">Dometic Marine</span><span class="where">Vancouver, Canada</span></p><h3>Product Design Engineer, Electrical Co-op</h3><span class="when">09/2024 – 04/2025</span></div>
       <ul>
-        <li>Designed a hot-swap protection circuit for a specified working condition: selected components and captured the schematic in Altium Designer for a box-build assembly.</li>
-        <li>Wrote and ran electrostatic discharge (ESD) test plans to <b>IEC 61000-4-2</b>, found failures and their root causes to guide design changes.</li>
-        <li>Bring-up, assembly, automated EOL testing, troubleshooting and rework on <b>2 kW</b> PCBAs for 12 / 24 / 48 V boat control systems.</li>
-        <li>Assisted in radiated emission and immunity testing.</li>
+        <li>Designed an <b>LM5069 hot-swap</b> protection circuit (18–60 V, 10 A limit) in Altium: shunt sizing, MOSFET selection on R<sub>DS(on)</sub> against cost; adopted into the next board revision.</li>
+        <li>Planned and ran <b>IEC 61000-4-2</b> ESD tests on 5 marine control assemblies; root-caused an IMU failure to air discharge into an under-potted regulator, which drove a potting design change.</li>
+        <li>Built a 50 Ω controlled-impedance PCBA to characterise oscilloscope probe skew on 2 ns edges.</li>
+        <li>Brought up, reworked and debugged prototype <b>2 kW</b> power PCBAs for 12 / 24 / 48 V boat control systems.</li>
       </ul>
     </article>
 
@@ -87,7 +88,7 @@
       <div class="job-top"><p class="org"><a class="org-link" href="https://ubcaerodesign.com/" target="_blank" rel="noopener">UBC AeroDesign</a><span class="where">Vancouver, Canada</span></p><h3>Senior Hardware Member and Advisor</h3><span class="when">05/2025 – present</span></div>
       <ul>
         <li>Most senior member of the team; advise the avionics hardware, firmware and software work and review designs.</li>
-        <li>Lead designer of the <a href="content/projects/fc-som/index.html"><b>flight controller SoM</b></a> (STM32H757, 8 layers, ArduPilot): architecture, schematic, layout and manufacturing release.</li>
+        <li>Lead designer of the <a href="content/projects/fc-som/index.html"><b>flight controller SoM</b></a> (STM32H757, 8 layers, 240-ball BGA, ArduPilot): architecture, schematic, layout and manufacturing release. Rev A design complete, not yet fabricated.</li>
         <li>Train newer members by bringing them onto my boards: component selection and routing under review.</li>
       </ul>
     </article>
@@ -95,9 +96,8 @@
     <article class="job">
       <div class="job-top"><p class="org"><a class="org-link" href="https://ubcaerodesign.com/" target="_blank" rel="noopener">UBC AeroDesign</a><span class="where">Vancouver, Canada</span></p><h3>Avionics Lead</h3><span class="when">05/2024 – 05/2025</span></div>
       <ul>
-        <li>Led avionics hardware, firmware and software for an autonomous SAE Aero Design aircraft, for payload delivery and capture missions.</li>
+        <li>Led avionics hardware, firmware and software (<b>about 30 members</b>, 3 subteams) for the 2024–25 autonomous aircraft; the team placed <b>6th overall</b> at SAE Aero Design 2025, Advanced Class.</li>
         <li>Lead designer of the aircraft's <a href="content/projects/power-board/index.html"><b>power board</b></a> (5 V, 15 A, eFuse-protected, 6 layers), a clean-sheet redesign after the previous revision did not work. Directed the flight controller's design and bring-up.</li>
-        <li>Managed three multidisciplinary subteams (<b>about 30 members</b>) across propulsion, data acquisition, controls and ground systems.</li>
         <li>Ran technical reviews and program coordination.</li>
       </ul>
     </article>
@@ -105,18 +105,10 @@
     <article class="job">
       <div class="job-top"><p class="org"><a class="org-link" href="https://ubcaerodesign.com/" target="_blank" rel="noopener">UBC AeroDesign</a><span class="where">Vancouver, Canada</span></p><h3>Power and Propulsion Team Lead</h3><span class="when">05/2023 – 05/2024</span></div>
       <ul>
-        <li>Integrated, tested and debugged embedded hardware with PX4 on the CubePilot Cube Orange, hardware interfaces and firmware configuration, for two competition aircraft.</li>
-        <li>Led the design of a <a href="content/projects/avionics-2024/index.html"><b>power distribution module</b></a> in Altium Designer, a steady 5 V at <b>up to 10 A each</b>, for the added load of an optical system and servos.</li>
+        <li>Designed the <a href="content/projects/avionics-2024/index.html"><b>dual-battery power distribution system</b></a> for Shadow (a wiring hub and two 5 V buck modules); flown at SAE Aero Design West 2024.</li>
+        <li>Integrated, tested and debugged PX4 on the CubePilot Cube Orange, hardware interfaces and firmware configuration, for two competition aircraft.</li>
         <li>Standardised the team's hardware design process: component selection, schematic capture, PCB layout, LTspice simulation and BOM management.</li>
         <li>Taught members to characterise propulsion configurations on a custom thrust stand.</li>
-      </ul>
-    </article>
-
-    <article class="job">
-      <div class="job-top"><p class="org">UBC Computer Science Department<span class="where">Vancouver, Canada</span></p><h3>Computing, Hardware and Facilities Assistant</h3><span class="when">05/2023 – 08/2023</span></div>
-      <ul>
-        <li>Installed and maintained Dell PowerEdge and other servers in UBC's data centre and server rooms; network cable routing.</li>
-        <li>Weekly IT support: computer hardware repairs, server parts, custom network cables.</li>
       </ul>
     </article>
 
@@ -127,6 +119,46 @@
         <li>Built wing structures from laser-cut ribs, drill-press-machined spars and fittings, and hand-laid fibreglass / carbon-fibre skins, vacuum-bagged.</li>
         <li>Optimised lifting and control surface geometry with MATLAB / Python, Excel and XFLR5, against real manufacturing limits.</li>
         <li>Trained new members each term on the laser cutter, drill press, band saw and composite layup.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="cv-sec">
+    <h2>Projects</h2>
+
+    <article class="job">
+      <div class="job-top"><p class="org"><a class="proj-link" href="content/projects/power-board/index.html">AeroDesign Power Board</a><span class="where"><a class="repo-link" href="https://github.com/WeymenKoo/AeroDesign-Power-Board" target="_blank" rel="noopener">GitHub ↗</a></span></p><h3>Lead designer</h3><span class="when">2025</span></div>
+      <ul>
+        <li>6-layer board in Altium: 2S–4S LiPo to 5 V, 15 A synchronous buck (LM5146), eFuses on the input and servo output (TPS25983), servo current sense (INA240). Flown at SAE Aero Design 2025.</li>
+        <li>Bench-characterized with a scripted PSU, scope and e-load: protection thresholds <b>within 1 % of design</b>, <b>91–94 % efficient</b> at 1.9 A (load-limited); root-caused <b>3 design faults</b> (hot-plug overshoot, load dump on an eFuse trip, current-sense gain).</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-top"><p class="org"><a class="proj-link" href="content/projects/foc-controller/index.html">FOC Motor Controller</a><span class="where"><a class="repo-link" href="https://github.com/WeymenKoo/FOC-Motor-Controller" target="_blank" rel="noopener">GitHub ↗</a></span></p><h3>Designer</h3><span class="when">2026</span></div>
+      <ul>
+        <li>6-layer KiCad board for a robot leg joint: 12S bus, 10 A RMS design target, STM32G431 + DRV8323S, 14-bit encoder, CAN-FD.</li>
+        <li>Rev 1 fabricated and brought up on 12 V: gate driver, current sensing and PWM verified, motor identified and spun open-loop; <b>LTspice models checked against scope captures</b>. Closed loop in progress.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-top"><p class="org"><a class="proj-link" href="content/projects/dc-load/index.html">DC Electronic Load</a><span class="where"><a class="repo-link" href="https://github.com/WeymenKoo/DC-Electronic-Load" target="_blank" rel="noopener">GitHub ↗</a></span></p><h3>Designer</h3><span class="when">2024 – 2026</span></div>
+      <ul>
+        <li>Programmable load for testing my own converters: an STM32F103 and an MCP4725 DAC driving two IRF530s, each in its own op-amp current loop; USB-C control with a desktop GUI. Rev B (150 W, 4 × IRFP250N) in layout.</li>
+        <li>Bench-characterized Rev A with scripted tests: <b>11–16 µs load steps</b> with no ringing, ±7 mA calibrated setpoint, 36 W thermal limit; root-caused the <b>1.93 A ceiling</b> (gate drive capped at the 4.096 V reference) and a latched voltage-sense amplifier.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="cv-sec">
+    <h2>Earlier experience</h2>
+
+    <article class="job">
+      <div class="job-top"><p class="org">UBC Computer Science Department<span class="where">Vancouver, Canada</span></p><h3>Computing, Hardware and Facilities Assistant</h3><span class="when">05/2023 – 08/2023</span></div>
+      <ul>
+        <li>Installed and maintained Dell PowerEdge and other servers in UBC's data centre and server rooms; network cable routing.</li>
+        <li>Weekly IT support: computer hardware repairs, server parts, custom network cables.</li>
       </ul>
     </article>
 
@@ -152,7 +184,7 @@
 
 <div class="toast" id="toast" role="status"></div>
 
-<script src="assets/fx.js?v=c0aa626b"></script>
-<script src="assets/depths.js?v=c0aa626b"></script>
+<script src="assets/fx.js?v=31908eaa"></script>
+<script src="assets/depths.js?v=31908eaa"></script>
 </body>
 </html>
