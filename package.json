@@ -5,7 +5,7 @@
     "serve": "node tests/serve.js",
     "test": "playwright test",
     "profile": "node tools/scroll-profile.js",
-    "tldr": "node tools/tldr/build.js",
+    "portfolio": "node tools/portfolio/build.js",
     "stamp": "node tools/sizes.js && node tools/stamp.js"
   },
   "devDependencies": {

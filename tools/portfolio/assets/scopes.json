@@ -1,0 +1,467 @@
+{
+ "pb-startup": {
+  "src": "scope-pb-startup.png",
+  "w": 1024,
+  "h": 600,
+  "title": "Start-up and sequencing",
+  "legend": [
+   [
+    1,
+    "VIN"
+   ],
+   [
+    2,
+    "VBUCK_OUT"
+   ],
+   [
+    3,
+    "5V_PROT"
+   ],
+   [
+    4,
+    "OPGD"
+   ]
+  ],
+  "note": "12 V in, no load, battery-style plug-in",
+  "marks": [
+   {
+    "t": "span",
+    "x0": 295.0,
+    "x1": 443.0,
+    "y": 382.8,
+    "text": "soft-start 2.95 ms",
+    "c": "mark"
+   },
+   {
+    "t": "call",
+    "x": 517.0,
+    "y": 235.3,
+    "lx": 502.0,
+    "ly": 450.1,
+    "text": "5V_PROT follows the buck",
+    "c": "mark",
+    "al": "end"
+   },
+   {
+    "t": "call",
+    "x": 659.5,
+    "y": 273.1,
+    "lx": 792.0,
+    "ly": 201.7,
+    "text": "power-good at 10.95 ms",
+    "c": "mark",
+    "al": "end"
+   }
+  ]
+ },
+ "pb-loadstep": {
+  "src": "scope-pb-loadstep.png",
+  "w": 1024,
+  "h": 600,
+  "title": "Load transient, worst case",
+  "legend": [
+   [
+    2,
+    "VBUCK_OUT"
+   ],
+   [
+    3,
+    "5V_PROT"
+   ],
+   [
+    4,
+    "load current"
+   ]
+  ],
+  "note": "7.4 V in, 0.1 to 1.8 A step, AC-coupled, 16 averages",
+  "marks": [
+   {
+    "t": "call",
+    "x": 129.0,
+    "y": 481.0,
+    "lx": 242.0,
+    "ly": 455.2,
+    "text": "172 mV dip, no ringing",
+    "c": "mark"
+   },
+   {
+    "t": "span",
+    "x0": 112.0,
+    "x1": 310.0,
+    "y": 263.8,
+    "text": "within 10 mV in 198 µs",
+    "c": "mark"
+   },
+   {
+    "t": "call",
+    "x": 120.0,
+    "y": 212.0,
+    "lx": 412.0,
+    "ly": 139.6,
+    "text": "1.54 A step",
+    "c": "mark"
+   }
+  ]
+ },
+ "pb-ripple": {
+  "src": "scope-pb-ripple.png",
+  "w": 1024,
+  "h": 600,
+  "title": "Output ripple",
+  "legend": [
+   [
+    2,
+    "5V_PROT, AC-coupled"
+   ]
+  ],
+  "note": "16.8 V in, 1.9 A, 1x probe with ground spring, 20 MHz limit",
+  "marks": [
+   {
+    "t": "span",
+    "x0": 223.0,
+    "x1": 384.0,
+    "y": 191.3,
+    "text": "3.24 µs: 308 kHz",
+    "c": "mark"
+   },
+   {
+    "t": "label",
+    "x": 32.0,
+    "y": 408.7,
+    "text": "14.0 mVpp at the switching frequency",
+    "c": "mark",
+    "anchor": "start"
+   }
+  ]
+ },
+ "pb-swfreq": {
+  "src": "scope-pb-swfreq.png",
+  "w": 1024,
+  "h": 600,
+  "title": "Switching frequency",
+  "legend": [
+   [
+    2,
+    "switch node"
+   ],
+   [
+    1,
+    "VIN"
+   ],
+   [
+    3,
+    "5V_PROT"
+   ],
+   [
+    4,
+    "OPGD"
+   ]
+  ],
+  "note": "12 V in, 1.9 A, continuous conduction",
+  "marks": [
+   {
+    "t": "span",
+    "x0": 188.0,
+    "x1": 511.0,
+    "y": 129.2,
+    "text": "308.8 kHz, fixed at every load",
+    "c": "mark"
+   },
+   {
+    "t": "label",
+    "x": 82.0,
+    "y": 377.6,
+    "text": "no pulse skipping from 0 to 1.9 A",
+    "c": "mark",
+    "anchor": "start"
+   }
+  ]
+ },
+ "pb-swedge": {
+  "src": "scope-pb-swedge.png",
+  "w": 1024,
+  "h": 600,
+  "title": "Switch-node stress",
+  "legend": [
+   [
+    2,
+    "switch node"
+   ]
+  ],
+  "note": "22 V in, 1.9 A, rising edge at 1.25 GSa/s",
+  "marks": [
+   {
+    "t": "hline",
+    "y": 144.8,
+    "text": "30 V FET rating",
+    "side": "l",
+    "c": "dim",
+    "xmax": 850
+   },
+   {
+    "t": "call",
+    "x": 543.0,
+    "y": 179.0,
+    "lx": 452.0,
+    "ly": 232.7,
+    "text": "23.4 V peak: 22 % margin",
+    "c": "mark",
+    "al": "end"
+   }
+  ]
+ },
+ "foc-edge": {
+  "src": "scope-foc-edge.png",
+  "w": 1024,
+  "h": 600,
+  "title": "Switching edge",
+  "legend": [
+   [
+    1,
+    "phase A switch node"
+   ],
+   [
+    2,
+    "current-sense output"
+   ]
+  ],
+  "note": "30 V bus, 3 A, gate drive 190 / 380 mA",
+  "marks": [
+   {
+    "t": "label",
+    "x": 82.0,
+    "y": 227.6,
+    "text": "rise 25.5 ns (10–90 %)",
+    "c": "mark",
+    "anchor": "start"
+   },
+   {
+    "t": "call",
+    "x": 605.0,
+    "y": 148.0,
+    "lx": 652.0,
+    "ly": 227.6,
+    "text": "+0.11 V overshoot",
+    "c": "mark"
+   }
+  ]
+ },
+ "foc-pwm": {
+  "src": "scope-foc-pwm.png",
+  "w": 1024,
+  "h": 600,
+  "title": "PWM and current sense",
+  "legend": [
+   [
+    1,
+    "phase A switch node"
+   ],
+   [
+    2,
+    "current-sense output"
+   ]
+  ],
+  "note": "30 V bus, phase A sourcing 3 A, rotor parked",
+  "marks": [
+   {
+    "t": "span",
+    "x0": 103.0,
+    "x1": 505.0,
+    "y": 382.8,
+    "text": "40 µs: 25 kHz",
+    "c": "mark"
+   },
+   {
+    "t": "label",
+    "x": 122.0,
+    "y": 222.4,
+    "text": "sense output settled in each low-side window",
+    "c": "mark",
+    "anchor": "start"
+   }
+  ]
+ },
+ "foc-ripple": {
+  "src": "scope-foc-ripple.png",
+  "w": 1024,
+  "h": 600,
+  "title": "Bus ripple under load",
+  "legend": [
+   [
+    1,
+    "bus, AC-coupled"
+   ],
+   [
+    2,
+    "phase A switch node"
+   ]
+  ],
+  "note": "30 V bus, sensorless closed loop at 2000 rpm, 13.3 W",
+  "marks": [
+   {
+    "t": "label",
+    "x": 42.0,
+    "y": 165.4,
+    "text": "67 mV p-p between edges on a 30 V bus",
+    "c": "mark",
+    "anchor": "start"
+   }
+  ]
+ },
+ "foc-bemf": {
+  "src": "scope-foc-bemf.png",
+  "w": 1024,
+  "h": 600,
+  "title": "Back-EMF, coasting",
+  "legend": [
+   [
+    1,
+    "phase A"
+   ],
+   [
+    2,
+    "phase B"
+   ]
+  ],
+  "note": "outputs off at 1000 rpm, phases float near the 30 V bus",
+  "marks": [
+   {
+    "t": "label",
+    "x": 47.0,
+    "y": 274.1,
+    "text": "line-to-line 3.04 V peak at 858 rpm",
+    "c": "mark",
+    "anchor": "start"
+   },
+   {
+    "t": "label",
+    "x": 47.0,
+    "y": 325.9,
+    "text": "flux 1.396 mV·s, ±0.5 % over 3 runs",
+    "c": "mark",
+    "anchor": "start"
+   }
+  ]
+ },
+ "el-rise": {
+  "src": "scope-el-rise.png",
+  "w": 1024,
+  "h": 600,
+  "title": "Step response, rising",
+  "legend": [
+   [
+    1,
+    "FET Q2 current"
+   ],
+   [
+    2,
+    "FET Q1 current"
+   ],
+   [
+    3,
+    "gate 1"
+   ],
+   [
+    4,
+    "gate 2"
+   ]
+  ],
+  "note": "0.1 to 1.8 A into a 5 V source, 16 averages",
+  "marks": [
+   {
+    "t": "span",
+    "x0": 198.0,
+    "x1": 255.0,
+    "y": 183.0,
+    "text": "≈ 12 µs",
+    "c": "mark"
+   },
+   {
+    "t": "label",
+    "x": 302.0,
+    "y": 295.0,
+    "text": "overshoot ≤ 0.6 %, no ringing",
+    "c": "mark",
+    "anchor": "start"
+   }
+  ]
+ },
+ "el-fall": {
+  "src": "scope-el-fall.png",
+  "w": 1024,
+  "h": 600,
+  "title": "Step response, falling",
+  "legend": [
+   [
+    1,
+    "FET Q2 current"
+   ],
+   [
+    2,
+    "FET Q1 current"
+   ],
+   [
+    3,
+    "gate 1"
+   ],
+   [
+    4,
+    "gate 2"
+   ]
+  ],
+  "note": "1.8 to 0.1 A into a 5 V source, 16 averages",
+  "marks": [
+   {
+    "t": "span",
+    "x0": 181.0,
+    "x1": 260.0,
+    "y": 210.0,
+    "text": "≈ 16 µs",
+    "c": "mark"
+   },
+   {
+    "t": "label",
+    "x": 302.0,
+    "y": -4089.0,
+    "text": "the two FETs move together",
+    "c": "mark",
+    "anchor": "start"
+   }
+  ]
+ },
+ "el-settle": {
+  "src": "scope-el-settle.png",
+  "w": 1024,
+  "h": 600,
+  "title": "Settling",
+  "legend": [
+   [
+    1,
+    "FET Q2 current"
+   ],
+   [
+    2,
+    "FET Q1 current"
+   ],
+   [
+    3,
+    "gate 1"
+   ],
+   [
+    4,
+    "gate 2"
+   ]
+  ],
+  "note": "same step at 200 µs/div",
+  "marks": [
+   {
+    "t": "label",
+    "x": 302.0,
+    "y": 291.0,
+    "text": "within ±5 % in 12 µs, then flat",
+    "c": "mark",
+    "anchor": "start"
+   }
+  ]
+ }
+}
