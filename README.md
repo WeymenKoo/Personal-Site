@@ -2,7 +2,7 @@
 
 Circuit boards and flight hardware: a title screen over a pixel city, then the projects.
 
-**Live:** https://weymenkoo.github.io/Personal-Site/
+**Live:** https://weymenkoo.github.io/Personal-Site/ · **[Résumé (PDF)](https://github.com/WeymenKoo/WeymenKoo/blob/main/Weymen_Koo_Resume.pdf)** · **[Portfolio (PDF)](https://weymenkoo.github.io/Personal-Site/portfolio.pdf)**
 
 ```
 dusk/        the site itself: this folder is what gets published
@@ -14,10 +14,11 @@ tools/       scroll-profile.js, a frame-time profiler (npm run profile)
 ## Projects
 
 The **[portfolio.pdf](https://weymenkoo.github.io/Personal-Site/portfolio.pdf)** is a work sample for job
-applications: four projects, each as board, design and layout, test results and use, on one fixed grid. It is
+applications: four projects (16 pages), each as board, design and layout, test results and use, on one fixed grid. It is
 written in `tools/portfolio/content.js` and printed by `npm run portfolio` into `dusk/portfolio.pdf`, published with
 the site. See [tools/portfolio/README.md](tools/portfolio/README.md). The GitHub profile
-README is hand-written and just links here.
+README is hand-written and links here and to the one-page résumé PDF, which lives in that repo
+(`WeymenKoo/WeymenKoo`, `Weymen_Koo_Resume.pdf`); the site's résumé page links the same file.
 
 ## Editing
 
