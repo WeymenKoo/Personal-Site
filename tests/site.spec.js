@@ -645,7 +645,7 @@ test.describe('analytics', () => {
   test('Umami: Umami loads on the live domain only, honours Do Not Track, and the footer says so', async ({ page }) => {
   await open(page, server.url);
   const t = await page.evaluate(() => { const s = document.querySelector('script[src*="cloud.umami.is"]'); return s && { id: s.dataset.websiteId, dom: s.dataset.domains, dnt: s.dataset.doNotTrack, wk: typeof window.wkTrack }; });
-  expect(t).toEqual({ id: '60ba8533-8db0-4cd0-8311-3fd032f42581', dom: 'weymenkoo.github.io', dnt: 'true', wk: 'function' });
+  expect(t).toEqual({ id: '426494d4-e58a-4337-83a9-103fbc68c98c', dom: 'weymenkoo.github.io', dnt: 'true', wk: 'function' });
   await expect(page.locator('footer')).toContainText('Anonymous visit counts via Umami. No cookies.');
   // no cookies set by the page itself
   expect(await page.context().cookies()).toEqual([]);
