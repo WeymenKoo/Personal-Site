@@ -255,4 +255,4 @@ For the flown board:
 
 The next revision takes the same three fixes into the design, moves the feedback point to the servo rail, and gets tested at full current on a bigger load.
 
-Schematic, test log, scripts, raw data and every scope capture: [github.com/WeymenKoo/2025-Power-Board](https://github.com/WeymenKoo/2025-Power-Board).
+Schematic, test log, scripts, raw data and every scope capture: [github.com/WeymenKoo/AeroDesign-Power-Board](https://github.com/WeymenKoo/AeroDesign-Power-Board).
