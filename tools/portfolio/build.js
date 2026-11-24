@@ -172,7 +172,6 @@ b{font-weight:700}
 .page:last-child{break-after:auto}
 header{display:flex;justify-content:space-between;font-size:6.6pt;letter-spacing:.1em;text-transform:uppercase;color:#5f5486;border-bottom:1px solid #cfc5df;padding-bottom:.07in}
 header .sec b{color:#0a6f83}
-.pn::after{content:counter(pg)}
 h2{font-size:17pt;font-weight:800;font-style:italic;letter-spacing:-.02em;line-height:1.1;margin-top:.13in}
 .spec{font-size:7.7pt;color:#0a6f83;margin-top:.045in}
 .grid{flex:1;min-height:0;margin-top:.14in;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:.16in .2in}
@@ -240,6 +239,9 @@ async function writePdf() {
   const page_ = await browser.newPage();
   await page_.setContent(html(), { waitUntil: 'load' });
   await page_.evaluate(() => document.fonts.ready);
+  // page numbers as n / total
+  await page_.evaluate(() => { const ps = [...document.querySelectorAll('.page')];
+    ps.forEach((p, i) => p.querySelectorAll('.pn').forEach(e => { e.textContent = `${i + 1} / ${ps.length}`; })); });
   // no text block may be clipped
   const over = await page_.evaluate(() => [...document.querySelectorAll('.page')].flatMap((p, i) =>
     [...p.querySelectorAll('.cap,.under,.text,.strip')].filter(b => b.scrollHeight > b.clientHeight + 1 || b.scrollWidth > b.clientWidth + 1)
