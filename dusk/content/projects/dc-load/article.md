@@ -119,4 +119,4 @@ Simulated in LTspice with TI's TLV915x model: phase margin at least 87° and gai
 3. Bring-up, then firmware.
 4. Test hot-plug from a battery, which Rev A's bench supply could not show.
 
-Hardware, firmware, GUI, test scripts, raw data and the full report: [github.com/WeymenKoo/dc-electronic-load](https://github.com/WeymenKoo/dc-electronic-load).
+Hardware, firmware, GUI, test scripts, raw data and the full report: [github.com/WeymenKoo/DC-Electronic-Load](https://github.com/WeymenKoo/DC-Electronic-Load).

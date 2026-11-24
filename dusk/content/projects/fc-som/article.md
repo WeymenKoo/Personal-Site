@@ -26,7 +26,7 @@ The 55 × 40 mm, 8-layer module carries the MCU, two IMUs, two barometers, a mag
 | I/O | 16 PWM, 8 UARTs + USB, 4 I2C, 2 CAN, 5 ADC |
 | Assembly | 150 parts (59 top, 91 bottom), 22 test pads |
 | Designers | Weymen Koo (lead) · Lachlan Biersteker (trained on this board) |
-| Files | [Repository](https://github.com/WeymenKoo/UBCAeroDesign-2026-Flight-Controller) · [Schematic (PDF)](https://github.com/WeymenKoo/UBCAeroDesign-2026-Flight-Controller/blob/main/FC_SoM_RevA_Schematic.pdf) · [STEP model](https://github.com/WeymenKoo/UBCAeroDesign-2026-Flight-Controller/blob/main/mechanical/FC_SoM_RevA.step) |
+| Files | [Repository](https://github.com/WeymenKoo/AeroDesign-Flight-Controller-SoM) · [Schematic (PDF)](https://github.com/WeymenKoo/AeroDesign-Flight-Controller-SoM/blob/main/FC_SoM_RevA_Schematic.pdf) · [STEP model](https://github.com/WeymenKoo/AeroDesign-Flight-Controller-SoM/blob/main/mechanical/FC_SoM_RevA.step) |
 
 ## Board views
 
@@ -140,7 +140,7 @@ Built for JLCPCB. The Gerbers, BOM and pick-and-place file were exported on 15 N
 | Assembly | Standard PCBA, both sides |
 | Inspection | X-ray for the BGA |
 
-The upload set is in the repository under [`jlcpcb/`](https://github.com/WeymenKoo/UBCAeroDesign-2026-Flight-Controller/tree/main/jlcpcb).
+The upload set is in the repository under [`jlcpcb/`](https://github.com/WeymenKoo/AeroDesign-Flight-Controller-SoM/tree/main/jlcpcb).
 
 ## Status
 
