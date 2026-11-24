@@ -168,7 +168,7 @@ body{color:#241a4a;font-family:JBM,"JetBrains Mono",monospace;font-variant-ligat
   -webkit-print-color-adjust:exact;print-color-adjust:exact;counter-reset:pg}
 a{color:inherit;text-decoration:none}
 b{font-weight:700}
-.page{background:#f4eefb;width:11in;height:8.5in;padding:.38in .42in .34in;display:flex;flex-direction:column;break-after:page;overflow:hidden;counter-increment:pg}
+.page{width:11in;height:8.5in;padding:.38in .42in .34in;display:flex;flex-direction:column;break-after:page;overflow:hidden;counter-increment:pg}
 .page:last-child{break-after:auto}
 header{display:flex;justify-content:space-between;font-size:6.6pt;letter-spacing:.1em;text-transform:uppercase;color:#5f5486;border-bottom:1px solid #cfc5df;padding-bottom:.07in}
 header .sec b{color:#0a6f83}
@@ -195,7 +195,7 @@ h2{font-size:17pt;font-weight:800;font-style:italic;letter-spacing:-.02em;line-h
 .lab.above{transform:translateY(-120%)}
 .lab.above.end{transform:translate(-100%,-120%)}
 .lab.above.centre{transform:translate(-50%,-115%)}
-.num{position:absolute;transform:translate(-50%,-50%);width:1.75em;height:1.75em;border-radius:50%;background:#241a4a;color:#fff;font-weight:700;font-size:7.6pt;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1.2px #f4eefb}
+.num{position:absolute;transform:translate(-50%,-50%);width:1.75em;height:1.75em;border-radius:50%;background:#241a4a;color:#fff;font-weight:700;font-size:7.6pt;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1.2px #fff}
 .tagl{position:absolute;transform:translateX(-50%);font-size:6.6pt;letter-spacing:.1em;text-transform:uppercase;color:#5f5486;white-space:nowrap}
 .legend{position:absolute;left:2.2%;bottom:2.4%;display:flex;gap:1.3em;font-size:6.3pt;color:#4c3f80}
 .legend i{display:inline-block;width:.7em;height:.7em;border-radius:1px;margin-right:.45em}
