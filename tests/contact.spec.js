@@ -11,7 +11,7 @@ test.afterAll(async () => { await server.close(); });
 async function open(page) {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
-  await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
+  await page.route(/fonts\.(googleapis|gstatic)\.com|cloud\.umami\.is/, r => r.abort());
   await page.goto(server.url + 'contact.html');
   return errors;
 }
@@ -121,7 +121,7 @@ test('same look as the front page, in both themes; fits a phone', async ({ brows
 });
 
 test('the front page links here from the top bar and the footer', async ({ page }) => {
-  await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
+  await page.route(/fonts\.(googleapis|gstatic)\.com|cloud\.umami\.is/, r => r.abort());
   await page.goto(server.url + 'index.html');
   await expect(page.locator('.topbar nav a', { hasText: 'Contact' })).toHaveAttribute('href', 'contact.html');
   await page.locator('#contact a.telegram').click();

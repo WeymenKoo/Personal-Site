@@ -1152,7 +1152,7 @@
       jazzBtn = el("button", "jazz"); jazzBtn.type = "button"; jazzBtn.id = "jazz";
       jazzBtn.title = "The Low Pass: jazz, live tonight";
       jazzBtn.setAttribute("aria-label", "The Low Pass jazz club: play a tune");
-      jazzBtn.addEventListener("click", function () { jazz.toggle(); });
+      jazzBtn.addEventListener("click", function () { jazz.toggle(); if (window.wkTrack) wkTrack("egg", { which: "jazz" }); });
       hero.appendChild(jazzBtn);
     }
     jazzBtn.style.left = a.x + "px"; jazzBtn.style.top = a.y + "px";
@@ -1478,12 +1478,12 @@
     if (/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName || ""))) return;
     var k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
     kpos = k === KONAMI[kpos] ? kpos + 1 : (k === KONAMI[0] ? 1 : 0);
-    if (kpos === KONAMI.length) { kpos = 0; if (game.invade) game.invade(); else toast("Wrong floor. Try the title screen."); }
+    if (kpos === KONAMI.length) { kpos = 0; if (window.wkTrack) wkTrack("egg", { which: "konami" }); if (game.invade) game.invade(); else toast("Wrong floor. Try the title screen."); }
     if (e.key.length === 1) {
       typed = (typed + k).slice(-12);
-      if (/sudo$/.test(typed)) toast("Nice try. This incident will be reported.");
-      if (/smoke$/.test(typed)) toast("Don't let it out. The red car lights told you.");
-      if (/42$/.test(typed)) toast("The answer. Now what was the question?");
+      if (/sudo$/.test(typed)) { if (window.wkTrack) wkTrack("egg", { which: "sudo" }); } if (/sudo$/.test(typed)) toast("Nice try. This incident will be reported.");
+      if (/smoke$/.test(typed)) { if (window.wkTrack) wkTrack("egg", { which: "smoke" }); } if (/smoke$/.test(typed)) toast("Don't let it out. The red car lights told you.");
+      if (/42$/.test(typed)) { if (window.wkTrack) wkTrack("egg", { which: "42" }); } if (/42$/.test(typed)) toast("The answer. Now what was the question?");
     }
   });
 
