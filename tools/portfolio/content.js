@@ -1,8 +1,8 @@
 // The portfolio's pages, in order. Built projects follow one sequence: the real board with its specs
 // and purpose, then design and layout, then testing, then use. Numbers come from the projects' reports:
 //   power board  github.com/WeymenKoo/AeroDesign-Power-Board (README, bench_test/results/*/notes.txt)
-//   FOC          github.com/WeymenKoo/FOC-Motor-Controller (Testing/README.md, Testing/Bench/CHAR_LOG.md)
-//   DC load      github.com/WeymenKoo/DC-Electronic-Load (bench_test/REPORT.md, RevB/README.md)
+//   FOC          github.com/WeymenKoo/FOC-Motor-Controller (README.md, bench session)
+//   DC load      github.com/WeymenKoo/DC-Electronic-Load (bench_test/README.md, RevB/README.md)
 //   SoM          github.com/WeymenKoo/AeroDesign-Flight-Controller-SoM (README.md)
 module.exports = ({ fig, scope, text, table, stats, key, kicker, grid, hero, page, layoutMarks, LEGEND, frame, cap }) => {
   const P = [];

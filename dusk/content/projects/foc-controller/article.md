@@ -22,7 +22,7 @@ date: Rev 1 · 2026
 | Comms | CAN-FD (TCAN1044), UART to the bench GUI, SWD |
 | Power tree | SMCJ51CA TVS → LMR36520 buck to 5 V → LDO to 3.3 V |
 | Board | 70 × 70 mm, 6 layers, KiCad 10, fabricated and assembled by JLCPCB |
-| Files | [Repository](https://github.com/WeymenKoo/FOC-Motor-Controller) · [Schematic (PDF)](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/FoC_Motor_Controller_Schematic.pdf) · [Design notes](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/Documentation/Design_Notes.md) |
+| Files | [Repository](https://github.com/WeymenKoo/FOC-Motor-Controller) · [Schematic (PDF)](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/Documentation/FoC_Motor_Controller_Schematic.pdf) · [Bench session](https://github.com/WeymenKoo/FOC-Motor-Controller#bench-session-22-november-2026) |
 
 ## Renders
 
@@ -86,7 +86,7 @@ Three LTspice decks built from the Rev 1 netlist, each predicting what a bench m
 
 The I/f spin at 2 A / 300 rpm gives a 2.04 A envelope, and the 112 mV pulse matches the sim's 120 mV.
 
-Full slides: [Sim and bench results (PDF)](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/FOC_Motor_Controller_Sim_and_Bench_Results.pdf). Decks, raw captures and scripts: [`Simulation/`](https://github.com/WeymenKoo/FOC-Motor-Controller/tree/main/Simulation).
+Full slides: [Sim and bench results (PDF)](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/Documentation/FOC_Motor_Controller_Sim_and_Bench_Results.pdf). Decks, results and raw captures: [`Testing/Simulation/`](https://github.com/WeymenKoo/FOC-Motor-Controller/tree/main/Testing/Simulation).
 
 ## Bench GUI: FOCLINK
 
@@ -106,11 +106,10 @@ Screenshots are from the GUI's built-in board simulator, not a live board.
 
 | File | What it is |
 |---|---|
-| [Schematic](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/FoC_Motor_Controller_Schematic.pdf) | Full schematic, 12 hierarchical sheets |
-| [PCB artwork](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/FoC_Motor_Controller_PCB_Artwork.pdf) | Board drawing |
-| [Technical reference](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/FOC_Motor_Controller_Rev1_Technical_Reference.pdf) | Rev 1 technical reference |
-| [Sim and bench results](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/FOC_Motor_Controller_Sim_and_Bench_Results.pdf) | Simulation and bench-correlation slides |
-| [Design notes](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/Documentation/Design_Notes.md) | The full design write-up: theory, power stage, gate drive, current sensing, power tree, layout, safety, bring-up, Rev 2 list, lessons |
+| [Schematic](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/Documentation/FoC_Motor_Controller_Schematic.pdf) | Full schematic, 14 pages |
+| [PCB artwork](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/Documentation/FoC_Motor_Controller_PCB_Artwork.pdf) | Board drawing |
+| [Sim and bench results](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/Documentation/FOC_Motor_Controller_Sim_and_Bench_Results.pdf) | Simulation and bench-correlation slides |
+| [Bench session](https://github.com/WeymenKoo/FOC-Motor-Controller#bench-session-22-november-2026) | Rev 1 characterization: switching, protection, current sensing, dead time, braking, heat, motor constants, Rev 2 list |
 
 ## Validation | What's proven, what's next
 
@@ -134,4 +133,4 @@ Each step runs on a current-limited supply before the next. Ticked items are don
 4. More bulk capacitance, or a lower-ESR part
 5. Hardware CAN node addressing
 
-The full list, with reasons, is in the [design notes](https://github.com/WeymenKoo/FOC-Motor-Controller/blob/main/Documentation/Design_Notes.md#16-rev-2-list).
+The full list, with reasons, is in the [repository README](https://github.com/WeymenKoo/FOC-Motor-Controller#rev-2).
