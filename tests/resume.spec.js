@@ -10,7 +10,7 @@ test.afterAll(async () => { await server.close(); });
 test('the work history renders, with no errors and no transcript', async ({ page, request }) => {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
-  await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
+  await page.route(/fonts\.(googleapis|gstatic)\.com|cloud\.umami\.is/, r => r.abort());
   await page.goto(server.url + 'resume.html');
   await expect(page.locator('h1')).toHaveText('Weymen Koo');
   await expect(page.locator('.cv-sec h2')).toHaveText(['Education', 'Skills', 'Experience', 'Projects', 'Earlier experience']);

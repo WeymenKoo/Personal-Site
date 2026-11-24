@@ -5,7 +5,7 @@ const { copySite, addEntry, removeExample, SITE } = require('./content');
 
 /* keep tests offline and deterministic */
 async function offline(page) {
-  await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
+  await page.route(/fonts\.(googleapis|gstatic)\.com|cloud\.umami\.is/, r => r.abort());
 }
 async function open(page, url) {
   const errors = [];
@@ -231,7 +231,7 @@ test.describe('as shipped', () => {
 
   test('the cursor nudges the spacecraft aside, gently', async ({ page }) => {
     await page.setViewportSize({ width: 1200, height: 800 });
-    await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
+    await page.route(/fonts\.(googleapis|gstatic)\.com|cloud\.umami\.is/, r => r.abort());
     await page.goto(server.url + 'index.html?scene=station');
     // the push: away from the cursor, small, and nothing beyond the radius
     const r = await page.evaluate(() => {
@@ -636,4 +636,18 @@ test('a broken entry is skipped and logged; the rest still render', async ({ pag
   expect(logs.join('\n')).toContain('skipped content/projects/bad/entry.json');
   await server.close();
   fs.rmSync(site, { recursive: true, force: true });
+});
+
+test.describe('analytics', () => {
+  let server;
+  test.beforeAll(async () => { server = await startServer(SITE); });
+  test.afterAll(async () => { await server.close(); });
+  test('Umami: Umami loads on the live domain only, honours Do Not Track, and the footer says so', async ({ page }) => {
+  await open(page, server.url);
+  const t = await page.evaluate(() => { const s = document.querySelector('script[src*="cloud.umami.is"]'); return s && { id: s.dataset.websiteId, dom: s.dataset.domains, dnt: s.dataset.doNotTrack, wk: typeof window.wkTrack }; });
+  expect(t).toEqual({ id: '60ba8533-8db0-4cd0-8311-3fd032f42581', dom: 'weymenkoo.github.io', dnt: 'true', wk: 'function' });
+  await expect(page.locator('footer')).toContainText('Anonymous visit counts via Umami. No cookies.');
+  // no cookies set by the page itself
+  expect(await page.context().cookies()).toEqual([]);
+});
 });

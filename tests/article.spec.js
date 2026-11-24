@@ -5,7 +5,7 @@ const { startServer } = require('./serve');
 const { copySite, addEntry, SITE } = require('./content');
 
 async function offline(page) {
-  await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
+  await page.route(/fonts\.(googleapis|gstatic)\.com|cloud\.umami\.is/, r => r.abort());
 }
 async function openArticle(page, url) {
   const errors = [];
