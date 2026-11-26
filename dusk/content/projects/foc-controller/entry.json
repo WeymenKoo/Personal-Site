@@ -1,10 +1,10 @@
 {
   "title": "FOC motor controller",
   "status": "wip",
-  "statusLabel": "Bring-up",
+  "statusLabel": "Characterised",
   "year": "2026",
   "spec": "12S bus · 10 A RMS · STM32G431 + DRV8323S · CAN-FD",
-  "summary": "A single-axis, sensored field-oriented-control motor controller for one joint of a cat-scale bipedal robot: 70 × 70 mm, 6 layers. Rev 1 is fabricated and partly bench-validated on a 12 V supply, with a motor identified and spun open-loop up to 1000 rpm.",
+  "summary": "A single-axis, sensored field-oriented-control motor controller for one joint of a cat-scale bipedal robot: 70 × 70 mm, 6 layers. Rev 1 was bench-characterised in November 2026 at up to 30 V and 10 A per phase: the bench found −10 V on a −7 V pin and a 280 A short-circuit trip at the gate driver's defaults, both now fixed, and set the Rev 2 list.",
   "cover": {
     "src": "card.jpg",
     "alt": "Render of the FOC motor controller, top side: three-phase bridge, bulk capacitors, DRV8323S and STM32G431, on brass standoffs",
@@ -28,8 +28,8 @@
     },
     {
       "src": "thumb-bench.jpg",
-      "alt": "Rev 1 on the bench, wired to a motor and a bench supply",
-      "caption": "Bench test"
+      "alt": "Rev 1 on the bench with the motor, a scope, a bench supply and a meter",
+      "caption": "Characterised"
     }
   ],
   "link": "content/projects/foc-controller/index.html"
