@@ -113,6 +113,26 @@
 .ar-gbu li{margin:0 0 .35rem}
 @media(max-width:640px){.ar-gbu{grid-template-columns:1fr}}
 
+/* ---------- the results in big numbers: <div class="ar-stats"> ----------
+   Each child is <div><b>36 W</b><span>what it means</span></div>. They rise in
+   one after another as the strip scrolls into view, and the numbers count up
+   (article.js); with reduced motion they are simply there. */
+.ar-stats{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:4px;overflow:hidden;margin:2.2rem 0;font-family:var(--mono)}
+.ar-stats > div{flex:1 1 9.5rem;background:var(--bg);padding:1.1rem 1.1rem 1rem}
+.ar-stats b{display:block;font-size:1.55rem;line-height:1.1;color:var(--accent);font-weight:700;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.ar-stats span{display:block;margin-top:.45rem;font-size:.7rem;line-height:1.45;color:var(--dim)}
+.ar-stats .bad b{color:#B8433A}
+.ar-js .ar-stats > div{opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
+.ar-js .ar-stats.on > div{opacity:1;transform:none}
+.ar-js .ar-stats.on > div:nth-child(2){transition-delay:.12s}
+.ar-js .ar-stats.on > div:nth-child(3){transition-delay:.24s}
+.ar-js .ar-stats.on > div:nth-child(4){transition-delay:.36s}
+.ar-js .ar-stats.on > div:nth-child(5){transition-delay:.48s}
+.ar-js .ar-stats.on > div:nth-child(6){transition-delay:.6s}
+@media (prefers-reduced-motion:reduce){.ar-js .ar-stats > div{opacity:1;transform:none;transition:none}}
+
 /* ---------- what broke -> what fixed it ---------- */
 .ar-fix{width:100%;border-collapse:collapse;margin:2rem 0;font-family:var(--mono);font-size:.8rem}
 .ar-fix th{text-align:left;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);

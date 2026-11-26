@@ -417,14 +417,30 @@ test.describe('the seven articles, as shipped', () => {
     });
   }
 
-  test('power-board: one chapter per stage', async ({ page }) => {
+  /* README: <div class="ar-stats">: numbers rise in and count up, and always land on what was written */
+  test('big numbers count up to the written values; with reduced motion they are simply there', async ({ browser }) => {
+    for (const reducedMotion of ['no-preference', 'reduce']) {
+      const ctx = await browser.newContext({ reducedMotion });
+      const page = await ctx.newPage();
+      await openArticle(page, server.url + url('foc-controller'));
+      const strip = page.locator('.ar-stats');
+      await strip.scrollIntoViewIfNeeded();
+      await expect(strip).toHaveClass(/\bon\b/);
+      await expect(strip.locator('div').last()).toHaveCSS('opacity', '1', { timeout: 3000 });
+      await page.waitForTimeout(reducedMotion === 'reduce' ? 0 : 1200);   // the count-up takes 0.9 s
+      await expect(strip.locator('b')).toHaveText(['3000 rpm', '50 / 50', '10 A', '1–2 %']);
+      await ctx.close();
+    }
+  });
+
+  test('power-board: what it is, does it work, what failed', async ({ page }) => {
     await openArticle(page, server.url + url('power-board'));
     await expect(page.locator('section.ar-ch h2')).toHaveText([
-      'From the chalkboard', 'Power flow', 'Input eFuse and reverse polarity', '5 V, 15 A: LM5146', 'Output eFuse and current sense',
-      'Connectors', 'PCB layout', 'The flight controller (not my design)', "The flight controller didn't fit", 'SAE Aero Design 2025', 'Bench tests',
+      'What it is', "The flight controller didn't fit", 'SAE Aero Design 2025', 'Does it work?', 'What failed, and why',
     ]);
-    // every schematic sheet after the top one is shown, and the results link goes to SAE
-    await expect(page.locator('img[src^="sch-"]')).toHaveCount(4);
+    // the headline numbers, the build story, and the results link goes to SAE
+    await expect(page.locator('.ar-stats > div')).toHaveCount(4);
+    await expect(page.locator('.ar-gif img[src="story.gif"]')).toHaveCount(1);
     await expect(page.locator('a[href*="saeaerodesign.com"]')).toHaveAttribute('target', '_blank');
   });
 });

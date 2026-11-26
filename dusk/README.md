@@ -202,6 +202,7 @@ The styles for these live in `assets/article.css`:
 | text message (the dots "type" before it appears) | `<div class="ar-chat">` with `.who`, `.typing`, `.msg`, `.seen` |
 | three-column verdict | `<div class="ar-gbu">` with `.good` `.bad` `.ugly` |
 | the ECG trace | `<div class="ar-ecg">` |
+| results in big numbers (they count up as they scroll in) | `<div class="ar-stats">` holding `<div><b>36 W</b><span>what it means</span></div>` per number; add `class="bad"` to a child to show it in red |
 
 **Previewing:** GitHub and most editors render `article.md` well enough to
 proofread, but only the site shows the real layout. Run it locally (above).
