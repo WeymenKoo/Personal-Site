@@ -138,7 +138,7 @@
       <div class="job-top"><p class="org"><a class="proj-link" href="content/projects/foc-controller/index.html">FOC Motor Controller</a><span class="where"><a class="repo-link" href="https://github.com/WeymenKoo/FOC-Motor-Controller" target="_blank" rel="noopener">GitHub ↗</a></span></p><h3>Designer</h3><span class="when">2026</span></div>
       <ul>
         <li>6-layer KiCad board for a robot leg joint: 12S bus, 10 A RMS design target, STM32G431 + DRV8323S, 14-bit encoder, CAN-FD.</li>
-        <li>Rev 1 fabricated and brought up on 12 V: gate driver, current sensing and PWM verified, motor identified and spun open-loop; <b>LTspice models checked against scope captures</b>. Closed loop in progress.</li>
+        <li>Rev 1 bench-characterized at up to 30 V and 10 A per phase with scripted scope and PSU runs: found <b>−10 V on a −7 V gate-driver pin</b> and a <b>280 A short-circuit trip</b> at the driver's power-on defaults, fixed both, and set the Rev 2 list. <b>LTspice models checked against scope captures</b>.</li>
       </ul>
     </article>
 

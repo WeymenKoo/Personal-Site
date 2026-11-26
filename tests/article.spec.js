@@ -337,6 +337,28 @@ test.describe('the seven articles, as shipped', () => {
     expect(turned, 'rotate these for real and save without EXIF').toEqual([]);
   });
 
+  /* project rule: no metadata on site pictures (location, camera, dates, comments) */
+  test('no picture carries metadata: no EXIF, XMP, IPTC or comments', () => {
+    const root = `${SITE}/content/projects`, found = [];
+    for (const slug of fs.readdirSync(root)) {
+      if (!fs.statSync(`${root}/${slug}`).isDirectory()) continue;
+      for (const f of fs.readdirSync(`${root}/${slug}`)) {
+        const b = fs.readFileSync(`${root}/${slug}/${f}`);
+        if (/\.jpe?g$/i.test(f)) {
+          for (let i = 2; i < b.length - 4 && b[i] === 0xff && b[i + 1] !== 0xda; i += 2 + b.readUInt16BE(i + 2)) {
+            if ([0xe1, 0xed, 0xfe].includes(b[i + 1])) found.push(`${slug}/${f}: 0x${b[i + 1].toString(16)}`);
+          }
+        } else if (/\.png$/i.test(f)) {
+          for (let i = 8; i < b.length; i += 12 + b.readUInt32BE(i)) {
+            const t = b.toString('ascii', i + 4, i + 8);
+            if (['tEXt', 'iTXt', 'zTXt', 'eXIf', 'caBX'].includes(t)) found.push(`${slug}/${f}: ${t}`);
+          }
+        }
+      }
+    }
+    expect(found, 'strip these').toEqual([]);
+  });
+
   test('sizes.json in every folder is up to date (run: npm run stamp)', () => {
     expect(require('../tools/sizes').run(true)).toEqual([]);
   });

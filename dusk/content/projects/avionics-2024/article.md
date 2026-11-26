@@ -343,13 +343,13 @@ The final design is a 2-layer board, with no special stackup requirement, follow
 ## Nobody said it was easy
 
 ![A power module exposed to the elements on the airframe](fail-exposure.jpg "Bad integration, exposure to the elements.")
-![A damaged power module held in a hand](fail-shoot-through.jpg "Suspected shoot-through event, killing 4 servos.")
+![A damaged power module held in a hand](fail-servo-damage.jpg "The incident that killed 4 servos. Root cause undetermined.")
 ![The power module installed in the fuselage under the Cube Orange](fail-connectors.jpg "Not rework-friendly; cheap connectors.")
 
 During test flights and the competition, several design flaws became apparent. The most critical were:
 
 - **Poor connector choices**, which caused reliability problems.
-- **A suspected shoot-through event** that irreparably damaged the tail servos. The root cause was never conclusively identified.
+- **An incident that destroyed four tail servos.** Root cause undetermined; most likely servo overcurrent following a reversed-connector event. I called it shoot-through at the time, but no evidence supports that.
 
 Other issues:
 
@@ -358,6 +358,8 @@ Other issues:
 - The ICs' built-in features were underused.
 - No datalog for troubleshooting, and no test points.
 - Better test equipment was needed to validate the design.
+
+The biggest lesson is that the incident couldn't be debugged. One bad day left no logs, no preserved parts and a label nothing backed up. The next boards log their rails and reset causes, have test points, protect each output separately, and use connectors that are harmless when plugged in backwards.
 
 These failures, and the other limits, became the lessons that shaped the redesign of the power distribution system for the following year.
 
