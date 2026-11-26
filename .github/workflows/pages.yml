@@ -35,24 +35,38 @@ jobs:
           path: test-results/
           retention-days: 7
 
-  deploy:
+  # Build and deploy are separate jobs (GitHub's own Pages template). In one
+  # job, deploy-pages asks for the artifact a fraction of a second after the
+  # upload and can miss it ("No artifacts named github-pages"); across jobs
+  # it is always there. The deploy retries once after a minute, because
+  # Pages itself sometimes answers "Deployment failed, try again later".
+  build:
     needs: test
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-24.04   # Playwright 1.56 has no browser build for Ubuntu 26.04 (ubuntu-latest since Oct 2026)
-    # job-level permissions replace the workflow-level ones, so contents:read
-    # must be repeated here or checkout can't see a private repo
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dusk
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    # job-level permissions replace the workflow-level ones
     permissions:
-      contents: read
       pages: write
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.retry.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dusk
       - id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+      - if: steps.deployment.outcome == 'failure'
+        run: sleep 60
+      - id: retry
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4
