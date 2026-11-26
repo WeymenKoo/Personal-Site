@@ -57,6 +57,7 @@
 /* ---------- images ---------- */
 .ar-fig{margin:2.2rem 0}
 .ar-fig img{width:100%;height:auto;display:block;border-radius:3px}
+/* a tall picture on its own is held to the screen's height and centred, so it never fills a screen and a half */
 .ar-fig figcaption{font-family:var(--mono);font-size:.7rem;line-height:1.6;color:var(--dim);margin-top:.65rem}
 .ar-gif img{box-shadow:0 18px 40px -24px rgba(0,0,0,.6)}
 .ar-bleed{max-width:var(--maxw);margin:2.6rem auto;padding-inline:var(--pad)}
@@ -200,9 +201,18 @@
    own size instead of being stretched to the column. */
 #article .ar-fig img{width:auto;max-width:100%}
 /* with its size known (sizes.json) a picture is that wide, or the column's width, before it loads */
-#article .ar-fig img{width:min(100%,var(--w))}
-.ar-grid.nat img{aspect-ratio:var(--ar,auto);object-fit:contain}
-.ar-grid.nat{align-items:start}
+#article .ar-fig img{width:min(100%,var(--w),calc(80vh * var(--r,100)));margin-inline:auto}
+.lite #article .ar-fig img{width:min(100%,var(--w),calc(var(--vh0,1vh)*80 * var(--r,100)))}
+/* a row of pictures in their own shapes: each takes width in proportion to
+   its aspect ratio, so every picture in the row comes out the same height
+   and the row lines up top and bottom, whatever mix of sizes is in it */
+.ar-grid.nat{display:flex;align-items:flex-start}
+.ar-grid.nat > figure{flex:var(--r,1) 1 0;min-width:0}
+.ar-grid.nat img{aspect-ratio:var(--ar,auto);object-fit:contain;height:auto}
+@media(max-width:640px){.ar-grid.nat{flex-direction:column;align-items:stretch}.ar-grid.nat > figure{flex:none}}
+/* four or more in one block (not a gallery wall): two columns, each picture whole */
+.ar-grid.natgrid{align-items:start}
+.ar-grid.natgrid img{aspect-ratio:var(--ar,auto);object-fit:contain}
 @media(min-width:64rem){
   .ar-fig.wide,.ar-grid.wide{margin-inline:-7rem}
   /* file.jpg#bleed: the one image that gets the whole screen */
@@ -230,7 +240,7 @@ body.article{background:radial-gradient(60rem 40rem at 0% 0%,color-mix(in srgb,v
 @media(max-width:900px){.ar-grid.many{grid-template-columns:1fr 1fr}}
 @media(max-width:640px){.ar-grid.many{grid-template-columns:1fr}.ar-grid.many img{aspect-ratio:var(--ar,auto)}}
 #article.ar-gallery .ar-grid:not(.many) img{aspect-ratio:var(--ar,auto);object-fit:contain}
-#article.ar-gallery .ar-grid.two,#article.ar-gallery .ar-grid.three{align-items:start}
+#article.ar-gallery .ar-grid.two:not(.nat),#article.ar-gallery .ar-grid.three:not(.nat){align-items:start}
 #article.ar-gallery .ar-fig img{max-height:80vh;width:auto;margin-inline:auto}
 #article.ar-gallery .ar-fig img{width:min(100%,var(--w),calc(80vh * var(--r)))}
 #article.ar-gallery .ar-fig figcaption{text-align:center}
