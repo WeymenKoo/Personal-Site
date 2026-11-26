@@ -82,7 +82,9 @@
     /* click a figure to see it big, in the lightbox (fx.js); the link
        still points at the full-size file for a middle-click or no JS */
     var full = el("a", { class: "ar-full", href: img.getAttribute("src"), title: "Enlarge" }, [img]);
-    return el("figure", {}, [full, cap ? el("figcaption", { html: window.marked.parseInline(cap) }) : null]);
+    var fig = el("figure", {}, [full, cap ? el("figcaption", { html: window.marked.parseInline(cap) }) : null]);
+    if (wh) fig.style.setProperty("--r", wh[0] / wh[1]);                /* a row shares out its width by shape (article.css) */
+    return fig;
   }
   function images(root, gallery) {
     Array.prototype.slice.call(root.querySelectorAll("p")).forEach(function (p) {
@@ -106,7 +108,7 @@
       } else {
         box = el("div", {
           class: "ar-grid " + (imgs.length === 3 ? "three" : "two") +
-                 (has("tall") ? "" : has("land") ? " land" : " nat") + (has("wide") ? " wide" : "")
+                 (has("tall") ? "" : has("land") ? " land" : imgs.length > 3 ? " natgrid" : " nat") + (has("wide") ? " wide" : "")
         }, imgs.map(figure));
       }
       p.replaceWith(box);
@@ -258,7 +260,7 @@
   }
 
   window.articleReady = Promise.all([
-    script(ASSETS + "vendor/marked.umd.js?v=23a070f2"),
+    script(ASSETS + "vendor/marked.umd.js?v=62e4b958"),
     get("entry.json", "json").catch(function (e) { console.error("[article]", e.message); return {}; }),
     get("article.md", "text"),
     get("sizes.json", "json").catch(function () { return {}; })
@@ -268,9 +270,9 @@
   }).catch(sorry).then(function () {
     /* fx.js (quote, pets, lightbox) and article.js (text-message reveal)
        read the page when they start, so they load after it's built */
-    return script(ASSETS + "fx.js?v=23a070f2");
+    return script(ASSETS + "fx.js?v=62e4b958");
   }).then(function () {
-    return script(ASSETS + "article.js?v=23a070f2");
+    return script(ASSETS + "article.js?v=62e4b958");
   }).then(function () {
     if (location.hash.length > 1) {
       var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));

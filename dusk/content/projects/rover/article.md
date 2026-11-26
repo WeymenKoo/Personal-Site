@@ -80,7 +80,6 @@ I wanted to make it autonomous with ArduPilot, so I fitted a cheap GPS and magne
 
 ![The rover with a GPS mast, a clear electronics box and danger decals, April 2021](v2-desk.jpg "With the GPS mast, April 2021.")
 ![The same rover side-on: six wheels on the aluminium frame](v2-desk-side.jpg "Side-on.")
-![A frame from the drive video: the rover in a hallway behind a backpack](video.jpg "Drive video.")
 
 [▸ Watch it drive on YouTube](https://www.youtube.com/watch?v=HQ-1oEVmYHU)
 

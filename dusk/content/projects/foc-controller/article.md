@@ -15,7 +15,9 @@ date: Rev 1 · 2026
 ## Rev 1 | What it is
 
 ![The assembled Rev 1 board, top side, on a light background](photo-rev1.jpg "Rev 1, assembled by JLCPCB.")
-![Bottom side render: power bus, phase pads and the AS5047P encoder](render-bottom.jpg "The bottom: the encoder sits right under the motor shaft.")
+
+![Top side render: three half-bridges, bulk capacitors, DRV8323S and STM32G431](cover.jpg "Top: the bridge on one edge, the logic on the other.")
+![Bottom side render: power bus, phase pads and the AS5047P encoder](render-bottom.jpg "Bottom: the encoder sits right under the motor shaft.")
 
 | | |
 |---|---|
@@ -27,8 +29,6 @@ date: Rev 1 · 2026
 | Board | 70 × 70 mm, 6 layers, KiCad |
 
 ![The board on its 3D-printed test upright with the ODrive M8325s motor behind it](bench-board-side.jpg#wide "On the test upright with the motor it's meant for.")
-
-![Exploded view of the six copper layers](layer-stack.jpg#wide "The six copper layers.")
 
 ## Nov 2026 | Does it work?
 
@@ -59,6 +59,12 @@ One day on the bench with a 30 V supply, a scope and a small drone motor standin
 </table>
 
 ![Scope capture flipping between the default gate drive, ringing to −10 V, and the slowed one at −0.8 V](fix-gate-drive.gif#wide "The first fix, before and after.")
+
+## Design | Layout
+
+![The FOC controller layout plotted from the fabrication Gerbers, top and bottom, with nine numbered call-outs and a key](layout-annotated.png#wide "Power stage on one edge, logic on the other.")
+
+![Exploded view of the six copper layers](layer-stack.jpg#wide "The six copper layers.")
 
 ## Rev 2 | Next
 

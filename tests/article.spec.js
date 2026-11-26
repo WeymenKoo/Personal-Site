@@ -417,6 +417,32 @@ test.describe('the seven articles, as shipped', () => {
     });
   }
 
+  /* project rule: pictures side by side line up. A row of two or three is scaled to one height, and
+     no row puts a sliver next to a wide picture (aspect ratios within 2:1 of each other) */
+  test('pictures line up: rows share one height, no row mixes shapes more than 2:1, singles keep their shape', async ({ page }) => {
+    for (const slug of SLUGS) {
+      await openArticle(page, server.url + url(slug));
+      const rows = await page.locator('.ar-grid.nat').evaluateAll(gs => gs.map(g => {
+        const im = [...g.querySelectorAll('img')];
+        return { src: im.map(i => i.getAttribute('src')).join(' + '),
+                 h: im.map(i => i.getBoundingClientRect().height), r: im.map(i => i.width / i.height) };
+      }));
+      for (const row of rows) {
+        expect(Math.max(...row.h) - Math.min(...row.h), `${slug}: ${row.src} heights`).toBeLessThan(2);
+        expect(Math.max(...row.r) / Math.min(...row.r), `${slug}: ${row.src} shapes`).toBeLessThan(2.05);
+      }
+      // a picture on its own keeps its shape and never runs taller than 80 % of the screen
+      const singles = await page.locator('#article .ar-fig img').evaluateAll(is => is.map(i => {
+        const r = i.getBoundingClientRect();
+        return { src: i.getAttribute('src'), h: r.height, drawn: r.width / r.height, own: +i.getAttribute('width') / +i.getAttribute('height') };
+      }).filter(x => x.own && x.h));
+      for (const im of singles) {
+        expect(im.h, `${slug}: ${im.src} height`).toBeLessThanOrEqual(page.viewportSize().height * 0.8 + 2);
+        expect(Math.abs(im.drawn / im.own - 1), `${slug}: ${im.src} squashed`).toBeLessThan(0.02);
+      }
+    }
+  });
+
   /* README: <div class="ar-stats">: numbers rise in and count up, and always land on what was written */
   test('big numbers count up to the written values; with reduced motion they are simply there', async ({ browser }) => {
     for (const reducedMotion of ['no-preference', 'reduce']) {
@@ -433,14 +459,14 @@ test.describe('the seven articles, as shipped', () => {
     }
   });
 
-  test('power-board: what it is, does it work, what failed', async ({ page }) => {
+  test('power-board: one chapter per stage', async ({ page }) => {
     await openArticle(page, server.url + url('power-board'));
     await expect(page.locator('section.ar-ch h2')).toHaveText([
-      'What it is', "The flight controller didn't fit", 'SAE Aero Design 2025', 'Does it work?', 'What failed, and why',
+      'From the chalkboard', 'Power flow', 'Input eFuse and reverse polarity', '5 V, 15 A: LM5146', 'Output eFuse and current sense',
+      'Connectors', 'PCB layout', 'The flight controller (not my design)', "The flight controller didn't fit", 'SAE Aero Design 2025', 'Bench tests',
     ]);
-    // the headline numbers, the build story, and the results link goes to SAE
-    await expect(page.locator('.ar-stats > div')).toHaveCount(4);
-    await expect(page.locator('.ar-gif img[src="story.gif"]')).toHaveCount(1);
+    // every schematic sheet after the top one is shown, and the results link goes to SAE
+    await expect(page.locator('img[src^="sch-"]')).toHaveCount(4);
     await expect(page.locator('a[href*="saeaerodesign.com"]')).toHaveAttribute('target', '_blank');
   });
 });
